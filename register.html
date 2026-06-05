@@ -3,114 +3,159 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Create Account · Bikers Portal</title>
+  <title>Take the Oath · Bikers Portal</title>
   <link rel="icon" href="/assets/logo.svg" type="image/svg+xml" />
   <script src="./js/app.js"></script>
   <script src="https://cdn.tailwindcss.com"></script>
   <link rel="stylesheet" href="./assets/style.css" />
 </head>
-<body class="min-h-screen bg-ink-900 text-bone font-sans antialiased">
+<body class="bg-ink-900 text-bone">
+  <div class="canvas-grain"></div>
 
-  <div class="min-h-screen flex flex-col">
-    <header class="px-5 md:px-10 pt-7 pb-2">
-      <a href="/index.html" class="inline-flex items-center">
-        <img src="/assets/logo.svg" alt="Bikers Portal" class="h-8 w-auto" />
-      </a>
+  <header style="padding:32px var(--r-page-pad) 0;max-width:1280px;margin:0 auto;position:relative;z-index:1">
+    <a href="/index.html" class="navbar-brand">
+      <span class="brand-icon">
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 48 48" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+          <circle cx="24" cy="24" r="22" stroke-width="1.6"/>
+          <circle cx="24" cy="24" r="18.4" stroke-width="0.5" stroke-opacity="0.45"/>
+          <g stroke-width="0.9" stroke-opacity="0.45">
+            <line x1="24" y1="5.6" x2="24" y2="42.4"/>
+            <line x1="5.6" y1="24" x2="42.4" y2="24"/>
+            <line x1="10.6" y1="10.6" x2="37.4" y2="37.4"/>
+            <line x1="37.4" y1="10.6" x2="10.6" y2="37.4"/>
+          </g>
+          <circle cx="24" cy="24" r="9" stroke-width="1.1"/>
+          <text x="24" y="28.5" text-anchor="middle" font-family="Cormorant Garamond, Georgia, serif" font-size="12.5" font-weight="600" fill="currentColor" stroke="none" letter-spacing="0.4">BP</text>
+        </svg>
+      </span>
+      <span class="brand-word">
+        <strong>Bikers Portal</strong>
+        <em>Riding Society</em>
+      </span>
+    </a>
+  </header>
+
+  <main class="page-narrow" style="padding:48px var(--r-page-pad) 64px;position:relative;z-index:1">
+
+    <!-- ░░░ Introduction ░░░ -->
+    <header style="text-align:left;margin-bottom:36px;max-width:60ch" class="page-enter">
+      <p class="eyebrow brass" style="margin-bottom:16px">Membership begins</p>
+      <h1 style="font-size:clamp(28px,3.6vw,38px);line-height:1.08;letter-spacing:-0.01em">Begin your record on the road.</h1>
+      <p class="lede" style="font-size:15px;line-height:1.6;color:var(--c-text-2);margin-top:18px">
+        Three things shape a rider: <em>identity</em>, <em>discipline</em>, and <em>taste</em>. We ask for all three.
+      </p>
     </header>
 
-    <main class="flex-1 flex items-center justify-center px-5 py-8">
-      <div class="w-full max-w-lg">
-        <div class="text-center mb-7">
-          <p class="bp-section-label justify-center mb-3">Membership</p>
-          <h1 class="font-serif text-[26px] md:text-[30px] text-bone">Begin your record on the road.</h1>
-          <p class="text-bone-muted text-[13.5px] mt-2 max-w-sm mx-auto leading-relaxed">
-            Membership begins with identity, discipline, and taste.
-          </p>
+    <!-- ░░░ The Card ░░░ -->
+    <form id="regForm" class="card card-stitched page-enter delay-1" style="padding:clamp(22px, 4vw, 36px)" novalidate>
+
+      <!-- Identity -->
+      <section>
+        <div class="form-roman">
+          <span class="roman">I.</span>
+          <span class="form-roman-text">Identity</span>
+          <span class="line"></span>
         </div>
 
-        <form id="regForm" class="bp-card p-6 md:p-8 space-y-7" novalidate>
-          <!-- Identity -->
-          <section>
-            <p class="bp-section-label mb-4">I · Identity</p>
-            <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
-              <div>
-                <label class="bp-label" for="full_name">Full Name</label>
-                <input id="full_name" name="full_name" type="text" required class="bp-input" placeholder="e.g. Aarav Mehta" />
-                <p class="bp-msg bp-msg-error hidden" data-err="full_name"></p>
-              </div>
-              <div>
-                <label class="bp-label" for="username">Username</label>
-                <input id="username" name="username" type="text" required class="bp-input" placeholder="aarav_rides" autocomplete="username" />
-                <p class="bp-msg bp-msg-error hidden" data-err="username"></p>
-                <p class="bp-msg bp-msg-muted">Letters, numbers, underscores.</p>
-              </div>
+        <div class="form-grid-2">
+          <div class="field">
+            <label for="full_name" class="field-label">Full name</label>
+            <input id="full_name" name="full_name" type="text" required class="input" placeholder="e.g. Aarav Mehta" />
+            <p class="field-error hidden" data-err="full_name"></p>
+          </div>
+          <div class="field">
+            <label for="username" class="field-label">Username</label>
+            <input id="username" name="username" type="text" required class="input" placeholder="aarav_rides" autocomplete="username" />
+            <p class="field-error hidden" data-err="username"></p>
+            <p class="field-hint">Letters, numbers, underscores. 3–20 characters.</p>
+          </div>
+        </div>
+      </section>
+
+      <div class="rule" style="margin:32px 0"></div>
+
+      <!-- Access -->
+      <section>
+        <div class="form-roman">
+          <span class="roman">II.</span>
+          <span class="form-roman-text">Access</span>
+          <span class="line"></span>
+        </div>
+
+        <div class="field mb-5">
+          <label for="email" class="field-label">Email</label>
+          <input id="email" name="email" type="email" required class="input" placeholder="you@domain.com" autocomplete="email" />
+          <p class="field-error hidden" data-err="email"></p>
+        </div>
+
+        <div class="form-grid-2">
+          <div class="field">
+            <label for="password" class="field-label">Password</label>
+            <input id="password" name="password" type="password" required minlength="8" class="input" placeholder="Min. 8 characters" autocomplete="new-password" />
+            <p class="field-error hidden" data-err="password"></p>
+          </div>
+          <div class="field">
+            <label for="password2" class="field-label">Confirm</label>
+            <input id="password2" name="password2" type="password" required minlength="8" class="input" placeholder="Repeat password" autocomplete="new-password" />
+            <p class="field-error hidden" data-err="password2"></p>
+          </div>
+        </div>
+      </section>
+
+      <div class="rule" style="margin:32px 0"></div>
+
+      <!-- Machine -->
+      <section>
+        <div class="form-roman">
+          <span class="roman">III.</span>
+          <span class="form-roman-text">The machine</span>
+          <span class="line"></span>
+        </div>
+
+        <div class="field">
+          <label for="bike_model" class="field-label">Preferred machine</label>
+          <input id="bike_model" name="bike_model" type="text" class="input" placeholder="e.g. Royal Enfield Classic 350" />
+          <p class="field-hint">Tell us what you ride, or what you intend to.</p>
+        </div>
+
+        <div class="field" style="margin-top:24px">
+          <label class="field-label">Avatar <span style="color:var(--c-text-3);text-transform:none;letter-spacing:0.02em;font-size:11px">(optional)</span></label>
+          <div class="avatar-uploader">
+            <div id="avatarPreview" class="avatar avatar-md">?</div>
+            <div class="avatar-uploader-info">
+              <label class="btn btn-ghost btn-sm" style="cursor:pointer">
+                <span>Choose image</span>
+                <input id="avatarFile" type="file" accept="image/*" class="sr-only" />
+              </label>
+              <small>Square image, under 1.5 MB.</small>
             </div>
-          </section>
+          </div>
+          <p class="field-error hidden" data-err="avatar"></p>
+        </div>
+      </section>
 
-          <div class="bp-divider"></div>
+      <div class="rule" style="margin:32px 0"></div>
 
-          <!-- Access -->
-          <section>
-            <p class="bp-section-label mb-4">II · Access</p>
-            <div class="space-y-4">
-              <div>
-                <label class="bp-label" for="email">Email</label>
-                <input id="email" name="email" type="email" required class="bp-input" placeholder="you@domain.com" autocomplete="email" />
-                <p class="bp-msg bp-msg-error hidden" data-err="email"></p>
-              </div>
-              <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
-                <div>
-                  <label class="bp-label" for="password">Password</label>
-                  <input id="password" name="password" type="password" required minlength="8" class="bp-input" placeholder="Min. 8 characters" autocomplete="new-password" />
-                  <p class="bp-msg bp-msg-error hidden" data-err="password"></p>
-                </div>
-                <div>
-                  <label class="bp-label" for="password2">Confirm</label>
-                  <input id="password2" name="password2" type="password" required minlength="8" class="bp-input" placeholder="Repeat password" autocomplete="new-password" />
-                  <p class="bp-msg bp-msg-error hidden" data-err="password2"></p>
-                </div>
-              </div>
-            </div>
-          </section>
+      <p id="formErr" class="msg msg-error hidden" style="margin-bottom:16px"></p>
 
-          <div class="bp-divider"></div>
+      <button id="submitBtn" type="submit" class="btn btn-primary full" style="margin-top:8px">
+        <span class="btn-label">Take the oath</span>
+      </button>
 
-          <!-- Machine -->
-          <section>
-            <p class="bp-section-label mb-4">III · The Machine</p>
-            <div class="grid grid-cols-1 sm:grid-cols-[1fr_auto] gap-4 items-end">
-              <div>
-                <label class="bp-label" for="bike_model">Preferred Machine</label>
-                <input id="bike_model" name="bike_model" type="text" class="bp-input" placeholder="e.g. Royal Enfield Classic 350" />
-              </div>
-              <div>
-                <label class="bp-label">Avatar (optional)</label>
-                <div class="flex items-center gap-3">
-                  <div id="avatarPreview" class="bp-avatar-fallback" style="width:44px;height:44px;font-size:14px">?</div>
-                  <label class="bp-btn bp-btn-ghost cursor-pointer">
-                    <span>Choose image</span>
-                    <input id="avatarFile" type="file" accept="image/*" class="hidden" />
-                  </label>
-                </div>
-                <p class="bp-msg bp-msg-error hidden" data-err="avatar"></p>
-              </div>
-            </div>
-          </section>
+      <p class="row gap-2 mt-6" style="justify-content:center;font-size:13px;color:var(--c-text-2)">
+        <span>Already a member?</span>
+        <a href="/index.html" class="btn-link" style="font-size:12px">Enter the portal</a>
+      </p>
+    </form>
 
-          <p id="formErr" class="bp-msg bp-msg-error hidden"></p>
-
-          <button id="submitBtn" type="submit" class="bp-btn bp-btn-primary w-full justify-center">
-            <span class="btn-label">Take the oath</span>
-          </button>
-
-          <p class="text-center text-bone-muted text-[13px]">
-            Already a member?
-            <a href="/index.html" class="text-brass hover:text-brass-light ml-1">Sign in</a>
-          </p>
-        </form>
-      </div>
-    </main>
-  </div>
+    <!-- ░░░ The doctrine — small editorial footer ░░░ -->
+    <section style="margin-top:48px;display:grid;grid-template-columns:1fr;gap:24px" class="fade-up delay-2">
+      <p class="editorial-quote" style="max-width:60ch;margin:0">
+        Membership is not a feature. It is a quiet commitment to ride well, write honestly, and respect the road and the people on it.
+      </p>
+      <p class="eyebrow eyebrow-dim" style="margin-top:8px">House doctrine</p>
+    </section>
+  </main>
 
   <script type="module">
     import { supabase } from './js/supabase.js'
@@ -122,7 +167,6 @@
     const avatarFile = document.getElementById('avatarFile')
     const avatarPrev = document.getElementById('avatarPreview')
 
-    // If already signed in, complete any pending profile then go to feed
     const { data: { session } } = await supabase.auth.getSession()
     if (session) {
       await window.bp.completePendingProfile()
@@ -135,7 +179,7 @@
       if (!f) return
       const reader = new FileReader()
       reader.onload = () => {
-        avatarPrev.outerHTML = `<img id="avatarPreview" src="${reader.result}" alt="" class="rounded-full object-cover border border-bronze" style="width:44px;height:44px" />`
+        avatarPrev.outerHTML = `<img id="avatarPreview" src="${reader.result}" alt="" class="avatar avatar-md" style="object-fit:cover" />`
       }
       reader.readAsDataURL(f)
     })
@@ -178,7 +222,6 @@
       if (file && file.size > 1.5 * 1024 * 1024) { fieldErr('avatar', 'Avatar must be under 1.5 MB.'); bad = true }
       if (bad) return
 
-      // Convert avatar to data URL for cross-session persistence if confirmation is on
       let avatarDataUrl = null
       if (file) avatarDataUrl = await new Promise((r) => {
         const fr = new FileReader(); fr.onload = () => r(fr.result); fr.readAsDataURL(file)
@@ -202,21 +245,19 @@
         return
       }
       if (!data.session) {
-        // Email confirmation required — keep pending profile, tell user to check email
         setLoading(false)
         form.innerHTML = `
-          <div class="text-center py-4">
-            <p class="bp-section-label justify-center mb-4">Confirmation Sent</p>
-            <h2 class="font-serif text-[20px] text-bone">Check your email, rider.</h2>
-            <p class="text-bone-muted text-[13.5px] mt-3 leading-relaxed max-w-sm mx-auto">
-              We sent a confirmation link to <span class="text-bone">${email}</span>.
+          <div class="stack stack-4" style="text-align:center;padding:32px 0">
+            <p class="eyebrow" style="color:var(--c-brass)">Confirmation sent</p>
+            <h2 style="font-size:24px;margin:8px 0 0">Check your email, rider.</h2>
+            <p style="color:var(--c-text-2);font-size:14px;line-height:1.6;max-width:36ch;margin:14px auto 0">
+              We sent a confirmation link to <span style="color:var(--c-text)">${email}</span>.
               Click it, then return here to sign in and your record will be waiting.
             </p>
-            <a href="/index.html" class="bp-btn bp-btn-primary mt-7 inline-flex">Back to sign in</a>
+            <a href="/index.html" class="btn btn-primary" style="margin:24px auto 0">Back to sign in</a>
           </div>`
         return
       }
-      // Session exists (autoconfirm on) — complete profile now
       const result = await window.bp.completePendingProfile()
       if (!result.ok) {
         setLoading(false)

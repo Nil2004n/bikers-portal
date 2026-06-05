@@ -9,83 +9,117 @@
   <script src="https://cdn.tailwindcss.com"></script>
   <link rel="stylesheet" href="./assets/style.css" />
 </head>
-<body class="min-h-screen bg-ink-900 text-bone font-sans antialiased">
+<body class="bg-ink-900 text-bone">
+  <div class="canvas-grain"></div>
 
   <script type="module" src="./js/auth-guard.js"></script>
-
   <header id="bp-navbar" data-active=""></header>
 
-  <main class="max-w-5xl mx-auto px-4 md:px-6 py-8 md:py-12">
-    <!-- Dossier header -->
-    <section class="bp-card p-6 md:p-8 bp-stitched">
-      <div class="flex flex-col md:flex-row md:items-start gap-6">
-        <div id="bigAvatar" class="skeleton rounded-full shrink-0 mx-auto md:mx-0" style="width:112px;height:112px"></div>
-        <div class="flex-1 min-w-0 text-center md:text-left">
-          <p class="bp-section-label mb-2" id="dossierLabel" style="justify-content:center">Rider Dossier</p>
-          <h1 id="dName" class="font-serif text-[26px] md:text-[30px] text-bone">…</h1>
-          <p id="dHandle" class="text-bone-dim text-[13px] mt-1">…</p>
-          <p id="dBio" class="text-bone-muted text-[14px] mt-4 max-w-xl leading-relaxed">…</p>
-          <div class="mt-4 flex items-center gap-2 justify-center md:justify-start flex-wrap">
-            <span id="dBike" class="bp-badge" style="color:#c9a875;border-color:rgba(201,168,117,0.4);background:rgba(176,141,87,0.08)">—</span>
+  <main class="page-narrow" style="padding-top:32px;padding-bottom:80px;max-width:920px">
+
+    <!-- ░░ Dossier header ░░ -->
+    <section class="dossier fade-up">
+      <div class="dossier-head">
+        <div id="bigAvatar" class="skeleton avatar avatar-xl avatar-ring" style="width:104px;height:104px"></div>
+        <div class="dossier-meta" style="text-align:left">
+          <p class="eyebrow brass" id="dossierLabel" style="display:block;margin-bottom:6px">Rider dossier</p>
+          <h1 class="dossier-name" id="dName">…</h1>
+          <p class="dossier-handle" id="dHandle">…</p>
+          <p class="dossier-bio" id="dBio">…</p>
+          <div class="row row-2 mt-5" style="flex-wrap:wrap">
+            <span id="dBike" class="badge badge-brass">—</span>
           </div>
         </div>
-        <div class="flex md:flex-col gap-2 justify-center md:justify-start">
-          <button id="editBtn"  class="bp-btn bp-btn-primary text-[13px]">Edit Profile</button>
-          <button id="shareBtn" class="bp-btn bp-btn-ghost text-[13px]">Share Profile</button>
+        <div class="dossier-actions">
+          <button id="editBtn"  class="btn btn-primary btn-sm">Edit dossier</button>
+          <button id="shareBtn" class="btn btn-ghost btn-sm">Share profile</button>
         </div>
       </div>
 
-      <div class="bp-divider-double mt-7"></div>
-
-      <div class="grid grid-cols-3 gap-4 mt-6 text-center">
-        <div><p id="statPosts" class="font-serif text-[24px] text-bone">0</p><p class="text-bone-dim text-[10.5px] tracking-[0.22em] uppercase">Posts</p></div>
-        <div><p id="statBikes" class="font-serif text-[24px] text-bone">0</p><p class="text-bone-dim text-[10.5px] tracking-[0.22em] uppercase">Bikes</p></div>
-        <div><p id="statTrips" class="font-serif text-[24px] text-bone">0</p><p class="text-bone-dim text-[10.5px] tracking-[0.22em] uppercase">Trips</p></div>
+      <div class="dossier-stats">
+        <div class="stat"><span id="statPosts" class="stat-value">0</span><span class="stat-label">Posts</span></div>
+        <div class="stat"><span id="statBikes" class="stat-value">0</span><span class="stat-label">Machines</span></div>
+        <div class="stat"><span id="statTrips" class="stat-value">0</span><span class="stat-label">Routes</span></div>
       </div>
     </section>
 
-    <!-- Edit panel -->
-    <section id="editPanel" class="hidden mt-6">
-      <form id="editForm" class="bp-card p-5 md:p-7" novalidate>
-        <div class="flex items-center justify-between mb-5">
-          <p class="bp-section-label" style="justify-content:flex-start">Edit Dossier</p>
-          <button type="button" id="editCancel" class="bp-btn-subtle">Close</button>
+    <!-- ░░ Edit panel ░░ -->
+    <section id="editPanel" class="hidden mt-7">
+      <form id="editForm" class="card card-body card-stitched" novalidate>
+        <div class="row row-between mb-6" style="align-items:center">
+          <p class="eyebrow brass">Edit dossier</p>
+          <button type="button" id="editCancel" class="btn-subtle">Close</button>
         </div>
-        <div class="grid grid-cols-1 sm:grid-cols-[auto_1fr] gap-5 items-start">
-          <div>
-            <label class="bp-label">Avatar</label>
-            <div id="editAvatarPreview" class="skeleton rounded-full" style="width:80px;height:80px"></div>
-            <label class="bp-btn bp-btn-ghost cursor-pointer mt-2 text-[12px]">
+
+        <div class="grid-editform">
+          <div class="field" style="grid-row:1 / 3">
+            <label class="field-label">Avatar</label>
+            <div id="editAvatarPreview" class="skeleton avatar avatar-xl avatar-ring" style="width:88px;height:88px"></div>
+            <label class="btn btn-ghost btn-sm mt-3" style="cursor:pointer;width:100%">
               <span>Choose image</span>
-              <input id="editAvatarFile" type="file" accept="image/*" class="hidden" />
+              <input id="editAvatarFile" type="file" accept="image/*" class="sr-only" />
             </label>
-            <p class="bp-msg bp-msg-error hidden" data-err="avatar"></p>
+            <p class="field-hint mt-2" style="font-size:11px">Under 1.5 MB.</p>
+            <p class="field-error hidden" data-err="avatar"></p>
           </div>
-          <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
-            <div><label class="bp-label">Full Name</label><input name="full_name" class="bp-input" /><p class="bp-msg bp-msg-error hidden" data-err="full_name"></p></div>
-            <div><label class="bp-label">Username</label><input name="username" class="bp-input" /><p class="bp-msg bp-msg-error hidden" data-err="username"></p></div>
-            <div class="sm:col-span-2"><label class="bp-label">Bio</label><textarea name="bio" rows="3" class="bp-textarea" placeholder="A line or two about your road."></textarea></div>
-            <div class="sm:col-span-2"><label class="bp-label">Preferred Machine</label><input name="bike_model" class="bp-input" placeholder="e.g. Royal Enfield Interceptor 650" /></div>
+
+          <div class="field">
+            <label class="field-label">Full name</label>
+            <input name="full_name" class="input" />
+            <p class="field-error hidden" data-err="full_name"></p>
+          </div>
+          <div class="field">
+            <label class="field-label">Username</label>
+            <input name="username" class="input" />
+            <p class="field-error hidden" data-err="username"></p>
+          </div>
+          <div class="field" style="grid-column:2 / -1">
+            <label class="field-label">Bio</label>
+            <textarea name="bio" rows="3" class="textarea" placeholder="A line or two about your road."></textarea>
+          </div>
+          <div class="field" style="grid-column:2 / -1">
+            <label class="field-label">Preferred machine</label>
+            <input name="bike_model" class="input" placeholder="e.g. Royal Enfield Interceptor 650" />
           </div>
         </div>
-        <p id="editErr" class="bp-msg bp-msg-error hidden mt-3"></p>
-        <div class="flex justify-end gap-2 mt-5">
-          <button type="button" id="editCancel2" class="bp-btn bp-btn-ghost">Cancel</button>
-          <button type="submit" id="editSubmit" class="bp-btn bp-btn-primary"><span class="btn-label">Save dossier</span></button>
+
+        <p id="editErr" class="msg msg-error hidden mt-4"></p>
+
+        <div class="row row-end gap-3 mt-6">
+          <button type="button" id="editCancel2" class="btn btn-ghost">Cancel</button>
+          <button type="submit" id="editSubmit" class="btn btn-primary"><span class="btn-label">Save dossier</span></button>
         </div>
       </form>
     </section>
 
-    <!-- Tabs -->
-    <section class="mt-10">
-      <div class="flex items-center gap-1 border-b border-bronze">
-        <button class="bp-tab is-on" data-tab="posts">My Posts</button>
-        <button class="bp-tab"        data-tab="bikes">My Bikes</button>
-        <button class="bp-tab"        data-tab="trips">My Trips</button>
+    <!-- ░░ Tabs ░░ -->
+    <section class="mt-9">
+      <div class="tabs">
+        <button class="tab is-on" data-tab="posts">My posts</button>
+        <button class="tab"        data-tab="bikes">My machines</button>
+        <button class="tab"        data-tab="trips">My routes</button>
       </div>
-      <div id="tabPanel" class="mt-6 min-h-[160px]"></div>
+      <div id="tabPanel" class="tab-panel" style="min-height:160px"></div>
     </section>
   </main>
+
+  <style>
+    .grid-editform {
+      display: grid;
+      grid-template-columns: 1fr;
+      gap: 18px;
+    }
+    @media (min-width: 640px) {
+      .grid-editform { grid-template-columns: auto 1fr; gap: 18px 24px; }
+    }
+    /* fallback grid-machines for narrower viewports */
+    @media (max-width: 1023px) {
+      .grid-machines { grid-template-columns: 1fr 1fr; gap: 16px; }
+    }
+    @media (max-width: 639px) {
+      .grid-machines { grid-template-columns: 1fr; }
+    }
+  </style>
 
   <script type="module">
     import { supabase } from './js/supabase.js'
@@ -97,7 +131,6 @@
     let activeTab = 'posts'
     const cache = { posts: null, bikes: null, trips: null }
 
-    /* ── Paint dossier ─────────────────────────────────── */
     async function loadProfile() {
       profile = await window.bp.loadCurrentProfile()
       paintDossier()
@@ -105,17 +138,15 @@
     }
     function paintDossier() {
       const av = document.getElementById('bigAvatar')
-      av.outerHTML = avatarHTML(profile.avatar_url, profile.full_name || profile.username, 112)
+      av.outerHTML = avatarHTML(profile.avatar_url, profile.full_name || profile.username, 104)
       document.getElementById('dName').textContent   = profile.full_name || 'Rider'
       document.getElementById('dHandle').textContent = '@' + (profile.username || 'rider')
       const bio = profile.bio && profile.bio.trim()
       document.getElementById('dBio').textContent = bio || 'No introduction yet — share a line or two about your road.'
       const dBike = document.getElementById('dBike')
       dBike.textContent = profile.bike_model ? 'Machine — ' + profile.bike_model : 'No machine listed'
-      // edit preview
       const ep = document.getElementById('editAvatarPreview')
-      ep.outerHTML = avatarHTML(profile.avatar_url, profile.full_name || profile.username, 80)
-      // fill form
+      ep.outerHTML = avatarHTML(profile.avatar_url, profile.full_name || profile.username, 88)
       const f = document.getElementById('editForm')
       f.full_name.value = profile.full_name || ''
       f.username.value  = profile.username || ''
@@ -128,12 +159,17 @@
         supabase.from('bikes').select('id', { count: 'exact', head: true }).eq('user_id', me.id),
         supabase.from('trips').select('id', { count: 'exact', head: true }).eq('user_id', me.id),
       ])
-      document.getElementById('statPosts').textContent = pc.count || 0
-      document.getElementById('statBikes').textContent = bc.count || 0
-      document.getElementById('statTrips').textContent = tc.count || 0
+      const paint = (id, n) => {
+        const el = document.getElementById(id)
+        if (!el) return
+        el.textContent = n || 0
+        el.classList.remove('count-pop'); void el.offsetWidth; el.classList.add('count-pop')
+      }
+      paint('statPosts', pc.count)
+      paint('statBikes', bc.count)
+      paint('statTrips', tc.count)
     }
 
-    /* ── Edit panel ────────────────────────────────────── */
     const editPanel = document.getElementById('editPanel')
     document.getElementById('editBtn').addEventListener('click', () => editPanel.classList.remove('hidden'))
     document.getElementById('editCancel').addEventListener('click', () => editPanel.classList.add('hidden'))
@@ -149,7 +185,7 @@
       }
       const url = URL.createObjectURL(f)
       const ep = document.getElementById('editAvatarPreview')
-      ep.outerHTML = `<img id="editAvatarPreview" src="${url}" alt="" class="rounded-full object-cover border border-bronze" style="width:80px;height:80px" />`
+      ep.outerHTML = `<img id="editAvatarPreview" src="${url}" alt="" class="avatar avatar-xl" style="width:88px;height:88px;object-fit:cover;box-shadow:0 0 0 1px var(--c-brass-line), 0 0 0 4px var(--c-bg)" />`
       editAvatarObj = f
     })
 
@@ -186,7 +222,6 @@
           full_name, username, bio, bike_model, avatar_url,
         }).eq('id', me.id)
         if (error) throw error
-        // update cached profile
         profile = { ...profile, full_name, username, bio, bike_model, avatar_url }
         window.bp.currentProfile = profile
         toast('Dossier updated.', 'success')
@@ -207,17 +242,15 @@
       }
     })
 
-    /* ── Share button (placeholder) ────────────────────── */
     document.getElementById('shareBtn').addEventListener('click', async () => {
       const url = window.location.href
       try { await navigator.clipboard.writeText(url); toast('Profile link copied.', 'success') }
       catch (_) { toast('Couldn’t copy link.', 'error') }
     })
 
-    /* ── Tabs ──────────────────────────────────────────── */
-    document.querySelectorAll('.bp-tab').forEach(b => {
+    document.querySelectorAll('.tab').forEach(b => {
       b.addEventListener('click', () => {
-        document.querySelectorAll('.bp-tab').forEach(x => x.classList.remove('is-on'))
+        document.querySelectorAll('.tab').forEach(x => x.classList.remove('is-on'))
         b.classList.add('is-on')
         activeTab = b.getAttribute('data-tab')
         renderTab()
@@ -225,7 +258,8 @@
     })
     async function renderTab() {
       const panel = document.getElementById('tabPanel')
-      panel.innerHTML = `<div class="space-y-3"><div class="skeleton h-20"></div><div class="skeleton h-20"></div></div>`
+      panel.classList.remove('tab-panel'); void panel.offsetWidth; panel.classList.add('tab-panel')
+      panel.innerHTML = `<div class="stack stack-3"><div class="skeleton" style="height:80px"></div><div class="skeleton" style="height:80px"></div></div>`
       if (activeTab === 'posts')      return renderPosts(panel)
       if (activeTab === 'bikes')      return renderBikes(panel)
       if (activeTab === 'trips')      return renderTrips(panel)
@@ -238,16 +272,20 @@
         cache.posts = data || []
       }
       if (!cache.posts.length) {
-        panel.innerHTML = `<div class="bp-card p-10 text-center"><p class="font-serif text-[18px] text-bone">No entries yet.</p><p class="text-bone-muted text-[13px] mt-2">The journal is waiting for your first mark.</p></div>`
+        panel.innerHTML = `<div class="card card-body-loose empty-state">
+          <p class="empty-title">No entries yet.</p>
+          <p class="empty-body">The journal is waiting for your first mark.</p>
+          <a href="/feed.html" class="btn btn-primary mt-6" style="margin:24px auto 0">Open the journal</a>
+        </div>`
         return
       }
-      panel.innerHTML = '<div class="space-y-3">' + cache.posts.map(p => `
-        <article class="bp-card p-4" data-post="${esc(p.id)}">
-          <p class="text-bone text-[13.5px] leading-relaxed whitespace-pre-wrap">${esc(p.content)}</p>
-          ${p.image_url ? `<img src="${esc(p.image_url)}" class="mt-3 w-full rounded-md border border-bronze max-h-72 object-cover" alt="" />` : ''}
-          <div class="mt-3 pt-3 border-t border-bronze flex items-center justify-between text-[12px] text-bone-dim">
-            <span>${timeAgo(p.created_at)}</span>
-            <button data-act="delete" class="bp-btn-subtle text-burgundy">Remove</button>
+      panel.innerHTML = '<div class="stack stack-3">' + cache.posts.map(p => `
+        <article class="feed-card fade-up" data-post="${esc(p.id)}">
+          <p class="feed-card-body" style="margin:0">${esc(p.content)}</p>
+          ${p.image_url ? `<img src="${esc(p.image_url)}" class="feed-card-image" alt="" />` : ''}
+          <div class="feed-card-actions" style="border:0;padding:0;margin-top:12px;justify-content:space-between">
+            <span style="font-size:11.5px;color:var(--c-text-3)">${timeAgo(p.created_at)}</span>
+            <button data-act="delete" class="btn-subtle" style="color:var(--c-error)">Remove</button>
           </div>
         </article>`).join('') + '</div>'
       panel.querySelectorAll('[data-act=delete]').forEach(b => b.addEventListener('click', async (e) => {
@@ -273,20 +311,25 @@
         cache.bikes = data || []
       }
       if (!cache.bikes.length) {
-        panel.innerHTML = `<div class="bp-card p-10 text-center"><p class="font-serif text-[18px] text-bone">No machines in the registry.</p><p class="text-bone-muted text-[13px] mt-2">Add your first machine from the garage page.</p><a href="/bikes.html" class="bp-btn bp-btn-primary mt-5 inline-flex">Add a machine</a></div>`
+        panel.innerHTML = `<div class="card card-body-loose empty-state">
+          <p class="empty-title">No machines in the registry.</p>
+          <p class="empty-body">Add your first machine from the garage page.</p>
+          <a href="/bikes.html" class="btn btn-primary mt-6" style="margin:24px auto 0">Add a machine</a>
+        </div>`
         return
       }
-      panel.innerHTML = '<div class="grid grid-cols-1 sm:grid-cols-2 gap-4">' + cache.bikes.map(b => `
-        <article class="bp-card overflow-hidden flex" data-bike="${esc(b.id)}">
-          <div class="w-28 shrink-0 bg-ink-700 border-r border-bronze">
-            ${b.photo_url ? `<img src="${esc(b.photo_url)}" class="w-full h-full object-cover" alt="" />` : `<div class="w-full h-full min-h-[112px] flex items-center justify-center text-bone-dim"><svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1" opacity="0.4"><circle cx="6" cy="17" r="3"/><circle cx="18" cy="17" r="3"/><path d="M9 17h6l2-7H7l-1 4M5 10h14"/></svg></div>`}
+      panel.innerHTML = '<div class="grid-machines">' + cache.bikes.map(b => `
+        <article class="machine-card fade-up" data-bike="${esc(b.id)}">
+          <div class="machine-card-img">
+            ${b.photo_url ? `<img src="${esc(b.photo_url)}" alt="" />` : `<div class="machine-card-img-placeholder"><svg width="40" height="40" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1" opacity="0.4"><circle cx="6" cy="17" r="3"/><circle cx="18" cy="17" r="3"/><path d="M9 17h6l2-7H7l-1 4M5 10h14"/></svg></div>`}
           </div>
-          <div class="p-3 flex-1 min-w-0 flex flex-col">
-            <p class="font-serif text-bone text-[14.5px] truncate">${esc(b.make)} ${esc(b.model)}</p>
-            <p class="text-bone-dim text-[11.5px]">${b.year || '—'}${b.engine_cc ? ' · ' + b.engine_cc + ' cc' : ''}</p>
-            ${b.description ? `<p class="text-bone-muted text-[12.5px] mt-1.5 line-clamp-2">${esc(b.description)}</p>` : ''}
-            <div class="mt-auto pt-2 flex items-center justify-end gap-1">
-              <a href="/bikes.html" class="bp-btn-subtle">Manage</a>
+          <div class="machine-card-body">
+            <p class="machine-card-title">${esc(b.make)} ${esc(b.model)}</p>
+            <p class="machine-card-meta">${b.year || '—'}${b.engine_cc ? ' · ' + b.engine_cc + ' cc' : ''}</p>
+            ${b.description ? `<p class="machine-card-desc line-clamp-2">${esc(b.description)}</p>` : ''}
+            <div class="machine-card-foot">
+              <span></span>
+              <a href="/bikes.html" class="btn-subtle">Manage</a>
             </div>
           </div>
         </article>`).join('') + '</div>'
@@ -299,36 +342,31 @@
         cache.trips = data || []
       }
       if (!cache.trips.length) {
-        panel.innerHTML = `<div class="bp-card p-10 text-center"><p class="font-serif text-[18px] text-bone">No routes in the ledger.</p><p class="text-bone-muted text-[13px] mt-2">Every long road begins as an intention.</p><a href="/trips.html" class="bp-btn bp-btn-primary mt-5 inline-flex">Plan a route</a></div>`
+        panel.innerHTML = `<div class="card card-body-loose empty-state">
+          <p class="empty-title">No routes in the ledger.</p>
+          <p class="empty-body">Every long road begins as an intention.</p>
+          <a href="/trips.html" class="btn btn-primary mt-6" style="margin:24px auto 0">Plan a route</a>
+        </div>`
         return
       }
-      panel.innerHTML = '<div class="space-y-3">' + cache.trips.map(t => {
-        const diff = (t.difficulty || 'Medium').toLowerCase()
+      panel.innerHTML = '<div class="grid-trips">' + cache.trips.map(t => {
         const date = t.trip_date ? new Date(t.trip_date).toLocaleDateString(undefined, { day:'numeric', month:'short', year:'numeric' }) : '—'
-        return `<article class="bp-card p-4">
-          <div class="flex items-start justify-between gap-3">
-            <div class="min-w-0">
-              <p class="font-serif text-bone text-[15.5px] truncate">${esc(t.title)}</p>
-              <p class="text-bone-dim text-[12px] mt-0.5">${esc(t.start_loc || '—')} → ${esc(t.end_loc || '—')} · ${date}</p>
+        return `<article class="route-card fade-up">
+          <div class="row row-between" style="align-items:flex-start;gap:12px">
+            <div class="stack stack-1 min-w-0" style="flex:1">
+              <p class="route-card-title">${esc(t.title)}</p>
+              <p class="route-card-route">${esc(t.start_loc || '—')} <span class="arrow">→</span> ${esc(t.end_loc || '—')} · ${date}</p>
             </div>
-            <span class="bp-badge bp-badge-${diff}">${esc(t.difficulty || 'Medium')}</span>
+            <span class="badge badge-brass">${esc(t.difficulty || 'Medium')}</span>
           </div>
-          <div class="bp-divider my-3"></div>
-          <div class="flex items-center justify-between text-[12.5px] text-bone-muted">
-            <span>${t.distance_km ? t.distance_km + ' km' : '— km'}${t.is_public ? ' · public' : ' · private'}</span>
-            <a href="/trips.html" class="bp-btn-subtle">Manage</a>
+          <div class="rule" style="margin:14px 0"></div>
+          <div class="row row-between" style="font-size:12.5px;color:var(--c-text-2)">
+            <span>${t.distance_km ? t.distance_km + ' km' : '— km'}<span class="sep" style="margin:0 6px;color:var(--c-text-4)">·</span>${t.is_public ? 'public' : 'private'}</span>
+            <a href="/trips.html" class="btn-subtle">Manage</a>
           </div>
         </article>`
       }).join('') + '</div>'
     }
-
-    // small tab style injected via tailwind classes won't be auto; add a quick class
-    const styleEl = document.createElement('style')
-    styleEl.textContent = `
-      .bp-tab { padding: 10px 14px; color: #8a7e6a; font-size: 12.5px; letter-spacing: 0.16em; text-transform: uppercase; border-bottom: 1px solid transparent; margin-bottom: -1px; }
-      .bp-tab:hover { color: #c7b9a2; }
-      .bp-tab.is-on { color: #f3ede3; border-bottom-color: #b08d57; }`
-    document.head.appendChild(styleEl)
 
     loadProfile()
     renderTab()

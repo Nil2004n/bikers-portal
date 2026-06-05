@@ -3,121 +3,187 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>The Road Journal · Bikers Portal</title>
+  <title>The Journal · Bikers Portal</title>
   <link rel="icon" href="/assets/logo.svg" type="image/svg+xml" />
   <script src="./js/app.js"></script>
   <script src="https://cdn.tailwindcss.com"></script>
   <link rel="stylesheet" href="./assets/style.css" />
 </head>
-<body class="min-h-screen bg-ink-900 text-bone font-sans antialiased">
+<body class="bg-ink-900 text-bone">
+  <div class="canvas-grain"></div>
 
   <script type="module" src="./js/auth-guard.js"></script>
-
   <header id="bp-navbar" data-active="feed"></header>
 
-  <main class="max-w-6xl mx-auto px-4 md:px-6 py-8 md:py-12">
-    <!-- Header -->
-    <div class="mb-8 md:mb-10">
-      <p class="bp-section-label">The Journal</p>
-      <h1 class="font-serif text-[28px] md:text-[34px] text-bone mt-2">Notes from the road.</h1>
-      <p class="text-bone-muted text-[14px] mt-2 max-w-xl">Where the brotherhood leaves its marks — routes, machines, and the quiet reflections between them.</p>
-    </div>
+  <main class="page" style="padding-top:32px;padding-bottom:80px">
 
-    <div class="grid grid-cols-1 lg:grid-cols-[260px_minmax(0,1fr)_280px] gap-6 lg:gap-8">
+    <!-- ░░ Page header ░░ -->
+    <header class="page-header" style="padding:24px 0 32px">
+      <p class="eyebrow brass" style="margin-bottom:14px">The journal</p>
+      <h1>Notes from the road.</h1>
+      <p class="lede">Where the brotherhood leaves its marks — routes, machines, and the quiet reflections between them.</p>
+    </header>
 
-      <!-- ░░ LEFT SIDEBAR ░░ -->
-      <aside class="order-2 lg:order-1 space-y-5">
-        <!-- Mini profile -->
-        <section id="miniProfile" class="bp-card p-5">
-          <div class="flex items-center gap-3">
-            <div id="miniAvatar" class="skeleton rounded-full" style="width:48px;height:48px"></div>
-            <div class="min-w-0">
-              <p id="miniName" class="font-serif text-bone text-[15px] truncate">…</p>
-              <p id="miniHandle" class="text-bone-dim text-[12px] truncate">…</p>
+    <div class="bp-grid-3col">
+
+      <!-- ░░░ LEFT RAIL ░░░ -->
+      <aside class="col-left stack stack-5">
+
+        <section id="miniProfile" class="card card-body fade-up">
+          <div class="row row-3" style="align-items:flex-start">
+            <div id="miniAvatar" class="skeleton avatar avatar-md" style="width:48px;height:48px"></div>
+            <div class="stack stack-1 min-w-0" style="flex:1">
+              <p id="miniName" class="truncate" style="font-family:var(--font-display);font-size:16px;color:var(--c-text)">…</p>
+              <p id="miniHandle" class="truncate" style="font-size:11.5px;color:var(--c-text-3)">…</p>
             </div>
           </div>
-          <div id="miniBike" class="hidden mt-3 text-[12px] text-bone-muted">
-            <span class="text-bone-dim tracking-[0.18em] uppercase text-[10.5px]">Machine — </span>
-            <span id="miniBikeName"></span>
+          <div id="miniBike" class="hidden mt-4" style="font-size:12.5px;color:var(--c-text-2)">
+            <span class="eyebrow eyebrow-dim" style="display:block;margin-bottom:4px">Machine</span>
+            <span id="miniBikeName" style="font-family:var(--font-display);font-size:15px"></span>
           </div>
-          <div class="grid grid-cols-3 gap-2 mt-4 pt-4 border-t border-bronze text-center">
-            <div><p id="statPosts" class="font-serif text-bone text-[16px]">0</p><p class="text-bone-dim text-[10.5px] tracking-[0.18em] uppercase">Posts</p></div>
-            <div><p id="statBikes" class="font-serif text-bone text-[16px]">0</p><p class="text-bone-dim text-[10.5px] tracking-[0.18em] uppercase">Bikes</p></div>
-            <div><p id="statTrips" class="font-serif text-bone text-[16px]">0</p><p class="text-bone-dim text-[10.5px] tracking-[0.18em] uppercase">Trips</p></div>
+          <div class="mini-stats">
+            <div class="stat"><span id="statPosts" class="stat-value">0</span><span class="stat-label">Posts</span></div>
+            <div class="stat"><span id="statBikes" class="stat-value">0</span><span class="stat-label">Bikes</span></div>
+            <div class="stat"><span id="statTrips" class="stat-value">0</span><span class="stat-label">Trips</span></div>
           </div>
         </section>
 
-        <!-- Motto -->
-        <section class="bp-card p-5 bp-stitched">
-          <p class="bp-section-label mb-3" style="justify-content:flex-start">Motto</p>
-          <p class="font-serif text-bone text-[15px] leading-relaxed italic">"Keep your machine, miles, and memories in one place."</p>
-          <div class="bp-divider mt-4"></div>
-          <p class="text-bone-dim text-[10.5px] tracking-[0.24em] uppercase mt-3">Riding Brotherhood</p>
+        <section class="card card-body card-stitched fade-up delay-1">
+          <p class="eyebrow brass" style="margin-bottom:14px">Motto</p>
+          <p class="editorial-quote">"Keep your machine, miles, and memories in one place."</p>
+          <div class="rule" style="margin:18px 0 12px"></div>
+          <p class="eyebrow eyebrow-dim">Riding Brotherhood</p>
         </section>
+
       </aside>
 
-      <!-- ░░ MAIN · Composer + Feed ░░ -->
-      <section class="order-1 lg:order-2 min-w-0 space-y-6">
-        <!-- Composer -->
-        <form id="composer" class="bp-card p-5">
-          <div class="flex items-start gap-3">
-            <div id="composerAvatar" class="skeleton rounded-full shrink-0" style="width:40px;height:40px"></div>
-            <div class="flex-1 min-w-0">
-              <textarea id="composerText" rows="3" maxlength="1000" class="bp-textarea" placeholder="What road is calling you next?" style="min-height:84px"></textarea>
-              <div id="composerPreviewWrap" class="hidden mt-3 relative inline-block">
-                <img id="composerPreview" class="rounded-md border border-bronze max-h-56" alt="" />
-                <button type="button" id="composerRemoveImg" class="absolute top-2 right-2 bp-btn bp-btn-ghost text-[11px] py-1 px-2">Remove</button>
+      <!-- ░░░ MAIN FEED ░░░ -->
+      <section class="col-main stack stack-5" style="min-width:0">
+
+        <!-- ░ Composer ░ -->
+        <form id="composer" class="composer fade-up">
+          <div class="composer-row">
+            <div id="composerAvatar" class="skeleton avatar avatar-md shrink-0" style="width:40px;height:40px"></div>
+            <div class="composer-body">
+              <textarea id="composerText" rows="3" maxlength="1000" class="composer-textarea" placeholder="What road is calling you next?" style="min-height:84px"></textarea>
+
+              <div id="composerPreviewWrap" class="hidden mt-3" style="position:relative;display:inline-block">
+                <img id="composerPreview" class="rounded" alt="" style="max-height:240px;border-radius:6px;border:1px solid var(--c-border)" />
+                <button type="button" id="composerRemoveImg" class="btn btn-ghost btn-sm" style="position:absolute;top:8px;right:8px">Remove</button>
               </div>
-              <div class="flex items-center justify-between mt-3">
-                <div class="flex items-center gap-2">
-                  <label class="bp-btn bp-btn-ghost cursor-pointer text-[12px]">
-                    <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"><rect x="3" y="5" width="18" height="14" rx="2"/><circle cx="8.5" cy="10" r="1.5"/><path d="M21 16l-5-5-9 9"/></svg>
+
+              <div class="composer-foot">
+                <div class="row row-3">
+                  <label class="btn btn-ghost btn-sm" style="cursor:pointer">
+                    <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="5" width="18" height="14" rx="2"/><circle cx="8.5" cy="10" r="1.5"/><path d="M21 16l-5-5-9 9"/></svg>
                     <span>Attach</span>
-                    <input id="composerFile" type="file" accept="image/*" class="hidden" />
+                    <input id="composerFile" type="file" accept="image/*" class="sr-only" />
                   </label>
-                  <span id="composerCount" class="text-bone-dim text-[11px]">0 / 1000</span>
+                  <span id="composerCount" class="counter">0 / 1000</span>
                 </div>
-                <button id="composerSubmit" type="submit" class="bp-btn bp-btn-primary text-[13px]">
-                  <span class="btn-label">Publish Entry</span>
+                <button id="composerSubmit" type="submit" class="btn btn-primary btn-sm">
+                  <span class="btn-label">Publish entry</span>
                 </button>
               </div>
-              <p id="composerErr" class="bp-msg bp-msg-error hidden"></p>
+
+              <p id="composerErr" class="msg msg-error hidden" style="margin-top:10px"></p>
             </div>
           </div>
         </form>
 
-        <!-- Feed list -->
-        <div id="feed" class="space-y-5"></div>
-        <div id="feedSkeleton" class="space-y-5">
-          <div class="bp-card p-5"><div class="flex gap-3"><div class="skeleton rounded-full" style="width:40px;height:40px"></div><div class="flex-1 space-y-2"><div class="skeleton h-3 w-1/3"></div><div class="skeleton h-3 w-1/2"></div></div></div><div class="skeleton h-40 mt-4"></div></div>
-          <div class="bp-card p-5"><div class="flex gap-3"><div class="skeleton rounded-full" style="width:40px;height:40px"></div><div class="flex-1 space-y-2"><div class="skeleton h-3 w-1/4"></div><div class="skeleton h-3 w-2/3"></div></div></div><div class="skeleton h-32 mt-4"></div></div>
-          <div class="bp-card p-5"><div class="flex gap-3"><div class="skeleton rounded-full" style="width:40px;height:40px"></div><div class="flex-1 space-y-2"><div class="skeleton h-3 w-1/3"></div><div class="skeleton h-3 w-1/2"></div></div></div></div>
+        <!-- ░ Feed list ░ -->
+        <div id="feed" class="stack stack-5"></div>
+
+        <div id="feedSkeleton" class="stack stack-5">
+          <article class="feed-card">
+            <div class="feed-card-header">
+              <div class="skeleton avatar avatar-md" style="width:40px;height:40px"></div>
+              <div class="stack stack-2" style="flex:1">
+                <div class="skeleton" style="height:12px;width:140px"></div>
+                <div class="skeleton" style="height:10px;width:90px"></div>
+              </div>
+            </div>
+            <div class="stack stack-2 mt-4">
+              <div class="skeleton" style="height:12px;width:90%"></div>
+              <div class="skeleton" style="height:12px;width:75%"></div>
+            </div>
+            <div class="skeleton mt-4" style="height:180px;border-radius:6px"></div>
+          </article>
+          <article class="feed-card">
+            <div class="feed-card-header">
+              <div class="skeleton avatar avatar-md" style="width:40px;height:40px"></div>
+              <div class="stack stack-2" style="flex:1">
+                <div class="skeleton" style="height:12px;width:120px"></div>
+                <div class="skeleton" style="height:10px;width:80px"></div>
+              </div>
+            </div>
+            <div class="stack stack-2 mt-4">
+              <div class="skeleton" style="height:12px;width:80%"></div>
+            </div>
+          </article>
         </div>
-        <div id="feedEmpty" class="hidden bp-card p-10 text-center">
-          <p class="font-serif text-[18px] text-bone">No road notes yet.</p>
-          <p class="text-bone-muted text-[13px] mt-2">Be the first to leave a mark.</p>
+
+        <div id="feedEmpty" class="hidden card card-body-loose empty-state">
+          <p class="empty-title">The road is quiet.</p>
+          <p class="empty-body">No entries yet. Be the first to leave a mark on the journal.</p>
         </div>
       </section>
 
-      <!-- ░░ RIGHT SIDEBAR ░░ -->
-      <aside class="order-3 space-y-5">
-        <section class="bp-card p-5">
-          <p class="bp-section-label mb-3" style="justify-content:flex-start">Riders of Note</p>
-          <ul id="ridersList" class="space-y-3"></ul>
+      <!-- ░░░ RIGHT RAIL ░░░ -->
+      <aside class="col-right stack stack-5">
+
+        <section class="card card-body fade-up">
+          <p class="eyebrow brass" style="margin-bottom:16px">Riders of note</p>
+          <ul id="ridersList" class="stack stack-4"></ul>
         </section>
-        <section class="bp-card p-5">
-          <p class="bp-section-label mb-3" style="justify-content:flex-start">Routes in Conversation</p>
-          <ul id="routesList" class="space-y-3"></ul>
+
+        <section class="card card-body fade-up delay-1">
+          <p class="eyebrow brass" style="margin-bottom:16px">Routes in conversation</p>
+          <ul id="routesList" class="stack stack-4"></ul>
         </section>
-        <section class="bp-card p-5 bp-stitched">
-          <p class="bp-section-label mb-3" style="justify-content:flex-start">Garage Signals</p>
-          <p class="text-bone text-[13.5px] leading-relaxed">Maintain the machine. Respect the road. The rest is noise.</p>
-          <div class="bp-divider mt-4"></div>
-          <p class="text-bone-dim text-[10.5px] tracking-[0.24em] uppercase mt-3">House Note</p>
+
+        <section class="card card-body card-stitched fade-up delay-2">
+          <p class="eyebrow brass" style="margin-bottom:14px">Garage signals</p>
+          <p class="italic-serif" style="font-size:16px;line-height:1.45">"Maintain the machine. Respect the road. The rest is noise."</p>
+          <div class="rule" style="margin:18px 0 12px"></div>
+          <p class="eyebrow eyebrow-dim">House note</p>
         </section>
       </aside>
     </div>
   </main>
+
+  <!-- Mobile floating compose -->
+  <a href="#composer" class="fab" aria-label="New entry">
+    <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 5v14M5 12h14"/></svg>
+  </a>
+
+  <style>
+    /* 3-col grid that collapses gracefully on mobile */
+    .bp-grid-3col {
+      display: grid;
+      grid-template-columns: 1fr;
+      gap: 24px;
+    }
+    @media (min-width: 900px) {
+      .bp-grid-3col {
+        grid-template-columns: 260px minmax(0, 1fr);
+        gap: 28px;
+      }
+      .col-right { display: none; }
+    }
+    @media (min-width: 1200px) {
+      .bp-grid-3col {
+        grid-template-columns: 260px minmax(0, 1fr) 280px;
+        gap: 36px;
+      }
+      .col-right { display: block; }
+    }
+    @media (max-width: 899px) {
+      .col-left { order: 2; }
+      .col-main { order: 1; }
+      .col-right { order: 3; }
+    }
+  </style>
 
   <script type="module">
     import { supabase } from './js/supabase.js'
@@ -151,15 +217,20 @@
         document.getElementById('miniBike').classList.remove('hidden')
         document.getElementById('miniBikeName').textContent = prof.bike_model
       }
-      // stats
       const [pc, bc, tc] = await Promise.all([
         supabase.from('posts').select('id', { count: 'exact', head: true }).eq('user_id', me.id),
         supabase.from('bikes').select('id', { count: 'exact', head: true }).eq('user_id', me.id),
         supabase.from('trips').select('id', { count: 'exact', head: true }).eq('user_id', me.id),
       ])
-      document.getElementById('statPosts').textContent = pc.count || 0
-      document.getElementById('statBikes').textContent = bc.count || 0
-      document.getElementById('statTrips').textContent = tc.count || 0
+      const paint = (id, n) => {
+        const el = document.getElementById(id)
+        if (!el) return
+        el.textContent = n || 0
+        el.classList.remove('count-pop'); void el.offsetWidth; el.classList.add('count-pop')
+      }
+      paint('statPosts', pc.count)
+      paint('statBikes', bc.count)
+      paint('statTrips', tc.count)
     }
 
     /* ── Right sidebars ─────────────────────────────────── */
@@ -169,13 +240,13 @@
         .select('id, username, full_name, avatar_url, bike_model')
         .neq('id', me.id).limit(20)
       const picks = (data || []).sort(() => Math.random() - 0.5).slice(0, 5)
-      if (!picks.length) { list.innerHTML = `<li class="text-bone-dim text-[12.5px]">No fellow riders yet.</li>`; return }
+      if (!picks.length) { list.innerHTML = `<li style="font-size:12.5px;color:var(--c-text-3);font-style:italic">No fellow riders yet.</li>`; return }
       list.innerHTML = picks.map(p => `
-        <li class="flex items-center gap-3">
+        <li class="row row-3" style="align-items:center">
           ${avatarHTML(p.avatar_url, p.full_name || p.username, 36)}
-          <div class="min-w-0">
-            <p class="text-bone text-[13px] truncate">${esc(p.full_name || p.username)}</p>
-            <p class="text-bone-dim text-[11.5px] truncate">${p.bike_model ? esc(p.bike_model) : '@' + esc(p.username)}</p>
+          <div class="stack stack-1 min-w-0" style="flex:1">
+            <p class="truncate" style="font-size:13.5px;color:var(--c-text)">${esc(p.full_name || p.username)}</p>
+            <p class="truncate" style="font-size:11.5px;color:var(--c-text-3)">${p.bike_model ? esc(p.bike_model) : '@' + esc(p.username)}</p>
           </div>
         </li>`).join('')
     }
@@ -184,15 +255,15 @@
       const { data } = await supabase.from('trips')
         .select('id, title, start_loc, end_loc, difficulty, distance_km, created_at, profiles(username, full_name)')
         .eq('is_public', true).order('created_at', { ascending: false }).limit(5)
-      if (!data || !data.length) { list.innerHTML = `<li class="text-bone-dim text-[12.5px]">No public routes yet.</li>`; return }
+      if (!data || !data.length) { list.innerHTML = `<li style="font-size:12.5px;color:var(--c-text-3);font-style:italic">No public routes yet.</li>`; return }
       list.innerHTML = data.map(t => {
         const prof = t.profiles || {}
         const route = [t.start_loc, t.end_loc].filter(Boolean).join(' → ')
-        return `<li class="flex items-start gap-2">
-          <span class="mt-1.5 inline-block w-1.5 h-1.5 rounded-full bg-brass/70 shrink-0"></span>
-          <div class="min-w-0">
-            <p class="text-bone text-[13px] truncate">${esc(t.title)}</p>
-            <p class="text-bone-dim text-[11.5px] truncate">${esc(route || '—')} · ${t.distance_km || '—'} km</p>
+        return `<li class="row row-3" style="align-items:flex-start">
+          <span class="pin" style="margin-top:8px"></span>
+          <div class="stack stack-1 min-w-0" style="flex:1">
+            <p class="truncate" style="font-size:13.5px;color:var(--c-text)">${esc(t.title)}</p>
+            <p class="truncate" style="font-size:11.5px;color:var(--c-text-3);letter-spacing:0.02em">${esc(route || '—')} · ${t.distance_km || '—'} km</p>
           </div>
         </li>`
       }).join('')
@@ -205,9 +276,8 @@
         .select('id, user_id, content, image_url, created_at, profiles(username, full_name, avatar_url)')
         .order('created_at', { ascending: false })
         .limit(50)
-      if (error) { feedSk.classList.add('hidden'); feedEl.innerHTML = `<div class="bp-card p-6 text-bone-muted text-[13px]">Couldn’t load the journal. Refresh and try again.</div>`; return }
+      if (error) { feedSk.classList.add('hidden'); feedEl.innerHTML = `<div class="card card-body">Couldn’t load the journal. Refresh and try again.</div>`; return }
       state.posts = posts || []
-      // batch likes + comments
       const ids = state.posts.map(p => p.id)
       if (ids.length) {
         const [{ data: likes }, { data: comments }] = await Promise.all([
@@ -235,32 +305,32 @@
       const cc = state.commentCounts.get(p.id) || 0
       const mine = p.user_id === me.id
       return `
-        <article class="bp-card p-5" data-post="${esc(p.id)}">
-          <header class="flex items-start gap-3">
+        <article class="feed-card fade-up" data-post="${esc(p.id)}">
+          <header class="feed-card-header">
             ${avatarHTML(prof.avatar_url, prof.full_name || prof.username, 40)}
-            <div class="min-w-0 flex-1">
-              <p class="text-bone text-[14px] leading-tight truncate">${esc(prof.full_name || prof.username)}</p>
-              <p class="text-bone-dim text-[11.5px] truncate">@${esc(prof.username || '')} · ${timeAgo(p.created_at)}</p>
+            <div class="feed-card-author">
+              <p class="feed-card-name">${esc(prof.full_name || prof.username)}</p>
+              <p class="feed-card-handle">@${esc(prof.username || '')} · ${timeAgo(p.created_at)}</p>
             </div>
-            ${mine ? `<button data-act="delete-post" class="bp-btn-subtle" title="Remove entry">Remove</button>` : ''}
+            ${mine ? `<button data-act="delete-post" class="btn-subtle" title="Remove entry">Remove</button>` : ''}
           </header>
-          <div class="mt-3 text-bone text-[14px] leading-relaxed whitespace-pre-wrap break-words">${esc(p.content)}</div>
-          ${p.image_url ? `<div class="mt-3 -mx-1"><img src="${esc(p.image_url)}" alt="" class="w-full rounded-md border border-bronze max-h-[520px] object-cover" loading="lazy" /></div>` : ''}
-          <footer class="mt-4 pt-3 border-t border-bronze flex items-center gap-1 text-bone-muted">
-            <button data-act="like" class="bp-btn-subtle ${liked ? 'text-brass' : ''}">
+          <div class="feed-card-body">${esc(p.content)}</div>
+          ${p.image_url ? `<img src="${esc(p.image_url)}" alt="" class="feed-card-image" loading="lazy" />` : ''}
+          <footer class="feed-card-actions">
+            <button data-act="like" class="btn-subtle like-btn ${liked ? 'is-liked' : ''}">
               <svg width="14" height="14" viewBox="0 0 24 24" fill="${liked ? 'currentColor' : 'none'}" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"/></svg>
               <span data-lc>${lc}</span>
             </button>
-            <button data-act="comment" class="bp-btn-subtle">
+            <button data-act="comment" class="btn-subtle">
               <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg>
               <span data-cc>${cc}</span>
             </button>
-            <button data-act="save" class="bp-btn-subtle ml-auto">
+            <button data-act="save" class="btn-subtle" style="margin-left:auto">
               <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M19 21l-7-5-7 5V5a2 2 0 0 1 2-2h10a2 2 0 0 1 2 2z"/></svg>
               <span>Save</span>
             </button>
           </footer>
-          <div data-comments class="hidden mt-4 pt-4 border-t border-bronze"></div>
+          <div data-comments class="hidden" style="margin-top:16px;padding-top:16px;border-top:1px solid var(--c-border)"></div>
         </article>`
     }
     function prependPost(p) {
@@ -316,18 +386,17 @@
         cText.value = ''; cCnt.textContent = '0 / 1000'
         cFileObj = null; cFile.value = ''; cWrap.classList.add('hidden')
         toast('Entry published.', 'success')
-        // realtime will prepend; if it doesn't, fallback:
         setTimeout(() => { if (!state.posts.length || state.posts[0].user_id !== me.id) loadFeed() }, 1500)
       } catch (err) {
         cErr.textContent = (err && err.message) || 'Couldn’t publish. Try again.'
         cErr.classList.remove('hidden')
       } finally {
         cBtn.disabled = false
-        cBtn.innerHTML = '<span class="btn-label">Publish Entry</span>'
+        cBtn.innerHTML = '<span class="btn-label">Publish entry</span>'
       }
     })
 
-    /* ── Feed interactions (event delegation) ───────────── */
+    /* ── Feed interactions ──────────────────────────────── */
     feedEl.addEventListener('click', async (e) => {
       const btn = e.target.closest('button[data-act]')
       if (!btn) return
@@ -344,11 +413,13 @@
 
     async function onLike(btn, postId) {
       const isLiked = state.liked.has(postId)
-      // optimistic
       state.liked = isLiked ? new Set([...state.liked].filter(x => x !== postId)) : new Set([...state.liked, postId])
       const cur = state.likeCounts.get(postId) || 0
       state.likeCounts.set(postId, isLiked ? Math.max(0, cur - 1) : cur + 1)
       paintLike(btn, postId)
+      // pop animation on the svg
+      const svg = btn.querySelector('svg')
+      if (svg) { svg.classList.remove('like-pop'); void svg.offsetWidth; svg.classList.add('like-pop') }
       try {
         if (isLiked) {
           const { error } = await supabase.from('likes').delete().eq('post_id', postId).eq('user_id', me.id)
@@ -358,7 +429,6 @@
           if (error) throw error
         }
       } catch (err) {
-        // revert
         state.liked = isLiked ? new Set([...state.liked, postId]) : new Set([...state.liked].filter(x => x !== postId))
         state.likeCounts.set(postId, cur)
         paintLike(btn, postId)
@@ -368,6 +438,7 @@
     function paintLike(btn, postId) {
       const liked = state.liked.has(postId)
       const lc = state.likeCounts.get(postId) || 0
+      btn.classList.toggle('is-liked', liked)
       btn.classList.toggle('text-brass', liked)
       btn.querySelector('[data-lc]').textContent = lc
       btn.querySelector('svg').setAttribute('fill', liked ? 'currentColor' : 'none')
@@ -380,25 +451,25 @@
       state.openComments.add(postId)
       panel.classList.remove('hidden')
       panel.innerHTML = `
-        <div class="space-y-3" data-list><div class="bp-msg bp-msg-muted">Loading conversation…</div></div>
-        <form data-add class="mt-3 flex items-start gap-2">
+        <div class="stack stack-3" data-list><div class="msg msg-muted">Loading conversation…</div></div>
+        <form data-add class="mt-4 row row-3" style="align-items:flex-start">
           ${avatarHTML((window.bp.currentProfile || {}).avatar_url, (window.bp.currentProfile || {}).full_name || (window.bp.currentProfile || {}).username, 32)}
-          <input type="text" maxlength="500" class="bp-input flex-1" placeholder="Add a thoughtful comment…" />
-          <button class="bp-btn bp-btn-primary text-[12px]" type="submit">Send</button>
+          <input type="text" maxlength="500" class="input" style="flex:1;padding:8px 12px;font-size:13.5px" placeholder="Add a thoughtful comment…" />
+          <button class="btn btn-primary btn-sm" type="submit">Send</button>
         </form>`
       const list = panel.querySelector('[data-list]')
       const { data } = await supabase.from('comments')
         .select('id, body, created_at, profiles(username, full_name, avatar_url)')
         .eq('post_id', postId).order('created_at', { ascending: true })
-      if (!data || !data.length) { list.innerHTML = `<div class="bp-msg bp-msg-muted">No comments yet. Be the first to respond.</div>` }
+      if (!data || !data.length) { list.innerHTML = `<div class="msg msg-muted">No comments yet. Be the first to respond.</div>` }
       else {
         list.innerHTML = data.map(c => {
           const p = c.profiles || {}
-          return `<div class="flex items-start gap-2">
+          return `<div class="row row-3" style="align-items:flex-start">
             ${avatarHTML(p.avatar_url, p.full_name || p.username, 28)}
-            <div class="flex-1 min-w-0">
-              <p class="text-[12.5px] text-bone-dim">@${esc(p.username || 'rider')} · ${timeAgo(c.created_at)}</p>
-              <p class="text-bone text-[13.5px] leading-snug">${esc(c.body)}</p>
+            <div class="stack stack-1 min-w-0" style="flex:1">
+              <p style="font-size:12px;color:var(--c-text-3)">@${esc(p.username || 'rider')} · ${timeAgo(c.created_at)}</p>
+              <p style="font-size:13.5px;line-height:1.5;color:var(--c-text)">${esc(c.body)}</p>
             </div>
           </div>`
         }).join('')
@@ -412,17 +483,16 @@
         const { error } = await supabase.from('comments').insert({ post_id: postId, user_id: me.id, body })
         input.disabled = false; input.value = ''
         if (error) { toast('Couldn’t add comment.', 'error'); return }
-        // re-render
         const { data: data2 } = await supabase.from('comments')
           .select('id, body, created_at, profiles(username, full_name, avatar_url)')
           .eq('post_id', postId).order('created_at', { ascending: true })
         list.innerHTML = data2.map(c => {
           const p = c.profiles || {}
-          return `<div class="flex items-start gap-2">
+          return `<div class="row row-3" style="align-items:flex-start">
             ${avatarHTML(p.avatar_url, p.full_name || p.username, 28)}
-            <div class="flex-1 min-w-0">
-              <p class="text-[12.5px] text-bone-dim">@${esc(p.username || 'rider')} · ${timeAgo(c.created_at)}</p>
-              <p class="text-bone text-[13.5px] leading-snug">${esc(c.body)}</p>
+            <div class="stack stack-1 min-w-0" style="flex:1">
+              <p style="font-size:12px;color:var(--c-text-3)">@${esc(p.username || 'rider')} · ${timeAgo(c.created_at)}</p>
+              <p style="font-size:13.5px;line-height:1.5;color:var(--c-text)">${esc(c.body)}</p>
             </div>
           </div>`
         }).join('')
@@ -435,8 +505,8 @@
     async function onDeletePost(postId) {
       const ok = await confirmModal('Remove this entry from the journal? This cannot be undone.', 'Remove entry')
       if (!ok) return
-      const { error } = await supabase.from('comments').delete().eq('post_id', postId)
-      const { error: lerr } = await supabase.from('likes').delete().eq('post_id', postId)
+      await supabase.from('comments').delete().eq('post_id', postId)
+      await supabase.from('likes').delete().eq('post_id', postId)
       const { error: perr } = await supabase.from('posts').delete().eq('id', postId).eq('user_id', me.id)
       if (perr) { toast('Couldn’t remove entry.', 'error'); return }
       state.posts = state.posts.filter(p => p.id !== postId)
@@ -446,7 +516,7 @@
       toast('Entry removed.', 'success')
     }
 
-    /* ── Realtime: new posts ────────────────────────────── */
+    /* ── Realtime ───────────────────────────────────────── */
     const channel = supabase.channel('posts-feed')
       .on('postgres_changes', { event: 'INSERT', schema: 'public', table: 'posts' }, async (payload) => {
         const p = payload.new

@@ -9,85 +9,99 @@
   <script src="https://cdn.tailwindcss.com"></script>
   <link rel="stylesheet" href="./assets/style.css" />
 </head>
-<body class="min-h-screen bg-ink-900 text-bone font-sans antialiased">
+<body class="bg-ink-900 text-bone">
+  <div class="canvas-grain"></div>
 
   <script type="module" src="./js/auth-guard.js"></script>
-
   <header id="bp-navbar" data-active="recommendations"></header>
 
-  <main class="max-w-4xl mx-auto px-4 md:px-6 py-8 md:py-12">
-    <div class="text-center mb-8">
-      <p class="bp-section-label justify-center">The Concierge</p>
-      <h1 class="font-serif text-[28px] md:text-[36px] text-bone mt-2">Road Concierge</h1>
-      <p class="text-bone-muted text-[14px] mt-2 max-w-lg mx-auto">Refined route suggestions based on your appetite for distance, terrain, and temperament.</p>
-    </div>
+  <main class="page-narrow" style="padding-top:32px;padding-bottom:80px">
+
+    <header class="page-header" style="padding:24px 0 36px;text-align:center">
+      <p class="eyebrow brass" style="margin-bottom:18px;justify-content:center;display:inline-flex">The concierge</p>
+      <h1 style="text-align:center">Road Concierge</h1>
+      <p class="lede" style="text-align:center;margin-left:auto;margin-right:auto">Refined route suggestions, considered by your appetite for distance, terrain, and temperament.</p>
+    </header>
 
     <!-- Form -->
-    <form id="conciergeForm" class="bp-card p-5 md:p-7 bp-stitched" novalidate>
-      <div class="grid grid-cols-1 md:grid-cols-2 gap-5">
-        <div>
-          <label class="bp-label">Rider Level</label>
-          <div class="grid grid-cols-3 gap-2" role="radiogroup">
-            <label class="bp-radio"><input type="radio" name="riderLevel" value="Beginner" /><span>Beginner</span></label>
-            <label class="bp-radio"><input type="radio" name="riderLevel" value="Intermediate" checked /><span>Intermediate</span></label>
-            <label class="bp-radio"><input type="radio" name="riderLevel" value="Expert" /><span>Expert</span></label>
+    <form id="conciergeForm" class="concierge-card page-enter" novalidate>
+
+      <div class="row row-4 mb-6" style="align-items:flex-end;flex-wrap:wrap;gap:16px">
+        <div class="field" style="flex:1;min-width:240px">
+          <label class="field-label">Rider level</label>
+          <div class="segmented">
+            <input type="radio" name="riderLevel" id="rl-b" value="Beginner" /><label for="rl-b">Beginner</label>
+            <input type="radio" name="riderLevel" id="rl-i" value="Intermediate" checked /><label for="rl-i">Intermediate</label>
+            <input type="radio" name="riderLevel" id="rl-e" value="Expert" /><label for="rl-e">Expert</label>
           </div>
         </div>
-        <div>
-          <label class="bp-label">Region / State</label>
-          <input id="region" class="bp-input" placeholder="e.g. Karnataka" />
+        <div class="field" style="flex:1;min-width:200px">
+          <label class="field-label" for="region">Region / state</label>
+          <input id="region" class="input" placeholder="e.g. Karnataka" />
         </div>
       </div>
 
-      <div class="mt-5">
-        <label class="bp-label">Terrain Preferences</label>
-        <div id="terrains" class="flex flex-wrap gap-2">
-          <button type="button" class="bp-chip" data-val="Highway">Highway</button>
-          <button type="button" class="bp-chip" data-val="Mountain">Mountain</button>
-          <button type="button" class="bp-chip" data-val="City">City</button>
-          <button type="button" class="bp-chip" data-val="Dirt">Dirt</button>
-          <button type="button" class="bp-chip" data-val="Touring">Touring</button>
-          <button type="button" class="bp-chip" data-val="Mixed">Mixed</button>
+      <div class="field mb-6">
+        <label class="field-label">Terrain preferences</label>
+        <div id="terrains" class="row row-2" style="flex-wrap:wrap">
+          <button type="button" class="chip" data-val="Highway">Highway</button>
+          <button type="button" class="chip" data-val="Mountain">Mountain</button>
+          <button type="button" class="chip" data-val="City">City</button>
+          <button type="button" class="chip" data-val="Dirt">Dirt</button>
+          <button type="button" class="chip" data-val="Touring">Touring</button>
+          <button type="button" class="chip" data-val="Mixed">Mixed</button>
         </div>
       </div>
 
-      <div class="mt-5">
-        <div class="bp-label-row">
-          <label class="bp-label" style="margin-bottom:0">Max Distance</label>
-          <span id="distLabel" class="text-bone-muted text-[12.5px]">300 km</span>
+      <div class="field mb-6">
+        <div class="row row-between" style="align-items:baseline;margin-bottom:8px">
+          <label class="field-label" for="maxDist" style="margin:0">Max distance</label>
+          <span id="distLabel" style="font-family:var(--font-display);font-size:18px;color:var(--c-text)">300 km</span>
         </div>
-        <input id="maxDist" type="range" min="50" max="1200" step="25" value="300" class="bp-range" />
-        <div class="flex justify-between text-bone-dim text-[10.5px] tracking-[0.18em] uppercase mt-1">
+        <input id="maxDist" type="range" min="50" max="1200" step="25" value="300" class="range" />
+        <div class="row row-between" style="font-size:10.5px;letter-spacing:0.18em;color:var(--c-text-3);text-transform:uppercase;margin-top:6px;font-weight:500">
           <span>50</span><span>400</span><span>800</span><span>1200</span>
         </div>
       </div>
 
-      <div class="mt-5">
-        <label class="bp-label">Mood <span class="text-bone-dim normal-case tracking-normal text-[10.5px]">(optional)</span></label>
-        <input id="mood" class="bp-input" placeholder="What kind of ride are you after? calm · spirited · long-haul · scenic · technical" />
+      <div class="field mb-6">
+        <label class="field-label" for="mood">Mood <span style="color:var(--c-text-3);text-transform:none;letter-spacing:0.02em;font-size:11px">(optional)</span></label>
+        <input id="mood" class="input" placeholder="calm · spirited · long-haul · scenic · technical" />
       </div>
 
-      <p id="conErr" class="bp-msg bp-msg-error hidden mt-3"></p>
+      <p id="conErr" class="msg msg-error hidden" style="margin-bottom:16px"></p>
 
-      <div class="flex justify-end mt-6">
-        <button id="conSubmit" type="submit" class="bp-btn bp-btn-primary">
-          <span class="btn-label">Request Recommendations</span>
+      <div class="row row-end">
+        <button id="conSubmit" type="submit" class="btn btn-primary">
+          <span class="btn-label">Consult the concierge</span>
         </button>
       </div>
     </form>
 
     <!-- Results -->
-    <section id="results" class="hidden mt-10">
-      <p id="resultsNote" class="bp-section-label mb-5">Curated Routes</p>
-      <div id="cards" class="grid grid-cols-1 md:grid-cols-3 gap-5"></div>
+    <section id="results" class="hidden mt-8">
+      <div class="subhead">
+        <h2 id="resultsNote">Curated routes</h2>
+        <span class="subhead-aside">From the concierge</span>
+      </div>
+      <div id="cards" class="grid-concierge"></div>
     </section>
 
-    <section id="skeleton" class="hidden mt-10 grid grid-cols-1 md:grid-cols-3 gap-5">
-      <div class="bp-card p-5"><div class="skeleton h-3 w-1/3"></div><div class="skeleton h-3 w-1/2 mt-3"></div><div class="skeleton h-16 mt-4"></div><div class="skeleton h-9 mt-5"></div></div>
-      <div class="bp-card p-5"><div class="skeleton h-3 w-1/3"></div><div class="skeleton h-3 w-1/2 mt-3"></div><div class="skeleton h-16 mt-4"></div><div class="skeleton h-9 mt-5"></div></div>
-      <div class="bp-card p-5"><div class="skeleton h-3 w-1/3"></div><div class="skeleton h-3 w-1/2 mt-3"></div><div class="skeleton h-16 mt-4"></div><div class="skeleton h-9 mt-5"></div></div>
+    <section id="skeleton" class="hidden mt-8 grid-concierge">
+      <article class="rec-card"><div class="skeleton" style="height:18px;width:60%"></div><div class="skeleton mt-3" style="height:11px;width:40%"></div><div class="skeleton mt-5" style="height:60px"></div><div class="skeleton mt-5" style="height:36px"></div></article>
+      <article class="rec-card"><div class="skeleton" style="height:18px;width:50%"></div><div class="skeleton mt-3" style="height:11px;width:55%"></div><div class="skeleton mt-5" style="height:60px"></div><div class="skeleton mt-5" style="height:36px"></div></article>
+      <article class="rec-card"><div class="skeleton" style="height:18px;width:70%"></div><div class="skeleton mt-3" style="height:11px;width:45%"></div><div class="skeleton mt-5" style="height:60px"></div><div class="skeleton mt-5" style="height:36px"></div></article>
     </section>
   </main>
+
+  <style>
+    .grid-concierge {
+      display: grid;
+      grid-template-columns: 1fr;
+      gap: 18px;
+    }
+    @media (min-width: 800px) { .grid-concierge { grid-template-columns: repeat(3, 1fr); } }
+  </style>
 
   <script type="module">
     import { supabase } from './js/supabase.js'
@@ -106,16 +120,15 @@
 
     const FALLBACK = [
       { title: 'Western Ghats Dawn Run',  distance_km: 180, difficulty: 'Medium', terrain: 'Mountain', description: 'A refined early-morning climb through mist, bends, and old hillside roads.' },
-      { title: 'Konkan Coastal Crawl',    distance_km: 240, difficulty: 'Easy',   terrain: 'Highway',  description: 'A measured ride along the western coast, salt air, and unhurried towns.' },
+      { title: 'Konkan Coastal Crawl',    distance_km: 240, difficulty: 'Easy',   terrain: 'Highway',  description: 'A measured ride along the western coast — salt air and unhurried towns.' },
       { title: 'Spiti Cold Ascent',       distance_km: 420, difficulty: 'Hard',   terrain: 'Mountain', description: 'A serious high-altitude push through stark valleys and moonlike passes.' },
     ]
     let lastList = []
 
     distIn.addEventListener('input', () => { distLb.textContent = distIn.value + ' km' })
 
-    // terrain chips
     const selected = new Set()
-    document.querySelectorAll('#terrains .bp-chip').forEach(b => {
+    document.querySelectorAll('#terrains .chip').forEach(b => {
       b.addEventListener('click', () => {
         const v = b.getAttribute('data-val')
         if (selected.has(v)) { selected.delete(v); b.classList.remove('is-on') }
@@ -147,16 +160,16 @@
         if (!r.ok || !data) throw new Error('Concierge unavailable')
         const recs = (data.recommendations || []).slice(0, 3)
         if (!recs.length) throw new Error('No recommendations returned')
-        if (data.fallback) { note.textContent = 'Concierge service is temporarily unavailable. Showing house recommendations.' }
-        else               { note.textContent = 'Curated Routes' }
+        if (data.fallback) { note.textContent = 'Concierge is paused — showing house recommendations' }
+        else               { note.textContent = 'Curated routes' }
         renderCards(recs)
       } catch (e2) {
         skel.classList.add('hidden')
-        note.textContent = 'Concierge service is temporarily unavailable. Showing house recommendations.'
+        note.textContent = 'Concierge is paused — showing house recommendations'
         renderCards(FALLBACK)
       } finally {
         submit.disabled = false
-        submit.innerHTML = '<span class="btn-label">Request Recommendations</span>'
+        submit.innerHTML = '<span class="btn-label">Consult the concierge</span>'
       }
     })
 
@@ -165,18 +178,20 @@
       res.classList.remove('hidden')
       skel.classList.add('hidden')
       cards.innerHTML = list.map((r, i) => {
-        const diff = (r.difficulty || 'Medium').toLowerCase()
-        return `<article class="bp-card p-5 flex flex-col" data-idx="${i}">
-          <p class="font-serif text-[17px] text-bone leading-tight">${esc(r.title)}</p>
-          <div class="mt-2 flex items-center gap-2 flex-wrap">
-            <span class="bp-badge bp-badge-${diff}">${esc(r.difficulty || 'Medium')}</span>
-            <span class="text-bone-dim text-[11.5px] tracking-[0.16em] uppercase">${esc(r.terrain || 'Mixed')}</span>
-            <span class="text-bone-dim text-[11.5px]">·</span>
-            <span class="text-bone-muted text-[12px]">${r.distance_km || '—'} km</span>
+        return `<article class="rec-card fade-up" data-idx="${i}">
+          <p class="rec-card-title">${esc(r.title)}</p>
+          <div class="rec-card-meta">
+            <span class="badge badge-brass">${esc(r.difficulty || 'Medium')}</span>
+            <span class="dot">·</span>
+            <span>${esc(r.terrain || 'Mixed')}</span>
+            <span class="dot">·</span>
+            <span>${r.distance_km || '—'} km</span>
           </div>
-          <div class="bp-divider my-4"></div>
-          <p class="text-bone-muted text-[13.5px] leading-relaxed flex-1">${esc(r.description)}</p>
-          <button data-act="save" class="bp-btn bp-btn-ghost mt-5 justify-center">Save as Trip</button>
+          <div class="rule" style="margin:16px 0"></div>
+          <p class="rec-card-desc">${esc(r.description)}</p>
+          <div class="rec-card-foot">
+            <button data-act="save" class="btn btn-ghost full">Save to my routes</button>
+          </div>
         </article>`
       }).join('')
     }
@@ -201,7 +216,7 @@
         waypoints: [],
         is_public: false,
       })
-      if (error) { toast('Couldn’t save this route.', 'error'); btn.disabled = false; btn.innerHTML = 'Save as Trip'; return }
+      if (error) { toast('Couldn’t save this route.', 'error'); btn.disabled = false; btn.innerHTML = 'Save to my routes'; return }
       toast('Route added to your ledger.', 'success')
       btn.innerHTML = 'Saved'
     })

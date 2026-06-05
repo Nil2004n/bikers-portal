@@ -3,117 +3,183 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Trips · Bikers Portal</title>
+  <title>Routes · Bikers Portal</title>
   <link rel="icon" href="/assets/logo.svg" type="image/svg+xml" />
   <script src="./js/app.js"></script>
   <script src="https://cdn.tailwindcss.com"></script>
   <link rel="stylesheet" href="./assets/style.css" />
 </head>
-<body class="min-h-screen bg-ink-900 text-bone font-sans antialiased">
+<body class="bg-ink-900 text-bone">
+  <div class="canvas-grain"></div>
 
   <script type="module" src="./js/auth-guard.js"></script>
-
   <header id="bp-navbar" data-active="trips"></header>
 
-  <main class="max-w-6xl mx-auto px-4 md:px-6 py-8 md:py-12">
-    <div class="mb-8">
-      <p class="bp-section-label">The Route Desk</p>
-      <h1 class="font-serif text-[28px] md:text-[34px] text-bone mt-2">Plan the next long road with intention.</h1>
-      <p class="text-bone-muted text-[14px] mt-2 max-w-xl">Every long road begins as an intention. Sketch it, then ride it.</p>
-    </div>
+  <main class="page" style="padding-top:32px;padding-bottom:80px">
 
-    <div class="grid grid-cols-1 lg:grid-cols-[minmax(0,1fr)_360px] gap-6 lg:gap-8">
+    <header class="page-header" style="padding:24px 0 32px">
+      <p class="eyebrow brass" style="margin-bottom:14px">The route desk</p>
+      <h1>Plan the next long road with intention.</h1>
+      <p class="lede">Every long road begins as an intention. Sketch it, then ride it.</p>
+    </header>
 
-      <!-- ░░ LEFT ░░ -->
-      <section class="min-w-0 space-y-8">
+    <div class="bp-grid-2col">
+
+      <!-- ░░░ LEFT — planner + ledger ░░░ -->
+      <section class="col-main stack stack-7" style="min-width:0">
+
         <!-- Planner form -->
-        <form id="tripForm" class="bp-card p-5 md:p-6 bp-stitched" novalidate>
-          <div class="flex items-center justify-between mb-5">
-            <p class="bp-section-label" id="tripFormTitle" style="justify-content:flex-start">A New Route</p>
-            <button type="button" id="tripFormClose" class="bp-btn-subtle hidden">Close</button>
+        <form id="tripForm" class="card card-body card-stitched fade-up" novalidate>
+          <div class="row row-between mb-5" style="align-items:center">
+            <p class="eyebrow brass" id="tripFormTitle">A new route</p>
+            <button type="button" id="tripFormClose" class="btn-subtle hidden">Close</button>
           </div>
 
-          <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
-            <div class="sm:col-span-2"><label class="bp-label">Title</label><input name="title" required class="bp-input" placeholder="The Dawn Run to Coorg" /><p class="bp-msg bp-msg-error hidden" data-err="title"></p></div>
-            <div><label class="bp-label">From</label><input name="start_loc" class="bp-input" placeholder="Bengaluru" /></div>
-            <div><label class="bp-label">To</label><input name="end_loc" class="bp-input" placeholder="Madikeri" /></div>
-            <div><label class="bp-label">Date</label><input name="trip_date" type="date" class="bp-input" /></div>
-            <div><label class="bp-label">Distance (km)</label><input name="distance_km" type="number" min="0" class="bp-input" placeholder="260" /></div>
-            <div><label class="bp-label">Difficulty</label>
-              <select name="difficulty" class="bp-select">
+          <div class="grid-tripform">
+            <div class="field" style="grid-column:1 / -1">
+              <label class="field-label">Title</label>
+              <input name="title" required class="input" placeholder="The Dawn Run to Coorg" />
+              <p class="field-error hidden" data-err="title"></p>
+            </div>
+            <div class="field">
+              <label class="field-label">From</label>
+              <input name="start_loc" class="input" placeholder="Bengaluru" />
+            </div>
+            <div class="field">
+              <label class="field-label">To</label>
+              <input name="end_loc" class="input" placeholder="Madikeri" />
+            </div>
+            <div class="field">
+              <label class="field-label">Date</label>
+              <input name="trip_date" type="date" class="input" />
+            </div>
+            <div class="field">
+              <label class="field-label">Distance (km)</label>
+              <input name="distance_km" type="number" min="0" class="input" placeholder="260" />
+            </div>
+            <div class="field">
+              <label class="field-label">Difficulty</label>
+              <select name="difficulty" class="select">
                 <option value="Easy">Easy</option>
                 <option value="Medium" selected>Medium</option>
                 <option value="Hard">Hard</option>
               </select>
             </div>
-            <div class="flex items-end">
-              <label class="inline-flex items-center gap-2 text-bone-muted text-[13px]">
-                <input name="is_public" type="checkbox" class="accent-brass" checked />
-                <span>Share with the community</span>
+            <div style="display:flex;align-items:flex-end">
+              <label class="check" style="font-size:12.5px;color:var(--c-text-2)">
+                <input name="is_public" type="checkbox" checked />
+                <span class="check-box"></span>
+                <span>Share with the brotherhood</span>
               </label>
             </div>
           </div>
 
-          <div class="mt-4">
-            <div class="bp-label-row"><label class="bp-label" style="margin-bottom:0">Waypoints</label>
-              <button type="button" id="addWp" class="bp-btn-subtle text-[11.5px]">+ Add waypoint</button>
+          <div class="field mt-5">
+            <div class="row row-between" style="align-items:baseline;margin-bottom:12px">
+              <label class="field-label" style="margin:0">Waypoints</label>
+              <button type="button" id="addWp" class="btn-link" style="font-size:10.5px">+ Add waypoint</button>
             </div>
-            <div id="waypoints" class="mt-2 space-y-2"></div>
+            <div id="waypoints" class="stack stack-1"></div>
           </div>
 
-          <div class="mt-4"><label class="bp-label">Notes</label><textarea name="notes" rows="3" class="bp-textarea" placeholder="A few words for the road — conditions, fuel, photo stops."></textarea></div>
-          <p id="tripFormErr" class="bp-msg bp-msg-error hidden mt-3"></p>
-          <div class="flex justify-end gap-2 mt-5">
-            <button type="button" id="tripFormCancel" class="bp-btn bp-btn-ghost hidden">Cancel</button>
-            <button type="submit" id="tripFormSubmit" class="bp-btn bp-btn-primary"><span class="btn-label">Save route</span></button>
+          <div class="field mt-5">
+            <label class="field-label">Notes</label>
+            <textarea name="notes" rows="3" class="textarea" placeholder="A few words for the road — conditions, fuel, photo stops."></textarea>
+          </div>
+
+          <p id="tripFormErr" class="msg msg-error hidden mt-4"></p>
+
+          <div class="row row-end gap-3 mt-6">
+            <button type="button" id="tripFormCancel" class="btn btn-ghost hidden">Cancel</button>
+            <button type="submit" id="tripFormSubmit" class="btn btn-primary"><span class="btn-label">Save route</span></button>
           </div>
         </form>
 
         <!-- My trips -->
         <section>
-          <div class="flex items-end justify-between mb-4">
-            <h2 class="font-serif text-[18px] text-bone">My Trips</h2>
-            <span id="myCount" class="text-bone-dim text-[12px]">0 routes</span>
+          <div class="subhead">
+            <h2>My routes</h2>
+            <span id="myCount" class="subhead-aside">0 routes</span>
           </div>
-          <div id="myList" class="grid grid-cols-1 md:grid-cols-2 gap-4"></div>
-          <div id="myEmpty" class="hidden bp-card p-8 text-center">
-            <p class="font-serif text-[16px] text-bone">No routes planned yet.</p>
-            <p class="text-bone-muted text-[13px] mt-1.5">Every long road begins as an intention.</p>
+          <div id="myList" class="grid-trips"></div>
+          <div id="myEmpty" class="hidden card card-body empty-state">
+            <p class="empty-title">No routes planned yet.</p>
+            <p class="empty-body">Every long road begins as an intention.</p>
           </div>
         </section>
 
-        <!-- Community trips -->
+        <!-- Community -->
         <section>
-          <div class="flex items-end justify-between mb-4">
-            <h2 class="font-serif text-[18px] text-bone">Community Routes</h2>
-            <button id="loadMore" class="bp-btn-subtle">Load more</button>
+          <div class="subhead">
+            <h2>Brotherhood routes</h2>
+            <button id="loadMore" class="btn-subtle">Load more</button>
           </div>
-          <div id="commList" class="grid grid-cols-1 md:grid-cols-2 gap-4"></div>
-          <div id="commEmpty" class="hidden bp-card p-8 text-center">
-            <p class="font-serif text-[16px] text-bone">No public routes yet.</p>
-            <p class="text-bone-muted text-[13px] mt-1.5">Be the first to share a road.</p>
+          <div id="commList" class="grid-trips"></div>
+          <div id="commEmpty" class="hidden card card-body empty-state">
+            <p class="empty-title">No public routes yet.</p>
+            <p class="empty-body">Be the first to share a road.</p>
           </div>
         </section>
       </section>
 
-      <!-- ░░ RIGHT · Map placeholder ░░ -->
-      <aside class="space-y-4">
-        <div class="bp-map h-72 md:h-96 relative">
-          <div class="absolute inset-0 flex flex-col items-center justify-center text-center px-6 z-10">
-            <p class="bp-section-label mb-3" style="justify-content:center">Cartography</p>
-            <p class="font-serif text-[16px] text-bone">Route cartography arrives in the next build.</p>
-            <p class="text-bone-muted text-[12.5px] mt-2 max-w-[260px]">Until then, sketch your intentions on paper and let the road surprise you.</p>
-          </div>
-        </div>
-        <div class="bp-card p-5 bp-stitched">
-          <p class="bp-section-label mb-3" style="justify-content:flex-start">House Note</p>
-          <p class="text-bone text-[13.5px] leading-relaxed italic">"Journeys carved in dust and chrome."</p>
-          <div class="bp-divider mt-4"></div>
-          <p class="text-bone-dim text-[10.5px] tracking-[0.24em] uppercase mt-3">Riding Brotherhood</p>
-        </div>
+      <!-- ░░░ RIGHT — cartography + house note ░░░ -->
+      <aside class="col-aside stack stack-5">
+        <section class="map-board" style="min-height:340px;padding:24px;display:flex;flex-direction:column;justify-content:flex-end;position:relative;z-index:1">
+          <p class="eyebrow brass" style="margin-bottom:12px;position:relative;z-index:2">Cartography</p>
+          <p style="font-family:var(--font-display);font-size:19px;color:var(--c-text);line-height:1.25;position:relative;z-index:2;max-width:24ch">Route cartography arrives in the next build.</p>
+          <p style="color:var(--c-text-2);font-size:12.5px;line-height:1.55;margin-top:10px;position:relative;z-index:2;max-width:30ch">Until then, sketch your intentions on paper and let the road surprise you.</p>
+        </section>
+
+        <section class="card card-body card-stitched">
+          <p class="eyebrow brass" style="margin-bottom:14px">House note</p>
+          <p class="italic-serif" style="font-size:17px;line-height:1.45">"Journeys carved in dust and chrome."</p>
+          <div class="rule" style="margin:18px 0 12px"></div>
+          <p class="eyebrow eyebrow-dim">Riding Brotherhood</p>
+        </section>
+
+        <section class="card card-body">
+          <p class="eyebrow brass" style="margin-bottom:14px">Doctrine</p>
+          <ol class="feature-list" style="margin:0">
+            <li>
+              <span class="num">i.</span>
+              <span class="text"><strong>Plan it once.</strong> Title, distance, difficulty. The rest is in the road.</span>
+            </li>
+            <li>
+              <span class="num">ii.</span>
+              <span class="text"><strong>Mark the stops.</strong> Waypoints, fuel, photo lines. Leave room for the unscripted.</span>
+            </li>
+            <li>
+              <span class="num">iii.</span>
+              <span class="text"><strong>Share what serves.</strong> Keep the ledgers honest and the routes useful.</span>
+            </li>
+          </ol>
+        </section>
       </aside>
     </div>
   </main>
+
+  <style>
+    .bp-grid-2col {
+      display: grid;
+      grid-template-columns: 1fr;
+      gap: 32px;
+    }
+    @media (min-width: 1024px) {
+      .bp-grid-2col { grid-template-columns: minmax(0, 1fr) 340px; gap: 40px; }
+    }
+    .grid-trips {
+      display: grid;
+      grid-template-columns: 1fr;
+      gap: 16px;
+    }
+    @media (min-width: 700px) { .grid-trips { grid-template-columns: 1fr 1fr; } }
+    .grid-tripform {
+      display: grid;
+      grid-template-columns: 1fr;
+      gap: 16px;
+    }
+    @media (min-width: 700px) { .grid-tripform { grid-template-columns: 1fr 1fr; } }
+  </style>
 
   <script type="module">
     import { supabase } from './js/supabase.js'
@@ -138,30 +204,28 @@
     const commEmpty   = document.getElementById('commEmpty')
     const loadMoreBtn = document.getElementById('loadMore')
 
-    /* ── Waypoints ─────────────────────────────────────── */
     function addWaypoint(value) {
       const i = wpHost.querySelectorAll('input').length
       const row = document.createElement('div')
-      row.className = 'flex items-center gap-2'
+      row.className = 'waypoint'
       row.innerHTML = `
-        <span class="text-bone-dim text-[11px] tracking-[0.2em] w-6 text-center">${String(i + 1).padStart(2, '0')}</span>
-        <input class="bp-input flex-1" placeholder="e.g. Sakleshpur" value="${esc(value || '')}" />
-        <button type="button" class="bp-btn-subtle" data-rm>Remove</button>`
+        <span class="waypoint-index">${String(i + 1).padStart(2, '0')}</span>
+        <input class="input" style="flex:1;padding:8px 12px;font-size:13.5px" placeholder="e.g. Sakleshpur" value="${esc(value || '')}" />
+        <button type="button" class="btn-subtle" data-rm>Remove</button>`
       row.querySelector('[data-rm]').addEventListener('click', () => { row.remove(); reindexWp() })
       wpHost.appendChild(row)
     }
     function reindexWp() {
-      wpHost.querySelectorAll('span').forEach((s, i) => s.textContent = String(i + 1).padStart(2, '0'))
+      wpHost.querySelectorAll('.waypoint-index').forEach((s, i) => s.textContent = String(i + 1).padStart(2, '0'))
     }
     document.getElementById('addWp').addEventListener('click', () => addWaypoint())
-    addWaypoint('') // start with one empty row
+    addWaypoint('')
 
-    /* ── Form open/close/edit ──────────────────────────── */
     formClose.addEventListener('click', resetForm)
     formCancel.addEventListener('click', resetForm)
     function resetForm() {
       state.editingId = null
-      formTitle.textContent = 'A New Route'
+      formTitle.textContent = 'A new route'
       submit.querySelector('.btn-label').textContent = 'Save route'
       form.reset()
       wpHost.innerHTML = ''
@@ -184,12 +248,16 @@
       else wps.forEach(w => addWaypoint(w))
     }
 
-    /* ── My trips ──────────────────────────────────────── */
+    function difficultyBadge(d) {
+      const v = (d || 'Medium').toLowerCase()
+      return `<span class="badge badge-brass">${esc(d || 'Medium')}</span>`
+    }
+
     async function loadMine() {
       const { data, error } = await supabase.from('trips')
         .select('id, user_id, title, start_loc, end_loc, distance_km, trip_date, difficulty, is_public, waypoints, created_at')
         .eq('user_id', me.id).order('trip_date', { ascending: false, nullsFirst: false }).order('created_at', { ascending: false })
-      if (error) { myEmpty.classList.remove('hidden'); myEmpty.innerHTML = `<p class="text-bone-muted text-[13px]">Couldn’t load your routes.</p>`; return }
+      if (error) { myEmpty.classList.remove('hidden'); myEmpty.innerHTML = `<p class="msg msg-error">Couldn’t load your routes.</p>`; return }
       const trips = data || []
       myCount.textContent = trips.length + (trips.length === 1 ? ' route' : ' routes')
       if (!trips.length) { myEmpty.classList.remove('hidden'); myList.innerHTML = ''; return }
@@ -197,22 +265,21 @@
       myList.innerHTML = trips.map(myCardHTML).join('')
     }
     function myCardHTML(t) {
-      const diff = (t.difficulty || 'Medium').toLowerCase()
       const date = t.trip_date ? new Date(t.trip_date).toLocaleDateString(undefined, { day:'numeric', month:'short', year:'numeric' }) : '—'
-      return `<article class="bp-card p-4" data-trip="${esc(t.id)}">
-        <div class="flex items-start justify-between gap-3">
-          <div class="min-w-0">
-            <p class="font-serif text-bone text-[15.5px] truncate">${esc(t.title)}</p>
-            <p class="text-bone-dim text-[12px] mt-0.5">${esc(t.start_loc || '—')} → ${esc(t.end_loc || '—')} · ${date}</p>
+      return `<article class="route-card fade-up" data-trip="${esc(t.id)}">
+        <div class="row row-between" style="align-items:flex-start;gap:12px">
+          <div class="stack stack-1 min-w-0" style="flex:1">
+            <p class="route-card-title">${esc(t.title)}</p>
+            <p class="route-card-route">${esc(t.start_loc || '—')} <span class="arrow">→</span> ${esc(t.end_loc || '—')} · ${date}</p>
           </div>
-          <span class="bp-badge bp-badge-${diff}">${esc(t.difficulty || 'Medium')}</span>
+          ${difficultyBadge(t.difficulty)}
         </div>
-        <div class="bp-divider my-3"></div>
-        <div class="flex items-center justify-between text-[12.5px] text-bone-muted">
-          <span>${t.distance_km ? t.distance_km + ' km' : '— km'}${t.is_public ? ' · public' : ' · private'}</span>
-          <div class="flex items-center gap-1">
-            <button data-act="edit"   class="bp-btn-subtle">Edit</button>
-            <button data-act="delete" class="bp-btn-subtle text-burgundy">Delete</button>
+        <div class="rule" style="margin:14px 0"></div>
+        <div class="row row-between" style="font-size:12.5px;color:var(--c-text-2)">
+          <span>${t.distance_km ? t.distance_km + ' km' : '— km'}<span class="sep" style="margin:0 6px;color:var(--c-text-4)">·</span>${t.is_public ? 'public' : 'private'}</span>
+          <div class="row row-1">
+            <button data-act="edit"   class="btn-subtle">Edit</button>
+            <button data-act="delete" class="btn-subtle" style="color:var(--c-error)">Delete</button>
           </div>
         </div>
       </article>`
@@ -227,7 +294,7 @@
       if (!t) return
       if (btn.getAttribute('data-act') === 'edit') {
         state.editingId = t.id
-        formTitle.textContent = 'Edit Route'
+        formTitle.textContent = 'Edit route'
         submit.querySelector('.btn-label').textContent = 'Save changes'
         fillForm(t)
         form.scrollIntoView({ behavior: 'smooth', block: 'start' })
@@ -241,7 +308,6 @@
       }
     })
 
-    /* ── Community trips ───────────────────────────────── */
     async function loadCommunity(reset) {
       if (reset) { state.communityPage = 0; state.communityDone = false; state.community = []; commList.innerHTML = '' }
       if (state.communityDone) return
@@ -257,7 +323,6 @@
       state.communityPage++
       if (!state.community.length) { commEmpty.classList.remove('hidden'); return }
       commEmpty.classList.add('hidden')
-      // append
       const html = rows.map(commCardHTML).join('')
       commList.insertAdjacentHTML('beforeend', html)
       loadMoreBtn.disabled = state.communityDone
@@ -265,20 +330,19 @@
     }
     function commCardHTML(t) {
       const prof = t.profiles || {}
-      const diff = (t.difficulty || 'Medium').toLowerCase()
       const date = t.trip_date ? new Date(t.trip_date).toLocaleDateString(undefined, { day:'numeric', month:'short' }) : ''
-      return `<article class="bp-card p-4">
-        <div class="flex items-start justify-between gap-3">
-          <div class="min-w-0">
-            <p class="font-serif text-bone text-[15.5px] truncate">${esc(t.title)}</p>
-            <p class="text-bone-dim text-[12px] mt-0.5">${esc(t.start_loc || '—')} → ${esc(t.end_loc || '—')}${date ? ' · ' + date : ''}</p>
+      return `<article class="route-card fade-up">
+        <div class="row row-between" style="align-items:flex-start;gap:12px">
+          <div class="stack stack-1 min-w-0" style="flex:1">
+            <p class="route-card-title">${esc(t.title)}</p>
+            <p class="route-card-route">${esc(t.start_loc || '—')} <span class="arrow">→</span> ${esc(t.end_loc || '—')}${date ? ' · ' + date : ''}</p>
           </div>
-          <span class="bp-badge bp-badge-${diff}">${esc(t.difficulty || 'Medium')}</span>
+          ${difficultyBadge(t.difficulty)}
         </div>
-        <div class="bp-divider my-3"></div>
-        <div class="flex items-center justify-between text-[12.5px] text-bone-muted">
+        <div class="rule" style="margin:14px 0"></div>
+        <div class="row row-between" style="font-size:12.5px;color:var(--c-text-2)">
           <span>${t.distance_km ? t.distance_km + ' km' : '— km'}</span>
-          <div class="flex items-center gap-2 min-w-0">
+          <div class="row row-2 min-w-0" style="align-items:center">
             ${avatarHTML(prof.avatar_url, prof.full_name || prof.username, 22)}
             <span class="truncate">${esc(prof.full_name || prof.username || 'Rider')}</span>
           </div>
@@ -287,7 +351,6 @@
     }
     loadMoreBtn.addEventListener('click', () => loadCommunity(false))
 
-    /* ── Submit (create + update) ──────────────────────── */
     form.addEventListener('submit', async (e) => {
       e.preventDefault()
       formErr.classList.add('hidden')

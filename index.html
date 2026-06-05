@@ -3,90 +3,127 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Sign In · Bikers Portal</title>
+  <title>Enter · Bikers Portal</title>
   <link rel="icon" href="/assets/logo.svg" type="image/svg+xml" />
   <script src="./js/app.js"></script>
   <script src="https://cdn.tailwindcss.com"></script>
   <link rel="stylesheet" href="./assets/style.css" />
 </head>
-<body class="min-h-screen bg-ink-900 text-bone font-sans antialiased">
+<body class="bg-ink-900 text-bone">
+  <div class="canvas-grain"></div>
 
-  <div class="min-h-screen flex flex-col md:flex-row">
-    <!-- ░░ LEFT · Atmosphere (desktop) / compact hero (mobile) ░░ -->
-    <aside class="bp-atmos relative md:flex md:flex-col md:justify-between md:w-1/2 md:min-h-screen px-6 md:px-14 py-10 md:py-16">
-      <a href="/index.html" class="relative z-10 inline-flex items-center">
-        <img src="/assets/logo.svg" alt="Bikers Portal" class="h-8 w-auto" />
+  <main class="auth-split">
+
+    <!-- ░░░ STAGE — the atmospheric left panel ░░░ -->
+    <section class="auth-stage bp-atmos">
+      <div class="atmosphere-grain"></div>
+
+      <a href="/index.html" class="navbar-brand" style="position:relative;z-index:2">
+        <span class="brand-icon">
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 48 48" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+            <circle cx="24" cy="24" r="22" stroke-width="1.6"/>
+            <circle cx="24" cy="24" r="18.4" stroke-width="0.5" stroke-opacity="0.45"/>
+            <g stroke-width="0.9" stroke-opacity="0.45">
+              <line x1="24" y1="5.6" x2="24" y2="42.4"/>
+              <line x1="5.6" y1="24" x2="42.4" y2="24"/>
+              <line x1="10.6" y1="10.6" x2="37.4" y2="37.4"/>
+              <line x1="37.4" y1="10.6" x2="10.6" y2="37.4"/>
+            </g>
+            <circle cx="24" cy="24" r="9" stroke-width="1.1"/>
+            <text x="24" y="28.5" text-anchor="middle" font-family="Cormorant Garamond, Georgia, serif" font-size="12.5" font-weight="600" fill="currentColor" stroke="none" letter-spacing="0.4">BP</text>
+          </svg>
+        </span>
+        <span class="brand-word">
+          <strong>Bikers Portal</strong>
+          <em>Riding Society</em>
+        </span>
       </a>
 
-      <div class="relative z-10 hidden md:block max-w-md">
-        <p class="bp-section-label mb-5">Riding Brotherhood</p>
-        <h1 class="font-serif text-[34px] leading-[1.15] text-bone">
-          For riders who respect the road.
-        </h1>
-        <p class="text-bone-muted text-[14.5px] leading-relaxed mt-5 max-w-sm">
-          A private space for machines, miles, and the people who carry both with grace.
-        </p>
-        <div class="bp-divider-double mt-10 max-w-xs"></div>
-        <p class="text-bone-dim text-[11px] tracking-[0.28em] uppercase mt-6">Est. road society</p>
+      <div class="stage-quote" style="position:relative;z-index:2">
+        <span class="quote-mark">“</span>
+        <p class="quote-body">For riders who respect the road — and the silence it teaches.</p>
+        <p class="quote-by">House motto · est. 2024</p>
       </div>
 
-      <div class="relative z-10 hidden md:block">
-        <p class="text-bone-dim text-[11px] tracking-[0.24em] uppercase">A quiet confidence in leather and chrome</p>
-      </div>
-
-      <!-- mobile compact hero -->
-      <div class="relative z-10 md:hidden mt-8 mb-2">
-        <p class="bp-section-label mb-3">Riding Brotherhood</p>
-        <h1 class="font-serif text-[26px] leading-[1.2] text-bone">For riders who respect the road.</h1>
-      </div>
-    </aside>
-
-    <!-- ░░ RIGHT · Form ░░ -->
-    <main class="flex-1 md:w-1/2 flex items-center justify-center px-5 py-10 md:py-0 bg-ink-900">
-      <div class="w-full max-w-sm">
-        <div class="bp-card p-7 md:p-9">
-          <div class="flex items-center gap-3 mb-7">
-            <div class="h-px flex-1 bg-bronze"></div>
-            <span class="font-serif text-bone-muted text-[11px] tracking-[0.32em] uppercase">Members Only</span>
-            <div class="h-px flex-1 bg-bronze"></div>
-          </div>
-
-          <h2 class="font-serif text-[22px] text-bone">Enter the Portal</h2>
-          <p class="text-bone-muted text-[13px] mt-1.5">Access your routes, machines, and road journal.</p>
-
-          <form id="loginForm" class="mt-7 space-y-4" novalidate>
-            <div>
-              <label for="email" class="bp-label">Email</label>
-              <input id="email" name="email" type="email" autocomplete="email" required class="bp-input" placeholder="you@domain.com" />
-              <p id="emailErr" class="bp-msg bp-msg-error hidden"></p>
-            </div>
-            <div>
-              <div class="bp-label-row">
-                <label for="password" class="bp-label" style="margin-bottom:0">Password</label>
-                <a href="#" class="text-[11px] text-bone-dim hover:text-brass tracking-wide">Forgot?</a>
-              </div>
-              <input id="password" name="password" type="password" autocomplete="current-password" required class="bp-input mt-1.5" placeholder="••••••••" />
-              <p id="passwordErr" class="bp-msg bp-msg-error hidden"></p>
-            </div>
-            <p id="formErr" class="bp-msg bp-msg-error hidden"></p>
-
-            <button id="submitBtn" type="submit" class="bp-btn bp-btn-primary w-full justify-center mt-2">
-              <span class="btn-label">Enter the Portal</span>
-            </button>
-          </form>
-
-          <div class="bp-divider my-7"></div>
-
-          <p class="text-center text-bone-muted text-[13px]">
-            New to the road?
-            <a href="/register.html" class="text-brass hover:text-brass-light ml-1">Create an account</a>
+      <div style="position:relative;z-index:2;display:flex;align-items:flex-end;justify-content:space-between;gap:24px;flex-wrap:wrap">
+        <div>
+          <p class="eyebrow eyebrow-dim" style="margin-bottom:8px">A private riding society</p>
+          <p style="font-family:var(--font-display);font-style:italic;font-size:18px;color:var(--c-text-2);max-width:32ch;line-height:1.4">
+            A quiet record of machines, miles, and the brotherhood that holds them.
           </p>
         </div>
-
-        <p class="text-bone-dim text-[11px] tracking-[0.2em] uppercase text-center mt-8">Bikers Portal · A private riding society</p>
+        <p class="eyebrow eyebrow-dim" style="writing-mode:vertical-rl;transform:rotate(180deg)">N · 12° 58′ · 77° 35′</p>
       </div>
-    </main>
-  </div>
+
+      <div class="crosshair" aria-hidden="true">
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 540 540" fill="none" stroke="currentColor" stroke-width="0.6" stroke-linecap="round">
+          <circle cx="270" cy="270" r="260"/>
+          <circle cx="270" cy="270" r="200" stroke-opacity="0.6"/>
+          <circle cx="270" cy="270" r="140" stroke-opacity="0.5"/>
+          <circle cx="270" cy="270" r="80" stroke-opacity="0.4"/>
+          <line x1="270" y1="0" x2="270" y2="540" stroke-opacity="0.5"/>
+          <line x1="0" y1="270" x2="540" y2="270" stroke-opacity="0.5"/>
+          <line x1="78" y1="78" x2="462" y2="462" stroke-opacity="0.3"/>
+          <line x1="462" y1="78" x2="78" y2="462" stroke-opacity="0.3"/>
+          <g stroke-opacity="0.7" font-family="Cormorant Garamond, Georgia, serif" font-size="11" fill="currentColor" stroke="none">
+            <text x="270" y="24" text-anchor="middle" letter-spacing="3">N</text>
+            <text x="270" y="528" text-anchor="middle" letter-spacing="3">S</text>
+            <text x="16" y="274" text-anchor="middle" letter-spacing="3">W</text>
+            <text x="524" y="274" text-anchor="middle" letter-spacing="3">E</text>
+          </g>
+        </svg>
+      </div>
+    </section>
+
+    <!-- ░░░ ENTRANCE — the sign-in form ░░░ -->
+    <section class="auth-form-side">
+      <div class="auth-form page-enter">
+
+        <header style="margin-bottom:36px">
+          <p class="eyebrow brass" style="margin-bottom:18px">Members only</p>
+          <h1 style="font-size:34px;line-height:1.1;letter-spacing:-0.01em">Enter the portal.</h1>
+          <p class="lede" style="font-size:14.5px;line-height:1.6;color:var(--c-text-2);margin-top:14px;max-width:36ch">
+            Your machines, routes, and the road journal are waiting on the other side.
+          </p>
+        </header>
+
+        <form id="loginForm" novalidate>
+
+          <div class="field mb-5">
+            <label for="email" class="field-label">Email</label>
+            <input id="email" name="email" type="email" autocomplete="email" required class="input" placeholder="you@domain.com" />
+            <p id="emailErr" class="field-error hidden"></p>
+          </div>
+
+          <div class="field mb-5">
+            <div class="field-label-row">
+              <label for="password" class="field-label" style="margin-bottom:0">Password</label>
+              <a href="#" class="btn-link" style="font-size:10.5px">Forgot?</a>
+            </div>
+            <input id="password" name="password" type="password" autocomplete="current-password" required class="input" placeholder="••••••••" style="margin-top:8px" />
+            <p id="passwordErr" class="field-error hidden"></p>
+          </div>
+
+          <p id="formErr" class="msg msg-error hidden" style="margin-bottom:16px"></p>
+
+          <button id="submitBtn" type="submit" class="btn btn-primary full" style="margin-top:8px">
+            <span class="btn-label">Enter the Portal</span>
+          </button>
+
+          <p class="row gap-2 mt-7" style="justify-content:center;font-size:13px;color:var(--c-text-2)">
+            <span>New to the road?</span>
+            <a href="/register.html" class="btn-link" style="font-size:12px">Take the oath</a>
+          </p>
+        </form>
+
+        <div class="rule mt-8"></div>
+
+        <p class="eyebrow eyebrow-dim text-center mt-6" style="font-size:10px;letter-spacing:0.32em">
+          A private riding society · est. 2024
+        </p>
+      </div>
+    </section>
+  </main>
 
   <script type="module">
     import { supabase } from './js/supabase.js'
@@ -99,7 +136,6 @@
     const passErr = document.getElementById('passwordErr')
     const formErr = document.getElementById('formErr')
 
-    // ── If already signed in, complete any pending profile, then go to feed
     const { data: { session } } = await supabase.auth.getSession()
     if (session) {
       await window.bp.completePendingProfile()

@@ -9,83 +9,141 @@
   <script src="https://cdn.tailwindcss.com"></script>
   <link rel="stylesheet" href="./assets/style.css" />
 </head>
-<body class="min-h-screen bg-ink-900 text-bone font-sans antialiased">
+<body class="bg-ink-900 text-bone">
+  <div class="canvas-grain"></div>
 
   <script type="module" src="./js/auth-guard.js"></script>
-
   <header id="bp-navbar" data-active="bikes"></header>
 
-  <main class="max-w-6xl mx-auto px-4 md:px-6 py-8 md:py-12">
-    <!-- Header -->
-    <div class="flex items-end justify-between gap-4 flex-wrap">
-      <div>
-        <p class="bp-section-label">The Garage</p>
-        <h1 class="font-serif text-[28px] md:text-[34px] text-bone mt-2">Machines worth remembering.</h1>
-        <p class="text-bone-muted text-[14px] mt-2 max-w-xl">A quiet registry of the motorcycles that carry us — kept by the riders who love them.</p>
-      </div>
-      <button id="addBtn" class="bp-btn bp-btn-primary">
-        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"><path d="M12 5v14M5 12h14"/></svg>
-        <span>Add a machine</span>
-      </button>
-    </div>
+  <main class="page" style="padding-top:32px;padding-bottom:80px">
 
-    <!-- Form panel (hidden by default) -->
-    <section id="formPanel" class="hidden mt-7">
-      <form id="bikeForm" class="bp-card p-5 md:p-6 bp-stitched" novalidate>
-        <div class="flex items-center justify-between mb-5">
-          <p class="bp-section-label" style="justify-content:flex-start" id="formTitle">A New Entry</p>
-          <button type="button" id="formClose" class="bp-btn-subtle">Close</button>
+    <!-- ░░ Header ░░ -->
+    <header class="page-header" style="padding:24px 0 32px;display:grid;grid-template-columns:1fr;gap:24px">
+      <div class="row row-between" style="align-items:flex-end;flex-wrap:wrap;gap:16px">
+        <div style="max-width:60ch">
+          <p class="eyebrow brass" style="margin-bottom:14px">The garage</p>
+          <h1>Machines worth remembering.</h1>
+          <p class="lede">A quiet registry of the motorcycles that carry us — kept by the riders who love them.</p>
         </div>
-        <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
-          <div><label class="bp-label">Make</label><input name="make" required class="bp-input" placeholder="Royal Enfield" /><p class="bp-msg bp-msg-error hidden" data-err="make"></p></div>
-          <div><label class="bp-label">Model</label><input name="model" required class="bp-input" placeholder="Classic 350" /><p class="bp-msg bp-msg-error hidden" data-err="model"></p></div>
-          <div><label class="bp-label">Year</label><input name="year" type="number" min="1900" max="2099" class="bp-input" placeholder="2021" /><p class="bp-msg bp-msg-error hidden" data-err="year"></p></div>
-          <div><label class="bp-label">Engine (cc)</label><input name="engine_cc" type="number" min="0" class="bp-input" placeholder="349" /></div>
-          <div><label class="bp-label">Color</label><input name="color" class="bp-input" placeholder="Chrome Bronze" /></div>
-          <div><label class="bp-label">Photograph</label><input name="photo" type="file" accept="image/*" class="bp-input" style="padding:7px" /><p class="bp-msg bp-msg-muted">Optional, under 4 MB.</p><p class="bp-msg bp-msg-error hidden" data-err="photo"></p></div>
+        <button id="addBtn" class="btn btn-primary">
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"><path d="M12 5v14M5 12h14"/></svg>
+          <span>Add a machine</span>
+        </button>
+      </div>
+    </header>
+
+    <!-- ░░ Form panel (hidden) ░░ -->
+    <section id="formPanel" class="hidden mb-7">
+      <form id="bikeForm" class="card card-body card-stitched" novalidate>
+        <div class="row row-between mb-6" style="align-items:center">
+          <p class="eyebrow brass" id="formTitle">A new entry</p>
+          <button type="button" id="formClose" class="btn-subtle">Close</button>
         </div>
-        <div class="mt-4"><label class="bp-label">Description</label><textarea name="description" rows="3" class="bp-textarea" placeholder="A few words about the machine — its character, its story."></textarea></div>
-        <p id="formErr" class="bp-msg bp-msg-error hidden mt-3"></p>
-        <div class="flex justify-end gap-2 mt-5">
-          <button type="button" id="formCancel" class="bp-btn bp-btn-ghost">Cancel</button>
-          <button type="submit" id="formSubmit" class="bp-btn bp-btn-primary"><span class="btn-label">Save machine</span></button>
+
+        <div class="grid-3">
+          <div class="field">
+            <label class="field-label">Make</label>
+            <input name="make" required class="input" placeholder="Royal Enfield" />
+            <p class="field-error hidden" data-err="make"></p>
+          </div>
+          <div class="field">
+            <label class="field-label">Model</label>
+            <input name="model" required class="input" placeholder="Classic 350" />
+            <p class="field-error hidden" data-err="model"></p>
+          </div>
+          <div class="field">
+            <label class="field-label">Year</label>
+            <input name="year" type="number" min="1900" max="2099" class="input" placeholder="2021" />
+            <p class="field-error hidden" data-err="year"></p>
+          </div>
+          <div class="field">
+            <label class="field-label">Engine (cc)</label>
+            <input name="engine_cc" type="number" min="0" class="input" placeholder="349" />
+          </div>
+          <div class="field">
+            <label class="field-label">Colour</label>
+            <input name="color" class="input" placeholder="Chrome Bronze" />
+          </div>
+          <div class="field">
+            <label class="field-label">Photograph</label>
+            <input name="photo" type="file" accept="image/*" class="input-file" />
+            <p class="field-hint">Optional, under 4 MB.</p>
+            <p class="field-error hidden" data-err="photo"></p>
+          </div>
+        </div>
+
+        <div class="field mt-5">
+          <label class="field-label">Description</label>
+          <textarea name="description" rows="3" class="textarea" placeholder="A few words about the machine — its character, its story."></textarea>
+        </div>
+
+        <p id="formErr" class="msg msg-error hidden mt-4"></p>
+
+        <div class="row row-end gap-3 mt-6">
+          <button type="button" id="formCancel" class="btn btn-ghost">Cancel</button>
+          <button type="submit" id="formSubmit" class="btn btn-primary"><span class="btn-label">Save machine</span></button>
         </div>
       </form>
     </section>
 
-    <!-- Filters -->
-    <section class="mt-8 mb-6 bp-card p-4">
-      <div class="grid grid-cols-2 md:grid-cols-4 gap-3">
-        <div>
-          <label class="bp-label">Make</label>
-          <select id="fMake" class="bp-select"><option value="">All makes</option></select>
+    <!-- ░░ Filters ░░ -->
+    <section class="card card-body-tight mb-7" style="padding:18px 22px">
+      <div class="grid-filters">
+        <div class="field" style="margin:0">
+          <label class="field-label">Make</label>
+          <select id="fMake" class="select"><option value="">All makes</option></select>
         </div>
-        <div>
-          <label class="bp-label">Year — from</label>
-          <select id="fYearFrom" class="bp-select"><option value="">Any</option></select>
+        <div class="field" style="margin:0">
+          <label class="field-label">Year — from</label>
+          <select id="fYearFrom" class="select"><option value="">Any</option></select>
         </div>
-        <div>
-          <label class="bp-label">Engine — min cc</label>
-          <select id="fCc" class="bp-select"><option value="">Any</option></select>
+        <div class="field" style="margin:0">
+          <label class="field-label">Engine — min cc</label>
+          <select id="fCc" class="select"><option value="">Any</option></select>
         </div>
-        <div class="flex items-end">
-          <button id="fReset" class="bp-btn bp-btn-ghost w-full">Reset filters</button>
+        <div style="display:flex;align-items:flex-end">
+          <button id="fReset" class="btn btn-ghost full">Reset filters</button>
         </div>
       </div>
     </section>
 
-    <!-- Grid -->
-    <section id="grid" class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-5"></section>
-    <section id="gridSkeleton" class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-5">
-      <div class="bp-card overflow-hidden"><div class="skeleton h-52"></div><div class="p-4 space-y-2"><div class="skeleton h-3 w-2/3"></div><div class="skeleton h-3 w-1/2"></div></div></div>
-      <div class="bp-card overflow-hidden"><div class="skeleton h-52"></div><div class="p-4 space-y-2"><div class="skeleton h-3 w-1/2"></div><div class="skeleton h-3 w-2/3"></div></div></div>
-      <div class="bp-card overflow-hidden"><div class="skeleton h-52"></div><div class="p-4 space-y-2"><div class="skeleton h-3 w-3/4"></div><div class="skeleton h-3 w-1/2"></div></div></div>
+    <!-- ░░ Grid ░░ -->
+    <section id="grid" class="grid-machines"></section>
+
+    <section id="gridSkeleton" class="grid-machines">
+      <article class="machine-card"><div class="machine-card-img"><div class="skeleton" style="width:100%;height:100%"></div></div><div class="machine-card-body"><div class="skeleton" style="height:18px;width:60%"></div><div class="skeleton" style="height:12px;width:40%"></div><div class="skeleton" style="height:36px"></div></div></article>
+      <article class="machine-card"><div class="machine-card-img"><div class="skeleton" style="width:100%;height:100%"></div></div><div class="machine-card-body"><div class="skeleton" style="height:18px;width:50%"></div><div class="skeleton" style="height:12px;width:65%"></div></div></article>
+      <article class="machine-card"><div class="machine-card-img"><div class="skeleton" style="width:100%;height:100%"></div></div><div class="machine-card-body"><div class="skeleton" style="height:18px;width:75%"></div><div class="skeleton" style="height:12px;width:50%"></div></div></article>
     </section>
-    <section id="empty" class="hidden bp-card p-12 text-center">
-      <p class="font-serif text-[20px] text-bone">No machines entered yet.</p>
-      <p class="text-bone-muted text-[13px] mt-2">Add the first machine to the registry.</p>
+
+    <section id="empty" class="hidden card card-body-loose empty-state">
+      <p class="empty-title">The garage is empty.</p>
+      <p class="empty-body">Add the first machine to the registry — or wait for a brother to leave a mark.</p>
     </section>
   </main>
+
+  <style>
+    .grid-machines {
+      display: grid;
+      grid-template-columns: 1fr;
+      gap: 20px;
+    }
+    @media (min-width: 640px) { .grid-machines { grid-template-columns: repeat(2, 1fr); } }
+    @media (min-width: 1024px) { .grid-machines { grid-template-columns: repeat(3, 1fr); gap: 24px; } }
+    .grid-3 {
+      display: grid;
+      grid-template-columns: 1fr;
+      gap: 18px;
+    }
+    @media (min-width: 700px) { .grid-3 { grid-template-columns: repeat(2, 1fr); } }
+    @media (min-width: 1000px) { .grid-3 { grid-template-columns: repeat(3, 1fr); } }
+    .grid-filters {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 14px;
+    }
+    @media (min-width: 800px) { .grid-filters { grid-template-columns: 2fr 1fr 1fr 1fr; } }
+  </style>
 
   <script type="module">
     import { supabase } from './js/supabase.js'
@@ -105,12 +163,11 @@
     const submit   = document.getElementById('formSubmit')
     const addBtn   = document.getElementById('addBtn')
 
-    /* ── Load + render ──────────────────────────────────── */
     async function load() {
       const { data, error } = await supabase.from('bikes')
         .select('id, user_id, make, model, year, engine_cc, color, description, photo_url, created_at, profiles(username, full_name, avatar_url)')
         .order('created_at', { ascending: false })
-      if (error) { gridSk.classList.add('hidden'); grid.innerHTML = `<div class="bp-card p-6 text-bone-muted text-[13px]">Couldn’t load the registry.</div>`; return }
+      if (error) { gridSk.classList.add('hidden'); grid.innerHTML = `<div class="card card-body">Couldn’t load the registry.</div>`; return }
       state.bikes = data || []
       gridSk.classList.add('hidden')
       populateFilters()
@@ -125,26 +182,27 @@
     function cardHTML(b) {
       const prof = b.profiles || {}
       const mine = b.user_id === me.id
+      const meta = [b.year, b.engine_cc ? b.engine_cc + ' cc' : null, b.color].filter(Boolean).join(' · ')
       return `
-        <article class="bp-card overflow-hidden flex flex-col" data-bike="${esc(b.id)}">
-          <div class="relative bg-ink-700 border-b border-bronze">
+        <article class="machine-card fade-up" data-bike="${esc(b.id)}">
+          <div class="machine-card-img">
             ${b.photo_url
-              ? `<img src="${esc(b.photo_url)}" alt="" class="w-full h-56 object-cover" loading="lazy" />`
-              : `<div class="w-full h-56 flex items-center justify-center text-bone-dim"><svg width="40" height="40" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1" opacity="0.5"><circle cx="6" cy="17" r="3"/><circle cx="18" cy="17" r="3"/><path d="M9 17h6l2-7H7l-1 4M5 10h14"/></svg></div>`}
-            ${mine ? `<span class="absolute top-2 left-2 bp-badge" style="color:#c9a875;border-color:rgba(201,168,117,0.4);background:rgba(12,11,9,0.7)">Mine</span>` : ''}
+              ? `<img src="${esc(b.photo_url)}" alt="" loading="lazy" />`
+              : `<div class="machine-card-img-placeholder"><svg width="44" height="44" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1" stroke-linecap="round" stroke-linejoin="round" opacity="0.45"><circle cx="6" cy="17" r="3"/><circle cx="18" cy="17" r="3"/><path d="M9 17h6l2-7H7l-1 4M5 10h14"/></svg></div>`}
+            ${mine ? `<span class="badge badge-brass" style="position:absolute;top:12px;left:12px">Mine</span>` : ''}
           </div>
-          <div class="p-4 flex-1 flex flex-col">
-            <p class="font-serif text-bone text-[17px] leading-tight">${esc(b.make)} ${esc(b.model)}</p>
-            <p class="text-bone-dim text-[12px] tracking-[0.12em] mt-0.5">${b.year || '—'}${b.engine_cc ? ' · ' + b.engine_cc + ' cc' : ''}${b.color ? ' · ' + esc(b.color) : ''}</p>
-            ${b.description ? `<p class="text-bone-muted text-[13px] mt-3 leading-relaxed line-clamp-3">${esc(b.description)}</p>` : ''}
-            <div class="mt-auto pt-4 flex items-center justify-between">
-              <div class="flex items-center gap-2 min-w-0">
+          <div class="machine-card-body">
+            <p class="machine-card-title">${esc(b.make)} ${esc(b.model)}</p>
+            <p class="machine-card-meta">${esc(meta || '—')}</p>
+            ${b.description ? `<p class="machine-card-desc line-clamp-3">${esc(b.description)}</p>` : ''}
+            <div class="machine-card-foot">
+              <div class="row row-2 min-w-0" style="align-items:center;flex:1">
                 ${avatarHTML(prof.avatar_url, prof.full_name || prof.username, 24)}
-                <span class="text-bone-dim text-[12px] truncate">${esc(prof.full_name || prof.username || 'Rider')}</span>
+                <span class="truncate" style="font-size:12px;color:var(--c-text-3)">${esc(prof.full_name || prof.username || 'Rider')}</span>
               </div>
-              ${mine ? `<div class="flex items-center gap-1">
-                <button data-act="edit"   class="bp-btn-subtle">Edit</button>
-                <button data-act="delete" class="bp-btn-subtle text-burgundy">Delete</button>
+              ${mine ? `<div class="row row-1">
+                <button data-act="edit"   class="btn-subtle">Edit</button>
+                <button data-act="delete" class="btn-subtle" style="color:var(--c-error)">Delete</button>
               </div>` : ''}
             </div>
           </div>
@@ -181,7 +239,6 @@
       render()
     })
 
-    /* ── Form open/close/add/edit ───────────────────────── */
     addBtn.addEventListener('click', () => openForm(null))
     document.getElementById('formClose').addEventListener('click', closeForm)
     document.getElementById('formCancel').addEventListener('click', closeForm)
@@ -189,7 +246,7 @@
       formErr.classList.add('hidden')
       form.querySelectorAll('[data-err]').forEach(e => e.classList.add('hidden'))
       state.editingId = b ? b.id : null
-      formTitle.textContent = b ? 'Edit Machine' : 'A New Entry'
+      formTitle.textContent = b ? 'Edit machine' : 'A new entry'
       submit.querySelector('.btn-label').textContent = b ? 'Save changes' : 'Save machine'
       form.reset()
       if (b) {
@@ -201,6 +258,7 @@
         form.description.value = b.description || ''
       }
       formPan.classList.remove('hidden')
+      formPan.classList.add('fade-up')
       formPan.scrollIntoView({ behavior: 'smooth', block: 'start' })
     }
     function closeForm() { formPan.classList.add('hidden'); state.editingId = null }
@@ -225,7 +283,7 @@
       if (bad) return
 
       submit.disabled = true
-      submit.innerHTML = '<span class="spinner"></span><span class="btn-label">' + (state.editingId ? 'Saving' : 'Saving') + '</span>'
+      submit.innerHTML = '<span class="spinner"></span><span class="btn-label">Saving</span>'
       try {
         let photo_url = null
         if (photo && photo.size) {
@@ -259,7 +317,6 @@
       }
     })
 
-    /* ── Grid interactions ──────────────────────────────── */
     grid.addEventListener('click', async (e) => {
       const btn = e.target.closest('button[data-act]')
       if (!btn) return

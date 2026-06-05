@@ -28,27 +28,27 @@
     theme: {
       extend: {
         colors: {
-          ink:      { 950:'#0c0b09', 900:'#11100e', 850:'#15130f', 800:'#181512', 750:'#1c1915', 700:'#1e1a15', 600:'#211c18', 500:'#2a241e', 400:'#3a3129' },
-          bone:     { DEFAULT:'#f3ede3', soft:'#e8e0d2', muted:'#c7b9a2', dim:'#8a7e6a' },
-          brass:    { DEFAULT:'#b08d57', light:'#c9a875', dark:'#8a6d40', deep:'#6b5230' },
-          burgundy: { DEFAULT:'#6e2f2f', deep:'#542424' },
+          ink:      { 950:'#0c0b09', 900:'#0d0c0a', 850:'#131110', 800:'#141210', 750:'#181614', 700:'#1a1714', 600:'#201d19', 500:'#272320', 400:'#3a3129' },
+          bone:     { DEFAULT:'#f0e8d8', soft:'#e8e0d2', muted:'#a89880', dim:'#6b5c4a' },
+          brass:    { DEFAULT:'#c9a84c', light:'#e0c070', dark:'#9e7c2c', deep:'#6b5230' },
+          burgundy: { DEFAULT:'#7a2d2d', deep:'#5a1f1f' },
           leather:  '#7a4b2a',
-          bronze:   { DEFAULT:'#3a3129', light:'#4a3f34' },
+          bronze:   { DEFAULT:'rgba(255,235,195,0.14)', light:'rgba(255,235,195,0.08)' },
         },
         fontFamily: {
-          sans:  ['"Satoshi"','Inter','system-ui','sans-serif'],
-          serif: ['"Fraunces"','Georgia','serif'],
+          sans:  ['"Cabinet Grotesk"','"Satoshi"','Inter','system-ui','sans-serif'],
+          serif: ['"Cormorant Garamond"','"Fraunces"','Georgia','serif'],
         },
         boxShadow: {
-          'inner-deep': 'inset 0 1px 0 rgba(255,237,210,0.04), inset 0 0 0 1px rgba(0,0,0,0.4)',
-          'panel': '0 1px 0 rgba(255,237,210,0.03), 0 8px 24px rgba(0,0,0,0.35)',
-          'brass-glow': '0 0 0 1px rgba(176,141,87,0.4), 0 0 14px rgba(176,141,87,0.18)',
+          'inner-deep': 'inset 0 1px 0 rgba(255,235,195,0.04), inset 0 0 0 1px rgba(0,0,0,0.4)',
+          'panel': '0 1px 0 rgba(255,235,195,0.03), 0 8px 24px rgba(0,0,0,0.35)',
+          'brass-glow': '0 0 0 1px rgba(201,168,76,0.35), 0 0 14px rgba(201,168,76,0.18)',
         },
-        borderRadius: { sm:'4px', DEFAULT:'6px', md:'8px', lg:'10px', xl:'14px' },
+        borderRadius: { sm:'3px', DEFAULT:'6px', md:'6px', lg:'8px', xl:'12px' },
       },
     },
     safelist: [
-      'bg-ink-700','bg-ink-800','bg-ink-600','bg-ink-500',
+      'bg-ink-700','bg-ink-800','bg-ink-600','bg-ink-500','bg-ink-850',
       'text-bone','text-bone-muted','text-bone-dim','text-bone-soft',
       'text-brass','text-brass-light','text-burgundy','text-burgundy-deep','text-leather',
       'bg-brass','bg-brass/10','bg-burgundy','bg-burgundy/15','bg-leather',
@@ -108,11 +108,10 @@
     if (!host) {
       host = document.createElement('div')
       host.id = 'bp-toast-host'
-      host.className = 'fixed top-16 right-4 z-[80] flex flex-col gap-2 pointer-events-none'
       document.body.appendChild(host)
     }
     const el = document.createElement('div')
-    el.className = `pointer-events-auto px-4 py-2.5 rounded-md border text-[13px] font-sans shadow-panel backdrop-blur-sm ${t === 'error' ? 'bg-burgundy-deep/95 border-burgundy text-bone' : 'bg-ink-700/95 border-brass/40 text-bone'}`
+    el.className = t === 'error' ? 'toast-error' : ''
     el.textContent = msg
     el.style.opacity = '0'
     el.style.transform = 'translateY(-4px)'
@@ -123,20 +122,20 @@
       el.style.opacity = '0'
       el.style.transform = 'translateY(-4px)'
       setTimeout(() => el.remove(), 240)
-    }, 2600)
+    }, 2800)
   }
 
   bp.confirm = (message, title) => {
     return new Promise((resolve) => {
       const overlay = document.createElement('div')
-      overlay.className = 'fixed inset-0 z-[90] flex items-center justify-center bg-black/70 backdrop-blur-sm p-4'
+      overlay.className = 'bp-modal-overlay'
       overlay.innerHTML = `
-        <div class="bp-card max-w-sm w-full p-6 shadow-panel">
-          <h3 class="font-serif text-[17px] text-bone">${bp.esc(title || 'Are you sure?')}</h3>
-          <p class="text-bone-muted text-[13px] mt-2 leading-relaxed">${bp.esc(message)}</p>
-          <div class="flex justify-end gap-2 mt-5">
-            <button data-act="cancel" class="bp-btn bp-btn-ghost">Cancel</button>
-            <button data-act="ok" class="bp-btn bp-btn-danger">Confirm</button>
+        <div class="bp-modal-card" role="dialog" aria-modal="true">
+          <h3>${bp.esc(title || 'Are you sure?')}</h3>
+          <p>${bp.esc(message)}</p>
+          <div class="row row-end gap-3 mt-7">
+            <button data-act="cancel" class="btn btn-ghost btn-sm">Cancel</button>
+            <button data-act="ok" class="btn btn-danger btn-sm">Confirm</button>
           </div>
         </div>`
       document.body.appendChild(overlay)
@@ -237,74 +236,111 @@
   /* ── 4. Navbar ──────────────────────────────────────────── */
   const NAV = [
     { key: 'feed',            label: 'Feed',        href: '/feed.html' },
-    { key: 'bikes',           label: 'Bikes',       href: '/bikes.html' },
-    { key: 'trips',           label: 'Trips',       href: '/trips.html' },
+    { key: 'bikes',           label: 'Machines',    href: '/bikes.html' },
+    { key: 'trips',           label: 'Routes',      href: '/trips.html' },
     { key: 'recommendations', label: 'Concierge',   href: '/recommendations.html' },
   ]
 
   function navLinkHTML(item, active) {
     const on = item.key === active
-    return `<a href="${item.href}" class="relative inline-flex items-center px-1 h-14 text-[13px] tracking-[0.06em] transition-colors ${on ? 'text-bone' : 'text-bone-muted hover:text-bone'}">
-      <span>${item.label}</span>
-      <span class="absolute left-0 right-0 bottom-0 h-px ${on ? 'bg-brass' : 'bg-transparent'}"></span>
-    </a>`
+    return `<a href="${item.href}" class="nav-link ${on ? 'is-active' : ''}">${item.label}</a>`
   }
   function mobileLinkHTML(item, active) {
     const on = item.key === active
-    return `<a href="${item.href}" class="block px-3 py-2.5 rounded text-[13.5px] ${on ? 'text-bone bg-ink-700 border-l-2 border-brass' : 'text-bone-muted hover:text-bone hover:bg-ink-800'}">${item.label}</a>`
+    return `<a href="${item.href}" class="nav-link ${on ? 'is-active' : ''}">${item.label}</a>`
   }
+
+  const LOGO_SVG = `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 48 48" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+    <circle cx="24" cy="24" r="22" stroke-width="1.6"/>
+    <circle cx="24" cy="24" r="18.4" stroke-width="0.5" stroke-opacity="0.45"/>
+    <g stroke-width="0.9" stroke-opacity="0.45">
+      <line x1="24" y1="5.6" x2="24" y2="42.4"/>
+      <line x1="5.6" y1="24" x2="42.4" y2="24"/>
+      <line x1="10.6" y1="10.6" x2="37.4" y2="37.4"/>
+      <line x1="37.4" y1="10.6" x2="10.6" y2="37.4"/>
+    </g>
+    <circle cx="24" cy="24" r="9" stroke-width="1.1"/>
+    <text x="24" y="28.5" text-anchor="middle" font-family="Cormorant Garamond, Georgia, serif" font-size="12.5" font-weight="600" fill="currentColor" stroke="none" letter-spacing="0.4">BP</text>
+  </svg>`
 
   function renderNavbarSkeleton(active) {
     const host = document.getElementById('bp-navbar')
     if (!host) return
-    host.className = 'sticky top-0 z-50 bg-ink-900/85 backdrop-blur-sm border-b border-bronze'
+    host.className = 'navbar'
     host.setAttribute('data-active', active || '')
     host.innerHTML = `
-      <div class="max-w-6xl mx-auto px-4 h-14 flex items-center justify-between">
-        <a href="/feed.html" class="flex items-center gap-2.5 group" aria-label="Bikers Portal — home">
-          <img src="/assets/logo.svg" alt="Bikers Portal" class="h-7 w-auto opacity-95 group-hover:opacity-100" />
-        </a>
-        <nav class="hidden md:flex items-center gap-7">${NAV.map((i) => navLinkHTML(i, active)).join('')}</nav>
-        <div class="flex items-center gap-2">
-          <a href="/profile.html" class="hidden md:inline text-[12.5px] text-bone-muted hover:text-bone"></a>
-          <div class="relative">
-            <button id="bp-avatar-btn" class="rounded-full focus:outline-none focus-visible:shadow-brass-glow" aria-haspopup="menu" aria-expanded="false" aria-label="Account menu">
-              <span class="skeleton rounded-full inline-block" style="width:36px;height:36px"></span>
-            </button>
-            <div id="bp-avatar-menu" class="hidden absolute right-0 mt-2 w-48 bp-card p-1.5 shadow-panel">
-              <a href="/profile.html" class="block px-3 py-2 rounded text-[13px] text-bone-muted hover:text-bone hover:bg-ink-700">Profile</a>
-              <button id="bp-logout" class="w-full text-left px-3 py-2 rounded text-[13px] text-bone-muted hover:text-bone hover:bg-ink-700">Sign out</button>
+      <div class="page-wide">
+        <div class="navbar-inner">
+          <a href="/feed.html" class="navbar-brand" aria-label="Bikers Portal — home">
+            <span class="brand-icon">${LOGO_SVG}</span>
+            <span class="brand-word">
+              <strong>Bikers Portal</strong>
+              <em>Riding Society</em>
+            </span>
+          </a>
+          <nav class="navbar-nav" aria-label="Primary">${NAV.map((i) => navLinkHTML(i, active)).join('')}</nav>
+          <div class="navbar-actions">
+            <div class="relative">
+              <button id="bp-avatar-btn" class="nav-avatar" aria-haspopup="menu" aria-expanded="false" aria-label="Account menu">
+                <span class="skeleton avatar" style="width:36px;height:36px"></span>
+              </button>
+              <div id="bp-avatar-menu" class="hidden user-menu">
+                <div class="user-menu-header">
+                  <div class="user-menu-name" id="bp-menu-name">Rider</div>
+                  <div class="user-menu-handle" id="bp-menu-handle">@rider</div>
+                </div>
+                <a href="/profile.html" class="user-menu-item">View profile</a>
+                <a href="/bikes.html" class="user-menu-item">My machines</a>
+                <a href="/trips.html" class="user-menu-item">My routes</a>
+                <div class="user-menu-divider"></div>
+                <button id="bp-logout" class="user-menu-item" style="color:var(--c-error)">Sign out</button>
+              </div>
             </div>
+            <button id="bp-burger" class="nav-burger" aria-label="Toggle menu" aria-expanded="false">
+              <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"><path d="M3 6h18M3 12h18M3 18h18"/></svg>
+            </button>
           </div>
-          <button id="bp-burger" class="md:hidden p-2 -mr-2 text-bone-muted hover:text-bone" aria-label="Toggle menu">
-            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"><path d="M3 6h18M3 12h18M3 18h18"/></svg>
-          </button>
         </div>
       </div>
-      <div id="bp-mobile-menu" class="md:hidden hidden border-t border-bronze bg-ink-900/95">
-        <nav class="px-3 py-3 flex flex-col gap-1">${NAV.map((i) => mobileLinkHTML(i, active)).join('')}</nav>
+      <div id="bp-mobile-menu" class="navbar-mobile">
+        <nav aria-label="Primary mobile">${NAV.map((i) => mobileLinkHTML(i, active)).join('')}</nav>
+        <div class="mobile-actions" style="padding:0 var(--r-page-pad)">
+          <a href="/profile.html" class="nav-link">Profile</a>
+        </div>
       </div>`
 
     // burger
     const burger = document.getElementById('bp-burger')
     const mobile = document.getElementById('bp-mobile-menu')
-    if (burger && mobile) burger.addEventListener('click', () => mobile.classList.toggle('hidden'))
+    if (burger && mobile) burger.addEventListener('click', () => {
+      const open = mobile.classList.toggle('is-open')
+      burger.setAttribute('aria-expanded', String(open))
+    })
+
+    // scroll shadow
+    const scroller = () => host.classList.toggle('is-scrolled', window.scrollY > 8)
+    scroller()
+    window.addEventListener('scroll', scroller, { passive: true })
   }
 
   function renderNavbarFill(profile) {
     const btn   = document.getElementById('bp-avatar-btn')
     const menu  = document.getElementById('bp-avatar-menu')
-    const nameA = document.querySelector('#bp-navbar a[href="/profile.html"]')
     if (!btn || !menu) return
 
     const name  = (profile && (profile.full_name || profile.username)) || 'Rider'
+    const handle = profile && profile.username ? '@' + profile.username : '@rider'
     btn.innerHTML = bp.avatarHTML(profile && profile.avatar_url, name, 36)
-    if (nameA) nameA.textContent = name
+
+    const nameEl = document.getElementById('bp-menu-name')
+    const handleEl = document.getElementById('bp-menu-handle')
+    if (nameEl) nameEl.textContent = name
+    if (handleEl) handleEl.textContent = handle
 
     btn.addEventListener('click', (e) => {
       e.stopPropagation()
-      const open = menu.classList.toggle('hidden')
-      btn.setAttribute('aria-expanded', String(!open))
+      const hidden = menu.classList.toggle('hidden')
+      btn.setAttribute('aria-expanded', String(!hidden))
     })
     document.addEventListener('click', (e) => {
       if (!menu.contains(e.target) && e.target !== btn && !btn.contains(e.target)) {
@@ -313,7 +349,12 @@
       }
     })
     document.addEventListener('keydown', (e) => {
-      if (e.key === 'Escape') { menu.classList.add('hidden'); btn.setAttribute('aria-expanded', 'false') }
+      if (e.key === 'Escape') {
+        menu.classList.add('hidden')
+        btn.setAttribute('aria-expanded', 'false')
+        const m = document.getElementById('bp-mobile-menu')
+        if (m) { m.classList.remove('is-open'); document.getElementById('bp-burger')?.setAttribute('aria-expanded','false') }
+      }
     })
     const logout = document.getElementById('bp-logout')
     if (logout) logout.addEventListener('click', async () => {
