@@ -3,27 +3,478 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Trip Planning | Bikers Portal</title>
+  <meta name="description" content="Plan and remember the long roads — a gentleman explorer's ledger." />
+  <title>Trips · Bikers Portal</title>
+
   <script src="https://cdn.tailwindcss.com"></script>
+  <script>
+    tailwind.config = {
+      theme: {
+        extend: {
+          colors: {
+            ink:   { 950: '#0d0c0a', 900: '#11100e', 800: '#181512', 700: '#211c18' },
+            bone:  { 100: '#f3ede3', 200: '#e8e0d2', 300: '#c7b9a2', 400: '#8a7d68' },
+            brass: { 400: '#c89e69', 500: '#b08d57', 600: '#8a6a3d' }
+          },
+          fontFamily: {
+            display: ['"Cormorant Garamond"', 'Georgia', 'serif'],
+            sans:    ['Satoshi', 'Inter', 'sans-serif']
+          }
+        }
+      }
+    }
+  </script>
   <link rel="stylesheet" href="./assets/style.css" />
 </head>
-<body class="bg-zinc-950 text-zinc-100 min-h-screen font-sans antialiased">
+<body>
 
   <script type="module" src="./js/auth-guard.js"></script>
 
-  <!-- ░░ NAVBAR (protected pages only) ░░ -->
-  <!-- TODO: sticky nav with logo, page links, avatar dropdown -->
+  <main>
+    <div class="page-head">
+      <p class="eyebrow">The Ledger</p>
+      <h1 class="font-display">Plan the next long road with intention.</h1>
+      <p class="lede">Routes are promises to the road. Sketch them, save them, share only the ones that deserve it.</p>
+    </div>
 
-  <!-- ░░ MAIN CONTENT ░░ -->
-  <main class="container mx-auto px-4 py-8 max-w-5xl">
-    <h1 class="text-xl font-bold text-zinc-100">Trip Planning</h1>
-    <p class="text-zinc-500 mt-1 text-sm">🚧 Page under construction</p>
-    <!-- TODO: Trip Planning page content -->
+    <div class="trips-grid">
+
+      <!-- ░░ LEFT: FORM + LISTS ░░ -->
+      <div>
+        <!-- Form -->
+        <section class="trip-form" id="formCard">
+          <div class="flex items-center justify-between mb-4">
+            <p class="label-engraved" id="formTitle">A New Route</p>
+            <button class="btn btn-ghost btn-sm" id="cancelEditBtn" type="button" style="display:none">Cancel</button>
+          </div>
+
+          <form id="tripForm" novalidate>
+            <input type="hidden" id="editId" />
+            <div class="stack gap-4">
+              <div class="field">
+                <label class="field-label" for="title">Title</label>
+                <input id="title" class="input" placeholder="Spiti Valley, October" required />
+                <div class="msg-error" data-error-for="title"></div>
+              </div>
+              <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                <div class="field">
+                  <label class="field-label" for="start_loc">Start</label>
+                  <input id="start_loc" class="input" placeholder="Manali" required />
+                  <div class="msg-error" data-error-for="start_loc"></div>
+                </div>
+                <div class="field">
+                  <label class="field-label" for="end_loc">End</label>
+                  <input id="end_loc" class="input" placeholder="Kaza" required />
+                  <div class="msg-error" data-error-for="end_loc"></div>
+                </div>
+              </div>
+
+              <div class="field">
+                <label class="field-label">Waypoints</label>
+                <div id="waypointsList"></div>
+                <button type="button" class="add-waypoint" id="addWaypointBtn">＋ Add Waypoint</button>
+              </div>
+
+              <div class="grid grid-cols-1 sm:grid-cols-3 gap-4">
+                <div class="field">
+                  <label class="field-label" for="trip_date">Date</label>
+                  <input id="trip_date" type="date" class="input" />
+                </div>
+                <div class="field">
+                  <label class="field-label" for="distance_km">Distance (km)</label>
+                  <input id="distance_km" type="number" min="0" step="0.1" class="input" placeholder="220" />
+                </div>
+                <div class="field">
+                  <label class="field-label" for="difficulty">Difficulty</label>
+                  <select id="difficulty" class="select">
+                    <option value="Easy">Easy</option>
+                    <option value="Medium" selected>Medium</option>
+                    <option value="Hard">Hard</option>
+                  </select>
+                </div>
+              </div>
+
+              <div class="field">
+                <label class="field-label" for="notes">Notes</label>
+                <textarea id="notes" class="textarea" placeholder="Fuel stops, weather, companions, hotel of choice…" style="min-height:90px"></textarea>
+              </div>
+
+              <label class="checkbox-field">
+                <input id="is_public" type="checkbox" />
+                <span>Share this route with the community</span>
+              </label>
+
+              <div class="flex items-center justify-end gap-2 mt-2">
+                <button type="submit" class="btn btn-primary btn-sm" id="saveBtn">
+                  <span class="label">Save Route</span>
+                </button>
+              </div>
+            </div>
+          </form>
+        </section>
+
+        <!-- My Trips -->
+        <div class="mt-8">
+          <div class="trip-section-head">
+            <h3 class="font-display" style="font-size:1.25rem">My Routes</h3>
+            <span class="label-engraved" id="myCount">0</span>
+          </div>
+          <div id="myTrips">
+            <div class="skeleton" style="height:72px;margin-bottom:0.5rem"></div>
+            <div class="skeleton" style="height:72px;margin-bottom:0.5rem"></div>
+          </div>
+        </div>
+
+        <!-- Community Trips -->
+        <div class="mt-8">
+          <div class="trip-section-head">
+            <h3 class="font-display" style="font-size:1.25rem">From the Community</h3>
+            <button class="btn-link" id="loadMoreBtn" type="button" style="display:none">Load more</button>
+          </div>
+          <div id="communityTrips">
+            <div class="skeleton" style="height:72px;margin-bottom:0.5rem"></div>
+            <div class="skeleton" style="height:72px;margin-bottom:0.5rem"></div>
+          </div>
+        </div>
+      </div>
+
+      <!-- ░░ RIGHT: MAP BOARD PLACEHOLDER ░░ -->
+      <aside>
+        <div class="map-board">
+          <div class="map-board-head">
+            <p class="label-engraved">Route Cartography</p>
+            <span class="text-xs text-faint">v.next</span>
+          </div>
+          <div class="map-board-canvas" aria-hidden="true">
+            <!-- decorative compass / coordinates -->
+            <svg viewBox="0 0 200 250" style="position:absolute;inset:0;width:100%;height:100%;opacity:0.55">
+              <defs>
+                <pattern id="grid" width="20" height="20" patternUnits="userSpaceOnUse">
+                  <path d="M 20 0 L 0 0 0 20" fill="none" stroke="#3a3129" stroke-width="0.3" />
+                </pattern>
+              </defs>
+              <rect width="100%" height="100%" fill="url(#grid)"/>
+              <!-- compass rose -->
+              <g transform="translate(100 125)" stroke="#b08d57" fill="none" stroke-width="0.8">
+                <circle r="40" opacity="0.4"/>
+                <circle r="30" opacity="0.3"/>
+                <circle r="3" fill="#b08d57" stroke="none"/>
+                <line x1="-50" y1="0" x2="-12" y2="0"/>
+                <line x1="12"  y1="0" x2="50"  y2="0"/>
+                <line x1="0" y1="-50" x2="0" y2="-12"/>
+                <line x1="0" y1="12"  x2="0" y2="50"/>
+                <text x="0" y="-44" text-anchor="middle" fill="#b08d57" font-family="serif" font-size="9" stroke="none">N</text>
+                <text x="0" y="50"  text-anchor="middle" fill="#b08d57" font-family="serif" font-size="9" stroke="none">S</text>
+                <text x="48" y="3" text-anchor="middle" fill="#b08d57" font-family="serif" font-size="9" stroke="none">E</text>
+                <text x="-48" y="3" text-anchor="middle" fill="#b08d57" font-family="serif" font-size="9" stroke="none">W</text>
+              </g>
+              <!-- route sketch -->
+              <path d="M 30 200 Q 80 140 100 130 T 170 60"
+                    fill="none" stroke="#b08d57" stroke-width="1.2" stroke-dasharray="4 3" opacity="0.7"/>
+              <circle cx="30"  cy="200" r="3" fill="#b08d57"/>
+              <circle cx="170" cy="60"  r="3" fill="#b08d57"/>
+              <!-- coordinate text -->
+              <text x="14"  y="220" fill="#8a7d68" font-family="monospace" font-size="7" opacity="0.7">32.2396° N</text>
+              <text x="148" y="50"  fill="#8a7d68" font-family="monospace" font-size="7" opacity="0.7">77.1887° E</text>
+            </svg>
+          </div>
+          <div class="map-board-foot">Route cartography arrives in the next build.</div>
+        </div>
+      </aside>
+    </div>
   </main>
 
+  <div class="notice" id="notice" role="status" aria-live="polite"></div>
+
   <script type="module">
-    import { supabase } from './js/supabase.js'
-    // TODO: Trip Planning logic
+    import { supabase } from './js/api.js'
+
+    let user = null
+    try {
+      const r = await supabase.auth.getUser()
+      user = r?.data?.user || null
+    } catch (err) { console.warn('[trips] user check failed:', err) }
+    if (!user) window.location.replace('/index.html')
+
+    let myTrips = []
+    let communityTrips = []
+    let communityOffset = 0
+    const COMMUNITY_PAGE = 8
+    let editingId = null
+
+    init()
+    async function init() {
+      bindForm()
+      await Promise.all([ loadMyTrips(), loadCommunityTrips(true) ])
+    }
+
+    // ── My Trips ────────────────────────────────────────
+    async function loadMyTrips() {
+      const el = document.getElementById('myTrips')
+      const { data, error } = await supabase
+        .from('trips')
+        .select('*')
+        .eq('user_id', user.id)
+        .order('trip_date', { ascending: false, nullsFirst: false })
+        .order('created_at', { ascending: false })
+      if (error) {
+        el.innerHTML = `<div class="banner banner-error">${escapeHtml(error.message)}</div>`
+        return
+      }
+      myTrips = data || []
+      document.getElementById('myCount').textContent = String(myTrips.length)
+      renderMyTrips()
+    }
+    function renderMyTrips() {
+      const el = document.getElementById('myTrips')
+      if (myTrips.length === 0) {
+        el.innerHTML = emptyState('No routes planned yet.', 'Every long road begins as an intention.')
+        return
+      }
+      el.innerHTML = myTrips.map(renderTripCard).join('')
+      el.querySelectorAll('[data-act]').forEach(b => {
+        b.addEventListener('click', (e) => {
+          e.stopPropagation()
+          const card = b.closest('.trip-card')
+          const id = card.dataset.tripId
+          if (b.dataset.act === 'edit')   return openEdit(id)
+          if (b.dataset.act === 'delete') return deleteTrip(id, card)
+        })
+      })
+    }
+
+    // ── Community Trips ──────────────────────────────────
+    async function loadCommunityTrips(reset) {
+      if (reset) {
+        communityOffset = 0
+        communityTrips = []
+      }
+      const el = document.getElementById('communityTrips')
+      const { data, error } = await supabase
+        .from('trips')
+        .select(`
+          id, title, start_loc, end_loc, trip_date, distance_km, difficulty, created_at,
+          profiles ( username, full_name )
+        `)
+        .eq('is_public', true)
+        .neq('user_id', user.id)
+        .order('created_at', { ascending: false })
+        .range(communityOffset, communityOffset + COMMUNITY_PAGE - 1)
+      if (error) {
+        el.innerHTML = `<div class="banner banner-error">${escapeHtml(error.message)}</div>`
+        return
+      }
+      const list = data || []
+      communityTrips = communityTrips.concat(list)
+      communityOffset += list.length
+      renderCommunity()
+      const more = document.getElementById('loadMoreBtn')
+      more.style.display = list.length < COMMUNITY_PAGE ? 'none' : 'inline-flex'
+    }
+    function renderCommunity() {
+      const el = document.getElementById('communityTrips')
+      if (communityTrips.length === 0) {
+        el.innerHTML = emptyState('No public routes yet.', 'Be the first to share a worthy road.')
+        return
+      }
+      el.innerHTML = communityTrips.map(t => renderTripCard(t, true)).join('')
+    }
+    document.getElementById('loadMoreBtn').addEventListener('click', () => loadCommunityTrips(false))
+
+    // ── Trip card ───────────────────────────────────────
+    function renderTripCard(t, isCommunity = false) {
+      const isMine = t.user_id === user.id
+      const profile = Array.isArray(t.profiles) ? t.profiles[0] : t.profiles
+      const diff = (t.difficulty || 'Medium').toLowerCase()
+      const diffCls = diff === 'easy' ? 'badge-easy' : diff === 'hard' ? 'badge-hard' : 'badge-medium'
+      const date = t.trip_date
+        ? new Date(t.trip_date).toLocaleDateString(undefined, { day:'2-digit', month:'short', year:'numeric' })
+        : '—'
+      const ownerLine = isCommunity && profile
+        ? `<span class="meta"><strong>${escapeHtml(profile.full_name || 'Rider')}</strong></span>`
+        : ''
+
+      return `
+        <div class="trip-card" data-trip-id="${t.id}" data-user-id="${t.user_id || ''}">
+          <div class="glyph">${t.distance_km ? Math.round(t.distance_km) : '—'}<br><span style="font-size:0.55rem;letter-spacing:0.1em">KM</span></div>
+          <div class="info">
+            <div class="title">${escapeHtml(t.title || 'Untitled route')}</div>
+            <div class="route">
+              <span>${escapeHtml(t.start_loc || '—')}</span>
+              <span style="color:var(--brass)">→</span>
+              <span>${escapeHtml(t.end_loc || '—')}</span>
+            </div>
+            <div class="meta">
+              <span>${date}</span>
+              <span class="badge ${diffCls}">${escapeHtml(t.difficulty || 'Medium')}</span>
+              ${ownerLine}
+            </div>
+          </div>
+          ${isMine ? `
+            <div class="stack gap-2" style="flex-shrink:0">
+              <button class="btn btn-ghost btn-sm" data-act="edit">Edit</button>
+              <button class="btn btn-burgundy btn-sm" data-act="delete">Remove</button>
+            </div>
+          ` : ''}
+        </div>
+      `
+    }
+
+    // ── Form ────────────────────────────────────────────
+    function bindForm() {
+      const form = document.getElementById('tripForm')
+      form.addEventListener('submit', onSubmit)
+      document.getElementById('cancelEditBtn').addEventListener('click', cancelEdit)
+      document.getElementById('addWaypointBtn').addEventListener('click', () => addWaypointRow())
+      // Start with one empty waypoint row
+      addWaypointRow()
+    }
+
+    function addWaypointRow(value = '') {
+      const list = document.getElementById('waypointsList')
+      const row = document.createElement('div')
+      row.className = 'waypoint-row'
+      row.innerHTML = `
+        <input class="input" type="text" placeholder="e.g. Rohtang Pass" value="${escapeAttr(value)}" />
+        <button type="button" class="remove-waypoint" aria-label="Remove waypoint">×</button>
+      `
+      row.querySelector('.remove-waypoint').addEventListener('click', () => {
+        if (list.children.length > 1) row.remove()
+        else { row.querySelector('input').value = '' }
+      })
+      list.appendChild(row)
+    }
+
+    function readWaypoints() {
+      return [...document.querySelectorAll('#waypointsList input')]
+        .map(i => i.value.trim())
+        .filter(Boolean)
+    }
+
+    function setWaypoints(list) {
+      const wrap = document.getElementById('waypointsList')
+      wrap.innerHTML = ''
+      const arr = Array.isArray(list) ? list : []
+      if (arr.length === 0) addWaypointRow()
+      else arr.forEach(v => addWaypointRow(v))
+    }
+
+    function openEdit(id) {
+      const t = myTrips.find(x => x.id === id)
+      if (!t) return
+      editingId = id
+      document.getElementById('formTitle').textContent = 'Edit Route'
+      document.getElementById('cancelEditBtn').style.display = 'inline-flex'
+      document.getElementById('editId').value = id
+      document.getElementById('title').value       = t.title || ''
+      document.getElementById('start_loc').value   = t.start_loc || ''
+      document.getElementById('end_loc').value     = t.end_loc || ''
+      document.getElementById('trip_date').value   = t.trip_date || ''
+      document.getElementById('distance_km').value = t.distance_km || ''
+      document.getElementById('difficulty').value  = t.difficulty || 'Medium'
+      document.getElementById('notes').value       = t.notes || ''
+      document.getElementById('is_public').checked = !!t.is_public
+      setWaypoints(t.waypoints)
+      document.getElementById('formCard').scrollIntoView({ behavior:'smooth', block:'start' })
+    }
+
+    function cancelEdit() {
+      editingId = null
+      document.getElementById('formTitle').textContent = 'A New Route'
+      document.getElementById('cancelEditBtn').style.display = 'none'
+      document.getElementById('editId').value = ''
+      document.getElementById('tripForm').reset()
+      setWaypoints([])
+    }
+
+    async function onSubmit(e) {
+      e.preventDefault()
+      document.querySelectorAll('[data-error-for]').forEach(el => el.textContent = '')
+
+      const title     = document.getElementById('title').value.trim()
+      const start_loc = document.getElementById('start_loc').value.trim()
+      const end_loc   = document.getElementById('end_loc').value.trim()
+      const trip_date = document.getElementById('trip_date').value || null
+      const distance  = parseFloat(document.getElementById('distance_km').value) || null
+      const difficulty= document.getElementById('difficulty').value
+      const notes     = document.getElementById('notes').value.trim() || null
+      const is_public = document.getElementById('is_public').checked
+      const waypoints = readWaypoints()
+
+      let ok = true
+      if (!title)     { setErr('title', 'Title is required.'); ok = false }
+      if (!start_loc) { setErr('start_loc', 'Start location is required.'); ok = false }
+      if (!end_loc)   { setErr('end_loc', 'End location is required.'); ok = false }
+      if (!ok) return
+
+      const btn = document.getElementById('saveBtn')
+      btn.disabled = true
+      btn.setAttribute('aria-busy', 'true')
+      btn.innerHTML = '<span class="spinner"></span> Saving…'
+
+      const row = {
+        user_id: user.id, title, start_loc, end_loc, waypoints,
+        trip_date, distance_km: distance, difficulty, notes, is_public
+      }
+
+      try {
+        if (editingId) {
+          const { error } = await supabase.from('trips').update(row).eq('id', editingId)
+          if (error) throw error
+          notify('Route updated.')
+        } else {
+          const { error } = await supabase.from('trips').insert(row)
+          if (error) throw error
+          notify('Route saved to the ledger.')
+        }
+        cancelEdit()
+        await loadMyTrips()
+      } catch (e2) {
+        notify(e2.message || 'Could not save that route.', true)
+      } finally {
+        btn.disabled = false
+        btn.removeAttribute('aria-busy')
+        btn.innerHTML = '<span class="label">Save Route</span>'
+      }
+    }
+
+    async function deleteTrip(id, card) {
+      const ok = await window.bpAsk('Remove this route from the ledger? It cannot be undone.', {
+        title: 'Remove route?',
+        confirmText: 'Remove',
+        danger: true
+      })
+      if (!ok) return
+      const { error } = await supabase.from('trips').delete().eq('id', id).eq('user_id', user.id)
+      if (error) return notify('Could not remove that route.', true)
+      card.style.transition = 'opacity 200ms, transform 200ms'
+      card.style.opacity = '0'
+      card.style.transform = 'translateY(-4px)'
+      setTimeout(() => loadMyTrips(), 220)
+      notify('Route removed.')
+    }
+
+    // ── States / helpers ────────────────────────────────
+    function emptyState(title, sub) {
+      return `<div class="empty">
+        <p class="empty-title">${escapeHtml(title)}</p>
+        <p class="empty-sub">${escapeHtml(sub)}</p>
+      </div>`
+    }
+    function setErr(name, msg) {
+      const el = document.querySelector(`[data-error-for="${name}"]`)
+      if (el) el.textContent = msg
+    }
+    function escapeHtml(s){ return String(s ?? '').replace(/[&<>"']/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c])) }
+    function escapeAttr(s){ return escapeHtml(s) }
+    function notify(msg, isError = false) {
+      const el = document.getElementById('notice')
+      el.textContent = msg
+      el.classList.toggle('error', isError)
+      el.classList.add('show')
+      clearTimeout(notify._t)
+      notify._t = setTimeout(() => el.classList.remove('show'), 2400)
+    }
   </script>
 
 </body>

@@ -1,11 +1,7 @@
-[build]
-  functions = "netlify/functions"
-
-[[redirects]]
-  from   = "/*"
-  to     = "/index.html"
-  status = 200
-
+# Netlify config is kept as a reference for static hosting.
+# The app now runs from the Express server in `server/index.js`.
+# If you redeploy to Netlify, set this folder as the publish target and
+# drop the [[functions]] / `functions = "netlify/functions"` line.
 [[headers]]
   for = "/*"
   [headers.values]

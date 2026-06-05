@@ -3,27 +3,380 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Recommendations | Bikers Portal</title>
+  <meta name="description" content="Refined route suggestions based on your appetite for distance, terrain, and temperament." />
+  <title>Concierge · Bikers Portal</title>
+
   <script src="https://cdn.tailwindcss.com"></script>
+  <script>
+    tailwind.config = {
+      theme: {
+        extend: {
+          colors: {
+            ink:   { 950: '#0d0c0a', 900: '#11100e', 800: '#181512', 700: '#211c18' },
+            bone:  { 100: '#f3ede3', 200: '#e8e0d2', 300: '#c7b9a2', 400: '#8a7d68' },
+            brass: { 400: '#c89e69', 500: '#b08d57', 600: '#8a6a3d' }
+          },
+          fontFamily: {
+            display: ['"Cormorant Garamond"', 'Georgia', 'serif'],
+            sans:    ['Satoshi', 'Inter', 'sans-serif']
+          }
+        }
+      }
+    }
+  </script>
   <link rel="stylesheet" href="./assets/style.css" />
 </head>
-<body class="bg-zinc-950 text-zinc-100 min-h-screen font-sans antialiased">
+<body>
 
   <script type="module" src="./js/auth-guard.js"></script>
 
-  <!-- ░░ NAVBAR (protected pages only) ░░ -->
-  <!-- TODO: sticky nav with logo, page links, avatar dropdown -->
+  <main>
+    <div class="page-head" style="text-align:center;padding-top:3rem;padding-bottom:1.25rem">
+      <p class="eyebrow">Road Concierge</p>
+      <h1 class="font-display" style="margin:0 auto">Curated suggestions, with discretion.</h1>
+      <p class="lede" style="margin:0.75rem auto 0">Refined route recommendations based on your appetite for distance, terrain, and temperament. Three options per enquiry — never more.</p>
+    </div>
 
-  <!-- ░░ MAIN CONTENT ░░ -->
-  <main class="container mx-auto px-4 py-8 max-w-5xl">
-    <h1 class="text-xl font-bold text-zinc-100">Recommendations</h1>
-    <p class="text-zinc-500 mt-1 text-sm">🚧 Page under construction</p>
-    <!-- TODO: Recommendations page content -->
+    <div class="rec-wrap">
+
+      <!-- ░░ FORM ░░ -->
+      <section class="rec-form">
+        <form id="recForm" novalidate>
+          <div class="grid grid-cols-1 md:grid-cols-2 gap-5">
+            <div class="field">
+              <label class="field-label" for="riderLevel">Rider Level</label>
+              <select id="riderLevel" class="select">
+                <option value="Beginner">Beginner</option>
+                <option value="Intermediate" selected>Intermediate</option>
+                <option value="Expert">Expert</option>
+              </select>
+            </div>
+            <div class="field">
+              <label class="field-label" for="region">Region or State</label>
+              <input id="region" class="input" placeholder="e.g. Himachal Pradesh" />
+            </div>
+            <div class="field md:col-span-2">
+              <label class="field-label">Terrain</label>
+              <div class="flex flex-wrap gap-2" id="terrainChips">
+                <button type="button" class="chip active" data-val="Highway">Highway</button>
+                <button type="button" class="chip active" data-val="Mountain">Mountain</button>
+                <button type="button" class="chip" data-val="City">City</button>
+                <button type="button" class="chip" data-val="Dirt">Dirt</button>
+                <button type="button" class="chip" data-val="Touring">Touring</button>
+                <button type="button" class="chip" data-val="Mixed">Mixed</button>
+              </div>
+            </div>
+            <div class="field md:col-span-2">
+              <label class="field-label" for="maxDistance">
+                Maximum Distance: <span class="range-readout" id="maxDistanceOut">500 km</span>
+              </label>
+              <input id="maxDistance" type="range" min="100" max="1500" step="50" value="500" />
+            </div>
+            <div class="field md:col-span-2">
+              <label class="field-label" for="mood">Appetite for the Day <span class="text-faint" style="text-transform:none;letter-spacing:0">(optional)</span></label>
+              <input id="mood" class="input" placeholder="Calm · Spirited · Long-haul · Scenic · Technical" />
+            </div>
+          </div>
+
+          <div class="flex items-center justify-end gap-2 mt-6">
+            <button type="submit" class="btn btn-primary" id="submitBtn">
+              <span class="label">Request Recommendations</span>
+            </button>
+          </div>
+        </form>
+      </section>
+
+      <div id="formError" class="banner banner-error mt-4 hidden" role="alert"></div>
+
+      <!-- ░░ RESULTS ░░ -->
+      <div id="results" class="rec-results" aria-live="polite"></div>
+    </div>
   </main>
 
+  <div class="notice" id="notice" role="status" aria-live="polite"></div>
+
   <script type="module">
-    import { supabase } from './js/supabase.js'
-    // TODO: Recommendations logic
+    import { supabase } from './js/api.js'
+
+    let user = null
+    try {
+      const r = await supabase.auth.getUser()
+      user = r?.data?.user || null
+    } catch (err) { console.warn('[recs] user check failed:', err) }
+    if (!user) window.location.replace('/index.html')
+
+    bindUI()
+
+    function bindUI() {
+      // Range readout
+      const range = document.getElementById('maxDistance')
+      const out   = document.getElementById('maxDistanceOut')
+      const sync  = () => out.textContent = `${range.value} km`
+      range.addEventListener('input', sync); sync()
+
+      // Chips
+      document.getElementById('terrainChips').addEventListener('click', (e) => {
+        const c = e.target.closest('.chip')
+        if (!c) return
+        c.classList.toggle('active')
+      })
+
+      // Submit
+      document.getElementById('recForm').addEventListener('submit', onSubmit)
+    }
+
+    function readTerrains() {
+      return [...document.querySelectorAll('#terrainChips .chip.active')].map(c => c.dataset.val)
+    }
+
+    function setLoading(loading) {
+      const btn = document.getElementById('submitBtn')
+      btn.disabled = loading
+      btn.setAttribute('aria-busy', loading ? 'true' : 'false')
+      btn.innerHTML = loading
+        ? '<span class="spinner"></span> Consulting the road…'
+        : '<span class="label">Request Recommendations</span>'
+    }
+
+    async function onSubmit(e) {
+      e.preventDefault()
+      const errEl = document.getElementById('formError')
+      errEl.classList.add('hidden'); errEl.textContent = ''
+
+      const payload = {
+        riderLevel: document.getElementById('riderLevel').value,
+        terrains:   readTerrains(),
+        maxDistance: parseInt(document.getElementById('maxDistance').value, 10),
+        region:     document.getElementById('region').value.trim() || 'India',
+        mood:       document.getElementById('mood').value.trim() || null
+      }
+      if (!payload.terrains.length) {
+        errEl.textContent = 'Choose at least one terrain.'
+        errEl.classList.remove('hidden')
+        return
+      }
+
+      setLoading(true)
+      renderSkeletons()
+
+      let data, usingFallback = false
+      try {
+        const res = await fetch('/api/ai/recommend', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify(payload)
+        })
+        if (!res.ok) throw new Error(`Request failed: ${res.status}`)
+        data = await res.json()
+        if (!data?.recommendations || !Array.isArray(data.recommendations)) {
+          throw new Error('Malformed response')
+        }
+        // Trim to 3
+        data.recommendations = data.recommendations.slice(0, 3)
+      } catch (err) {
+        usingFallback = true
+        data = { recommendations: fallbackRecommendations(payload) }
+      } finally {
+        setLoading(false)
+      }
+
+      // If less than 3, top up from fallback
+      if (data.recommendations.length < 3) {
+        const extra = fallbackRecommendations(payload).filter(
+          x => !data.recommendations.find(y => y.title === x.title)
+        )
+        data.recommendations = data.recommendations.concat(extra).slice(0, 3)
+      }
+
+      renderResults(data.recommendations, usingFallback)
+    }
+
+    // ── Rendering ───────────────────────────────────────
+    function renderSkeletons() {
+      const wrap = document.getElementById('results')
+      let out = ''
+      for (let i = 0; i < 3; i++) {
+        out += `
+          <div class="skel-card">
+            <div class="skeleton line" style="width:30%"></div>
+            <div class="skeleton line" style="width:80%;height:18px"></div>
+            <div class="skeleton line" style="width:50%"></div>
+            <div class="skeleton line" style="width:100%"></div>
+            <div class="skeleton line" style="width:90%"></div>
+            <div class="skeleton line" style="width:60%;height:32px;margin-top:1rem"></div>
+          </div>
+        `
+      }
+      wrap.innerHTML = out
+    }
+
+    function renderResults(list, usingFallback) {
+      const wrap = document.getElementById('results')
+      const notice = usingFallback
+        ? `<div class="banner banner-info" style="grid-column:1/-1;margin-bottom:0.5rem">Concierge service is temporarily unavailable. Showing house recommendations.</div>`
+        : ''
+
+      wrap.innerHTML = notice + list.map((r, i) => {
+        const idx = String(i + 1).padStart(2, '0')
+        const safeTitle = escapeHtml(r.title || 'Untitled route')
+        const safeDesc  = escapeHtml(r.description || '')
+        const diff = (r.difficulty || 'Medium').toLowerCase()
+        const diffCls = diff === 'easy' ? 'badge-easy' : diff === 'hard' ? 'badge-hard' : 'badge-medium'
+        return `
+          <article class="rec-card">
+            <p class="num">№ ${idx}</p>
+            <h3 class="title">${safeTitle}</h3>
+            <div class="meta">
+              ${r.distance_km ? `<span class="badge">${escapeHtml(r.distance_km)} km</span>` : ''}
+              ${r.difficulty ? `<span class="badge ${diffCls}">${escapeHtml(r.difficulty)}</span>` : ''}
+              ${r.terrain    ? `<span class="badge badge-brass">${escapeHtml(r.terrain)}</span>` : ''}
+            </div>
+            <p class="desc">${safeDesc}</p>
+            <button class="btn btn-ghost btn-sm" data-save='${escapeAttr(JSON.stringify(r))}'>
+              Save as Trip
+            </button>
+          </article>
+        `
+      }).join('')
+
+      wrap.querySelectorAll('[data-save]').forEach(btn => {
+        btn.addEventListener('click', () => {
+          const r = JSON.parse(btn.dataset.save)
+          saveAsTrip(r, btn)
+        })
+      })
+    }
+
+    async function saveAsTrip(r, btn) {
+      btn.disabled = true
+      btn.setAttribute('aria-busy', 'true')
+      btn.innerHTML = '<span class="spinner"></span> Saving…'
+
+      const row = {
+        user_id: user.id,
+        title: r.title || 'Suggested Route',
+        start_loc: '—',
+        end_loc:   '—',
+        waypoints: [],
+        trip_date: null,
+        distance_km: r.distance_km || null,
+        difficulty: r.difficulty || 'Medium',
+        notes: r.description || null,
+        is_public: false
+      }
+      const { error } = await supabase.from('trips').insert(row)
+      btn.disabled = false
+      btn.removeAttribute('aria-busy')
+      btn.innerHTML = 'Saved to Ledger'
+      if (error) {
+        btn.innerHTML = 'Try Again'
+        return notify(error.message, true)
+      }
+      notify('Route saved to your ledger.')
+    }
+
+    // ── Fallback house recommendations ───────────────────
+    function fallbackRecommendations(p) {
+      const list = [
+        {
+          title: 'Manali to Spiti — The High Pass Run',
+          distance_km: 220,
+          difficulty: 'Hard',
+          terrain: 'Mountain',
+          description: 'A two-day climb through Rohtang and Kunzum, with cold desert light, thin air, and roads that demand patience.'
+        },
+        {
+          title: 'Mumbai to Mahabaleshwar — Western Ghats Dawn Run',
+          distance_km: 250,
+          difficulty: 'Medium',
+          terrain: 'Mountain',
+          description: 'An early-morning sweep through mist and switchbacks, finished in a colonial hill station with excellent chai.'
+        },
+        {
+          title: 'Bangalore to Coorg — The Plantation Bends',
+          distance_km: 260,
+          difficulty: 'Medium',
+          terrain: 'Mixed',
+          description: 'Coffee country roads with flowing corners, sudden rain, and the smell of wet earth on warm tarmac.'
+        },
+        {
+          title: 'Delhi to Jaipur — The Heritage Express',
+          distance_km: 280,
+          difficulty: 'Easy',
+          terrain: 'Highway',
+          description: 'A composed six-hour ride on good tarmac, ending at the gates of the Pink City for a long lunch and longer stories.'
+        },
+        {
+          title: 'Leh — Khardung La Disposition',
+          distance_km: 120,
+          difficulty: 'Hard',
+          terrain: 'Mountain',
+          description: 'A short, sharp climb to one of the highest motorable passes in the world. Acclimatise first. Carry water. Carry patience.'
+        },
+        {
+          title: 'Pondicherry Coast — Slow Salt Run',
+          distance_km: 160,
+          difficulty: 'Easy',
+          terrain: 'Highway',
+          description: 'A relaxed coastal traverse past Auroville, with the Bay of Bengal to your right and unhurried French quarter dinners to your left.'
+        },
+        {
+          title: 'Rann of Kutch — The White Salt Pilgrimage',
+          distance_km: 380,
+          difficulty: 'Medium',
+          terrain: 'Dirt',
+          description: 'Long flat horizons, white earth, and a quiet that asks you to ride slowly. Best in winter, on a machine you trust.'
+        },
+        {
+          title: 'Kerala Spice Trail — The Western Ghat Garden Run',
+          distance_km: 320,
+          difficulty: 'Medium',
+          terrain: 'Mixed',
+          description: 'Curves through tea and cardamom country, monsoon-green and perfumed. The road bends like a polite question.'
+        },
+        {
+          title: 'Shillong to Tawang — The Eastern Cordillera',
+          distance_km: 480,
+          difficulty: 'Hard',
+          terrain: 'Mountain',
+          description: 'A long, honest ride through the eastern Himalayas. Three days well planned, weather permitting. Do not rush the road.'
+        }
+      ]
+      // Light filtering by terrain / region if possible
+      const want = new Set((p.terrains || []).map(t => t.toLowerCase()))
+      const region = (p.region || '').toLowerCase()
+      let pool = list
+      if (want.size > 0) {
+        const matches = list.filter(x => want.has((x.terrain || '').toLowerCase()))
+        if (matches.length >= 3) pool = matches
+      }
+      // region hints (very light)
+      if (region.includes('himachal') || region.includes('spiti') || region.includes('leh') || region.includes('ladakh')) {
+        pool = [list[0], list[4], list[8]]
+      } else if (region.includes('kerala') || region.includes('tamil') || region.includes('karnataka')) {
+        pool = [list[2], list[7], list[5]]
+      } else if (region.includes('maharashtra') || region.includes('mumbai') || region.includes('pune')) {
+        pool = [list[1], list[3], list[6]]
+      } else if (region.includes('rajasthan') || region.includes('delhi') || region.includes('jaipur')) {
+        pool = [list[3], list[6], list[0]]
+      } else if (region.includes('gujarat') || region.includes('kutch')) {
+        pool = [list[6], list[3], list[1]]
+      }
+      // cap to 3
+      return pool.slice(0, 3)
+    }
+
+    // ── Helpers ─────────────────────────────────────────
+    function escapeHtml(s){ return String(s ?? '').replace(/[&<>"']/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c])) }
+    function escapeAttr(s){ return escapeHtml(s) }
+    function notify(msg, isError = false) {
+      const el = document.getElementById('notice')
+      el.textContent = msg
+      el.classList.toggle('error', isError)
+      el.classList.add('show')
+      clearTimeout(notify._t)
+      notify._t = setTimeout(() => el.classList.remove('show'), 2400)
+    }
   </script>
 
 </body>

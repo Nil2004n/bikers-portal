@@ -3,27 +3,246 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Login | Bikers Portal</title>
+  <meta name="description" content="Bikers Portal — a private space for machines, miles, and the people who carry both with grace." />
+  <title>Sign In · Bikers Portal</title>
+
+  <link rel="preconnect" href="https://cdn.tailwindcss.com" />
   <script src="https://cdn.tailwindcss.com"></script>
+  <script>
+    tailwind.config = {
+      theme: {
+        extend: {
+          colors: {
+            ink:       { 950: '#0d0c0a', 900: '#11100e', 800: '#181512', 700: '#211c18', 600: '#2a241e' },
+            bone:      { 100: '#f3ede3', 200: '#e8e0d2', 300: '#c7b9a2', 400: '#8a7d68' },
+            brass:     { 300: '#d4b187', 400: '#c89e69', 500: '#b08d57', 600: '#8a6a3d' },
+            burgundy:  { 500: '#6e2f2f', 600: '#5a2626' },
+            leather:   { 500: '#7a4b2a' },
+            bronze:    { 700: '#3a3129', 800: '#2a221a' }
+          },
+          fontFamily: {
+            display: ['"Cormorant Garamond"', 'Georgia', 'serif'],
+            sans:    ['Satoshi', 'Inter', 'sans-serif']
+          }
+        }
+      }
+    }
+  </script>
   <link rel="stylesheet" href="./assets/style.css" />
 </head>
-<body class="bg-zinc-950 text-zinc-100 min-h-screen font-sans antialiased">
+<body>
 
-  <!-- public page — no auth guard -->
+  <main class="split">
+    <!-- ░░ Left: Heritage visual ░░ -->
+    <section class="split-visual" aria-hidden="true">
+      <div class="split-visual-content">
+        <div class="top">
+          <img src="./assets/logo.svg" alt="Bikers Portal" />
+        </div>
 
-  <!-- ░░ NAVBAR (protected pages only) ░░ -->
-  <!-- TODO: sticky nav with logo, page links, avatar dropdown -->
+        <div class="middle">
+          <p class="label-engraved mb-6">A Road Society</p>
+          <h1 class="headline">For riders who respect the road.</h1>
+          <p class="sub">
+            A private space for machines, miles, and the people who carry both
+            with grace. No noise. No haste. Only the road and those who keep it.
+          </p>
+        </div>
 
-  <!-- ░░ MAIN CONTENT ░░ -->
-  <main class="container mx-auto px-4 py-8 max-w-5xl">
-    <h1 class="text-xl font-bold text-zinc-100">Login</h1>
-    <p class="text-zinc-500 mt-1 text-sm">🚧 Page under construction</p>
-    <!-- TODO: Login page content -->
+        <div class="bottom">
+          <span>Est. MMXXVI</span>
+          <span>·</span>
+          <span>Road Society</span>
+        </div>
+      </div>
+    </section>
+
+    <!-- ░░ Right: Auth form ░░ -->
+    <section class="split-form">
+      <div class="split-form-inner">
+        <div class="auth-panel">
+          <div class="text-center mb-6 lg:hidden">
+            <img src="./assets/logo.svg" alt="Bikers Portal" class="mx-auto" style="height:40px" />
+          </div>
+
+          <p class="label-engraved text-center">Welcome Back</p>
+          <h1 class="font-display text-center mt-2 mb-1" style="font-size:1.875rem">Enter the Portal</h1>
+          <p class="text-muted text-center text-sm mb-6" style="font-family:'Cormorant Garamond',serif;font-style:italic">
+            Access your routes, machines, and road journal.
+          </p>
+
+          <div id="formError" class="banner banner-error mb-4 hidden" role="alert"></div>
+
+          <form id="loginForm" novalidate class="stack gap-4">
+            <div class="field">
+              <label class="field-label" for="email">Username</label>
+              <input
+                id="email"
+                name="username"
+                type="text"
+                class="input"
+                placeholder="rider"
+                autocomplete="username"
+                pattern="^[A-Za-z0-9_]{3,20}$"
+                required
+              />
+              <div class="msg-error" data-error-for="email"></div>
+            </div>
+
+            <div class="field">
+              <label class="field-label" for="password">Password</label>
+              <input
+                id="password"
+                name="password"
+                type="password"
+                class="input"
+                placeholder="••••••••"
+                autocomplete="current-password"
+                required
+              />
+              <div class="msg-error" data-error-for="password"></div>
+            </div>
+
+            <button id="submitBtn" type="submit" class="btn btn-primary btn-full mt-2">
+              <span class="label">Enter the Portal</span>
+            </button>
+          </form>
+
+          <div class="divider-stitched my-6"></div>
+
+          <p class="text-center text-sm text-muted">
+            New to the road?
+            <a href="/register.html" class="btn-link">Create an account</a>
+          </p>
+        </div>
+
+        <p class="text-center text-xs text-faint mt-6" style="color:var(--ink-ghost);letter-spacing:0.18em;text-transform:uppercase">
+          Members only · Quiet by design
+        </p>
+
+        <p id="connStatus" class="text-center text-xs mt-3" style="color:var(--ink-ghost);letter-spacing:0.12em">
+          <span class="spinner" style="width:10px;height:10px;border-width:1px;margin-right:0.4rem;vertical-align:-1px"></span>
+          <span id="connStatusText">Opening the road…</span>
+        </p>
+      </div>
+    </section>
   </main>
 
   <script type="module">
-    import { supabase } from './js/supabase.js'
-    // TODO: Login logic
+    import { supabase } from './js/api.js'
+
+    // Render connection status as soon as we know.
+    const connEl = document.getElementById('connStatus')
+    const connTxt = document.getElementById('connStatusText')
+    ;(async () => {
+      try {
+        const res = await fetch('/api/health')
+        if (res.ok) {
+          const data = await res.json()
+          connEl.style.color = 'var(--brass)'
+          const c = data.counts || {}
+          connTxt.textContent = `Connected · SQLite · ${c.profiles || 0} riders, ${c.posts || 0} entries`
+        } else {
+          connEl.style.color = '#d97a7a'
+          connTxt.textContent = `Server responded with ${res.status}`
+        }
+      } catch (e) {
+        connEl.style.color = '#d97a7a'
+        connTxt.textContent = 'Server unreachable — run `npm start`'
+      }
+    })()
+
+    // Already authenticated? Skip the form.
+    try {
+      const { data: { session } } = await supabase.auth.getSession()
+      if (session) {
+        window.location.replace('/feed.html')
+      }
+    } catch (err) {
+      console.warn('[index] session check failed:', err)
+    }
+
+    const form        = document.getElementById('loginForm')
+    const submitBtn   = document.getElementById('submitBtn')
+    const formError   = document.getElementById('formError')
+    const emailInput  = document.getElementById('email')
+    const passInput   = document.getElementById('password')
+
+    function setFieldError(name, msg) {
+      const el = document.querySelector(`[data-error-for="${name}"]`)
+      if (el) el.textContent = msg || ''
+    }
+
+    function setFormError(msg) {
+      if (!msg) {
+        formError.classList.add('hidden')
+        formError.textContent = ''
+      } else {
+        formError.textContent = msg
+        formError.classList.remove('hidden')
+      }
+    }
+
+    function setLoading(loading) {
+      submitBtn.disabled = loading
+      submitBtn.setAttribute('aria-busy', loading ? 'true' : 'false')
+      submitBtn.innerHTML = loading
+        ? '<span class="spinner"></span> Opening the road…'
+        : '<span class="label">Enter the Portal</span>'
+    }
+
+    function validate() {
+      let ok = true
+      setFieldError('email', '')
+      setFieldError('password', '')
+
+      const u = emailInput.value.trim()
+      if (!u) {
+        setFieldError('email', 'Username is required.')
+        ok = false
+      } else if (!/^[A-Za-z0-9_]{3,20}$/.test(u)) {
+        setFieldError('email', '3–20 characters: letters, numbers, underscore.')
+        ok = false
+      }
+      if (!passInput.value) {
+        setFieldError('password', 'Password is required.')
+        ok = false
+      }
+      return ok
+    }
+
+    emailInput.addEventListener('input', () => setFieldError('email', ''))
+    passInput.addEventListener('input', () => { setFieldError('password', ''); setFormError('') })
+
+    form.addEventListener('submit', async (e) => {
+      e.preventDefault()
+      setFormError('')
+      if (!validate()) return
+
+      setLoading(true)
+      const { error } = await supabase.auth.signInWithPassword({
+        email: emailInput.value.trim(),
+        password: passInput.value
+      })
+      if (error) {
+        setLoading(false)
+        setFormError(humaniseError(error))
+        return
+      }
+      // success — redirect
+      window.location.replace('/feed.html')
+    })
+
+    function humaniseError(err) {
+      const m = (err?.message || '').toLowerCase()
+      if (m.includes('invalid login') || m.includes('invalid credentials')) {
+        return 'Those credentials do not open the road. Please try again.'
+      }
+      if (m.includes('email not confirmed')) {
+        return 'Please confirm your email before entering.'
+      }
+      return 'Something kept the gate closed. Please try again shortly.'
+    }
   </script>
 
 </body>

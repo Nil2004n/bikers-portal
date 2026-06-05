@@ -3,27 +3,543 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Feed | Bikers Portal</title>
+  <meta name="description" content="The Bikers Portal road journal — entries, machines, and quiet milestones." />
+  <title>Feed · Bikers Portal</title>
+
   <script src="https://cdn.tailwindcss.com"></script>
+  <script>
+    tailwind.config = {
+      theme: {
+        extend: {
+          colors: {
+            ink:    { 950: '#0d0c0a', 900: '#11100e', 800: '#181512', 700: '#211c18' },
+            bone:   { 100: '#f3ede3', 200: '#e8e0d2', 300: '#c7b9a2', 400: '#8a7d68' },
+            brass:  { 400: '#c89e69', 500: '#b08d57', 600: '#8a6a3d' }
+          },
+          fontFamily: {
+            display: ['"Cormorant Garamond"', 'Georgia', 'serif'],
+            sans:    ['Satoshi', 'Inter', 'sans-serif']
+          }
+        }
+      }
+    }
+  </script>
   <link rel="stylesheet" href="./assets/style.css" />
 </head>
-<body class="bg-zinc-950 text-zinc-100 min-h-screen font-sans antialiased">
+<body>
 
   <script type="module" src="./js/auth-guard.js"></script>
 
-  <!-- ░░ NAVBAR (protected pages only) ░░ -->
-  <!-- TODO: sticky nav with logo, page links, avatar dropdown -->
+  <main>
+    <!-- ░░ PAGE HEAD ░░ -->
+    <div class="page-head">
+      <p class="eyebrow">The Road Journal</p>
+      <h1 class="font-display">Field Notes from the Road</h1>
+      <p class="lede">Routes taken, machines honoured, mornings remembered. A quiet register of every rider who chose to leave a mark.</p>
+    </div>
 
-  <!-- ░░ MAIN CONTENT ░░ -->
-  <main class="container mx-auto px-4 py-8 max-w-5xl">
-    <h1 class="text-xl font-bold text-zinc-100">Feed</h1>
-    <p class="text-zinc-500 mt-1 text-sm">🚧 Page under construction</p>
-    <!-- TODO: Feed page content -->
+    <div class="feed-grid">
+      <!-- ░░ LEFT SIDEBAR ░░ -->
+      <aside class="feed-aside feed-aside-left" aria-label="Your summary">
+        <div class="mini-profile" id="miniProfile">
+          <span class="avatar-fallback avatar-md" id="miniAvatarFallback" aria-hidden="true">·</span>
+          <img class="avatar avatar-md hidden" id="miniAvatar" alt="" />
+          <div class="name" id="miniName">Rider</div>
+          <div class="handle" id="miniHandle">@rider</div>
+          <div class="stat-row">
+            <div class="stat"><span class="num" id="statPosts">0</span><span class="lbl">Posts</span></div>
+            <div class="stat"><span class="num" id="statBikes">0</span><span class="lbl">Bikes</span></div>
+            <div class="stat"><span class="num" id="statTrips">0</span><span class="lbl">Trips</span></div>
+          </div>
+        </div>
+
+        <div class="quote-card">
+          <p class="q">“The road is the destination. The machine is the witness.”</p>
+          <p class="a">— Club Motto</p>
+        </div>
+
+        <div class="surface" style="padding:1rem 1.125rem">
+          <p class="label-engraved mb-3">Shortcuts</p>
+          <a href="/bikes.html" class="aside-list-item" style="padding:0.5rem 0">
+            <span class="info"><span class="name">Machines</span><span class="sub">Your garage registry</span></span>
+            <span style="color:var(--ink-faint)">→</span>
+          </a>
+          <a href="/trips.html" class="aside-list-item" style="padding:0.5rem 0">
+            <span class="info"><span class="name">Trips</span><span class="sub">Routes planned & taken</span></span>
+            <span style="color:var(--ink-faint)">→</span>
+          </a>
+          <a href="/recommendations.html" class="aside-list-item" style="padding:0.5rem 0">
+            <span class="info"><span class="name">Concierge</span><span class="sub">Curated route suggestions</span></span>
+            <span style="color:var(--ink-faint)">→</span>
+          </a>
+        </div>
+      </aside>
+
+      <!-- ░░ MAIN FEED ░░ -->
+      <section class="feed-main" aria-label="Feed">
+        <!-- Composer -->
+        <div class="composer">
+          <form id="composerForm" novalidate>
+            <div class="field">
+              <label class="field-label" for="composerText">Publish an Entry</label>
+              <textarea
+                id="composerText"
+                class="textarea"
+                placeholder="What road is calling you next?"
+                maxlength="1200"
+              ></textarea>
+              <div class="msg-error" id="composerError"></div>
+            </div>
+
+            <div class="composer-preview hidden" id="composerPreview">
+              <img id="composerPreviewImg" alt="Selected" />
+              <button type="button" class="remove" id="removeAttachment" aria-label="Remove image">✕</button>
+            </div>
+
+            <div class="composer-foot">
+              <div class="left">
+                <label class="attach-btn" title="Attach a photograph">
+                  <input id="composerFile" type="file" accept="image/*" />
+                  <span>＋ Photograph</span>
+                </label>
+                <span id="composerCount" class="text-xs text-faint">0 / 1200</span>
+              </div>
+              <button id="publishBtn" type="submit" class="btn btn-primary btn-sm">
+                <span class="label">Publish Entry</span>
+              </button>
+            </div>
+          </form>
+        </div>
+
+        <div class="divider-engraved"><span>Field Notes</span></div>
+
+        <div id="feed" aria-live="polite">
+          <!-- skeleton/empty/feed rendered here -->
+        </div>
+      </section>
+
+      <!-- ░░ RIGHT SIDEBAR ░░ -->
+      <aside class="feed-aside feed-aside-right" aria-label="Around the club">
+        <div class="surface" style="padding:1rem 1.125rem">
+          <p class="label-engraved mb-3">Riders of Note</p>
+          <div class="aside-list" id="ridersList">
+            <div class="skeleton" style="height:36px;margin-bottom:0.5rem"></div>
+            <div class="skeleton" style="height:36px;margin-bottom:0.5rem"></div>
+            <div class="skeleton" style="height:36px;margin-bottom:0.5rem"></div>
+          </div>
+        </div>
+
+        <div class="surface" style="padding:1rem 1.125rem">
+          <p class="label-engraved mb-3">Routes in Conversation</p>
+          <div class="aside-list" id="tripsList">
+            <div class="skeleton" style="height:36px;margin-bottom:0.5rem"></div>
+            <div class="skeleton" style="height:36px;margin-bottom:0.5rem"></div>
+          </div>
+        </div>
+
+        <div class="signal-card">
+          <p class="label label-engraved">Garage Signal</p>
+          <p class="body" id="signalText">Chain tension is the quietest discipline. Check it at every fuel stop on a long road.</p>
+        </div>
+      </aside>
+    </div>
   </main>
 
+  <div class="notice" id="notice" role="status" aria-live="polite"></div>
+
   <script type="module">
-    import { supabase } from './js/supabase.js'
-    // TODO: Feed logic
+    import { supabase } from './js/api.js'
+
+    const GARAGE_SIGNALS = [
+      'Chain tension is the quietest discipline. Check it at every fuel stop on a long road.',
+      'Pre-ride circle: tyres, oil, levers, lights. The machine speaks before the road does.',
+      'Tire pressure drops roughly 1 PSI for every 10°C fall. Mind it on cold morning rides.',
+      'A well-packed bag is the difference between a journey and a struggle. Less is more.',
+      'Lean with the bike, not against it. Trust the contact patch.',
+    ]
+
+    let user = null
+    try {
+      const r = await supabase.auth.getUser()
+      user = r?.data?.user || null
+    } catch (err) { console.warn('[feed] user check failed:', err) }
+    if (!user) { window.location.replace('/index.html') }
+
+    let myProfile = null
+    let realtimeChannel = null
+
+    // ── Boot ─────────────────────────────────────────────
+    init()
+
+    async function init() {
+      await loadMyProfile()
+      await loadFeed()
+      await Promise.all([ loadRidersOfNote(), loadRoutesInConversation() ])
+      rotateGarageSignal()
+      bindComposer()
+      subscribeRealtime()
+    }
+
+    // ── Profile (mini) ───────────────────────────────────
+    async function loadMyProfile() {
+      const { data } = await supabase
+        .from('profiles')
+        .select('id, username, full_name, avatar_url, bio, bike_model')
+        .eq('id', user.id)
+        .single()
+      myProfile = data
+
+      document.getElementById('miniName').textContent   = data?.full_name || 'Rider'
+      document.getElementById('miniHandle').textContent = data?.username ? `@${data.username}` : '@rider'
+      const initials = (data?.full_name || 'Rider').split(/\s+/).slice(0, 2).map(w => w[0]).join('').toUpperCase()
+      const fb  = document.getElementById('miniAvatarFallback')
+      const img = document.getElementById('miniAvatar')
+      fb.textContent = initials
+      if (data?.avatar_url) {
+        img.src = data.avatar_url
+        img.alt = data.full_name
+        img.classList.remove('hidden')
+        fb.classList.add('hidden')
+        img.addEventListener('error', () => {
+          img.classList.add('hidden')
+          fb.classList.remove('hidden')
+        }, { once: true })
+      }
+
+      // Stats — count via the rows we get back. Limit to a generous cap so
+      // the counts are accurate for any practical user.
+      const [posts, bikes, trips] = await Promise.all([
+        supabase.from('posts').select('id').eq('user_id', user.id).limit(1000),
+        supabase.from('bikes').select('id').eq('user_id', user.id).limit(1000),
+        supabase.from('trips').select('id').eq('user_id', user.id).limit(1000)
+      ])
+      document.getElementById('statPosts').textContent = (posts.data || []).length
+      document.getElementById('statBikes').textContent = (bikes.data || []).length
+      document.getElementById('statTrips').textContent = (trips.data || []).length
+    }
+
+    // ── Feed ─────────────────────────────────────────────
+    async function loadFeed() {
+      const feedEl = document.getElementById('feed')
+      feedEl.innerHTML = renderSkeletons(3)
+
+      const { data: posts, error } = await supabase
+        .from('posts')
+        .select(`
+          id, user_id, content, image_url, created_at,
+          profiles ( username, full_name, avatar_url )
+        `)
+        .order('created_at', { ascending: false })
+        .limit(50)
+
+      if (error) {
+        feedEl.innerHTML = errorState('The road journal could not be opened.')
+        return
+      }
+      if (!posts || posts.length === 0) {
+        feedEl.innerHTML = emptyState(
+          'No road notes yet.',
+          'Be the first to leave a mark in the journal.'
+        )
+        return
+      }
+
+      const ids = posts.map(p => p.id)
+      const [likesRes, commentsRes, mineLikesRes] = await Promise.all([
+        supabase.from('likes').select('post_id').in('post_id', ids),
+        supabase.from('comments').select('post_id').in('post_id', ids),
+        supabase.from('likes').select('post_id').eq('user_id', user.id).in('post_id', ids)
+      ])
+
+      const likeCounts    = countBy(likesRes.data, 'post_id')
+      const commentCounts = countBy(commentsRes.data, 'post_id')
+      const likedSet      = new Set((mineLikesRes.data || []).map(l => l.post_id))
+
+      feedEl.innerHTML = posts
+        .map(p => renderPost(p, likeCounts[p.id] || 0, commentCounts[p.id] || 0, likedSet.has(p.id)))
+        .join('')
+
+      attachPostHandlers()
+    }
+
+    function renderPost(post, likeCount, commentCount, isLiked) {
+      const profile = Array.isArray(post.profiles) ? post.profiles[0] : post.profiles
+      const name    = profile?.full_name || 'Unknown rider'
+      const handle  = profile?.username || 'rider'
+      const avatar  = profile?.avatar_url
+      const initials = name.split(/\s+/).slice(0, 2).map(w => w[0]).join('').toUpperCase()
+      const time    = timeAgo(post.created_at)
+      const safeContent = escapeHtml(post.content || '')
+      const safeImage   = post.image_url ? escapeAttr(post.image_url) : ''
+
+      const avatarHtml = avatar
+        ? `<img class="avatar avatar-sm" src="${escapeAttr(avatar)}" alt="" onerror="this.replaceWith(makeFallback('${escapeAttr(initials)}'))" />`
+        : `<span class="avatar-fallback avatar-sm">${initials}</span>`
+
+      return `
+        <article class="post-card" data-post-id="${post.id}" data-user-id="${post.user_id}">
+          <header class="post-head">
+            ${avatarHtml}
+            <div class="meta">
+              <div class="name">${escapeHtml(name)}</div>
+              <div class="handle">@${escapeHtml(handle)} · <span class="time">${time}</span></div>
+            </div>
+          </header>
+
+          ${post.content ? `<div class="post-body">${safeContent}</div>` : ''}
+          ${post.image_url ? `<img class="post-image" src="${safeImage}" alt="" loading="lazy" onerror="this.style.display='none'" />` : ''}
+
+          <div class="post-actions">
+            <button class="post-action ${isLiked ? 'liked' : ''}" data-act="like" aria-pressed="${isLiked}">
+              <span class="mark">${isLiked ? '◆' : '◇'}</span>
+              <span class="count">${likeCount}</span>
+              <span>Like</span>
+            </button>
+            <button class="post-action" data-act="comment">
+              <span class="mark">⌘</span>
+              <span class="count">${commentCount}</span>
+              <span>Reply</span>
+            </button>
+            <button class="post-action" data-act="save">
+              <span class="mark">✦</span>
+              <span>Save</span>
+            </button>
+            ${post.user_id === user.id ? `
+              <button class="post-action" data-act="delete" style="margin-left:auto;color:var(--ink-faint)">
+                <span class="mark">×</span><span>Remove</span>
+              </button>
+            ` : ''}
+          </div>
+
+          <div class="comments" data-comments-for="${post.id}">
+            <div class="comments-list"></div>
+            <form class="comment-form" data-comment-form>
+              <input class="input" type="text" placeholder="Add a thought to the record…" maxlength="600" required />
+              <button type="submit" class="btn btn-ghost btn-sm">Send</button>
+            </form>
+          </div>
+        </article>
+      `
+    }
+
+    function attachPostHandlers() {
+      document.querySelectorAll('#feed .post-card').forEach(card => {
+        const postId = card.dataset.postId
+
+        card.addEventListener('click', async (e) => {
+          const btn = e.target.closest('.post-action')
+          if (!btn) return
+          const act = btn.dataset.act
+
+          if (act === 'like')   return toggleLike(postId, btn, card)
+          if (act === 'comment')return toggleComments(postId, card)
+          if (act === 'save')   return notify('Saved to your private collection.')
+          if (act === 'delete') return deletePost(postId, card)
+        })
+
+        const form = card.querySelector('[data-comment-form]')
+        form.addEventListener('submit', async (e) => {
+          e.preventDefault()
+          e.stopPropagation()
+          const input = form.querySelector('input')
+          const body  = input.value.trim()
+          if (!body) return
+          const btn = form.querySelector('button')
+          btn.disabled = true
+          const { data, error } = await supabase
+            .from('comments')
+            .insert({ post_id: postId, user_id: user.id, body })
+            .select('id, body, created_at, profiles ( username, full_name, avatar_url )')
+            .single()
+          btn.disabled = false
+          if (error) return notify(error.message, true)
+          input.value = ''
+          // Append to comments list
+          const list = card.querySelector('.comments-list')
+          list.insertAdjacentHTML('beforeend', renderComment(data))
+          // Bump comment count
+          const cBtn = card.querySelector('[data-act="comment"] .count')
+          if (cBtn) cBtn.textContent = String(parseInt(cBtn.textContent || '0', 10) + 1)
+        })
+      })
+    }
+
+    async function toggleLike(postId, btn, card) {
+      // Optimistic
+      const wasLiked = btn.classList.contains('liked')
+      const liked = !wasLiked
+      btn.classList.toggle('liked', liked)
+      btn.setAttribute('aria-pressed', liked ? 'true' : 'false')
+      const countEl = btn.querySelector('.count')
+      let n = parseInt(countEl.textContent || '0', 10)
+      countEl.textContent = String(liked ? n + 1 : Math.max(0, n - 1))
+      btn.querySelector('.mark').textContent = liked ? '◆' : '◇'
+
+      // The backend exposes a single toggle endpoint; the previous liked state
+      // is the one we send so the server can flip it the right way.
+      const res = await fetch('/api/likes/toggle', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json', 'Authorization': `Bearer ${localStorage.getItem('bp_token')}` },
+        body: JSON.stringify({ post_id: postId })
+      })
+      if (!res.ok) {
+        // revert
+        btn.classList.toggle('liked', wasLiked)
+        btn.setAttribute('aria-pressed', wasLiked ? 'true' : 'false')
+        countEl.textContent = String(n)
+        btn.querySelector('.mark').textContent = wasLiked ? '◆' : '◇'
+        const data = await res.json().catch(() => ({}))
+        notify(data.error || 'Could not register that gesture.', true)
+      }
+    }
+
+    async function toggleComments(postId, card) {
+      const section = card.querySelector('[data-comments-for]')
+      const open = section.classList.toggle('open')
+      if (!open) return
+      const list = section.querySelector('.comments-list')
+      if (list.dataset.loaded === '1') return
+      list.innerHTML = `<div class="skeleton" style="height:14px;margin:0.5rem 0"></div>
+                        <div class="skeleton" style="height:14px;margin:0.5rem 0;width:80%"></div>`
+      const { data } = await supabase
+        .from('comments')
+        .select('id, body, created_at, profiles ( username, full_name, avatar_url )')
+        .eq('post_id', postId)
+        .order('created_at', { ascending: true })
+      list.dataset.loaded = '1'
+      if (!data || data.length === 0) {
+        list.innerHTML = `<p class="text-xs text-faint" style="padding:0.5rem 0">No replies yet.</p>`
+        return
+      }
+      list.innerHTML = data.map(renderComment).join('')
+    }
+
+    function renderComment(c) {
+      const profile = Array.isArray(c.profiles) ? c.profiles[0] : c.profiles
+      const name    = profile?.full_name || 'Rider'
+      const handle  = profile?.username || 'rider'
+      const initials = name.split(/\s+/).filter(Boolean).slice(0,2).map(w => w[0]).join('').toUpperCase()
+      return `
+        <div class="comment">
+          <span class="avatar-fallback avatar-xs">${escapeHtml(initials)}</span>
+          <div class="body">
+            <div class="by"><strong>${escapeHtml(name)}</strong> · @${escapeHtml(handle)} · ${timeAgo(c.created_at)}</div>
+            ${escapeHtml(c.body)}
+          </div>
+        </div>
+      `
+    }
+
+    async function deletePost(postId, card) {
+      const ok = await window.bpAsk('Remove this entry from the journal? It cannot be undone.', {
+        title: 'Remove entry?',
+        confirmText: 'Remove',
+        danger: true
+      })
+      if (!ok) return
+      const { error } = await supabase.from('posts').delete().eq('id', postId).eq('user_id', user.id)
+      if (error) return notify('Could not remove that entry.', true)
+      card.style.transition = 'opacity 200ms, transform 200ms'
+      card.style.opacity = '0'
+      card.style.transform = 'translateY(-4px)'
+      setTimeout(() => card.remove(), 220)
+      notify('Entry removed.')
+    }
+
+    // ── Realtime (SSE) ───────────────────────────────────
+    function subscribeRealtime() {
+      realtimeChannel = supabase.realtime.on('new-post', async (newPost) => {
+        if (!newPost) return
+        if (document.querySelector(`[data-post-id="${newPost.id}"]`)) return
+        const html = renderPost(
+          { ...newPost, profiles: newPost.profiles || {} },
+          newPost.like_count || 0,
+          newPost.comment_count || 0,
+          !!newPost.liked_by_me
+        )
+        const feedEl = document.getElementById('feed')
+        if (feedEl.querySelector('.skeleton') || feedEl.querySelector('.empty')) {
+          feedEl.innerHTML = html
+        } else {
+          feedEl.insertAdjacentHTML('afterbegin', html)
+        }
+        attachPostHandlers()
+      })
+    }
+
+    // ── Helpers ───────────────────────────────────────────
+    function renderSkeletons(n) {
+      let out = ''
+      for (let i = 0; i < n; i++) {
+        out += `
+          <div class="post-card">
+            <div class="post-head">
+              <span class="skeleton" style="width:36px;height:36px;border-radius:50%"></span>
+              <div style="flex:1">
+                <div class="skeleton" style="height:12px;width:35%;margin-bottom:6px"></div>
+                <div class="skeleton" style="height:10px;width:20%"></div>
+              </div>
+            </div>
+            <div class="skeleton" style="height:12px;width:90%;margin-bottom:8px"></div>
+            <div class="skeleton" style="height:12px;width:75%;margin-bottom:1rem"></div>
+            <div class="skeleton" style="height:120px;width:100%"></div>
+          </div>
+        `
+      }
+      return out
+    }
+
+    function emptyState(title, sub) {
+      return `<div class="empty">
+        <p class="empty-title">${escapeHtml(title)}</p>
+        <p class="empty-sub">${escapeHtml(sub)}</p>
+      </div>`
+    }
+
+    function errorState(msg) {
+      return `<div class="banner banner-error">${escapeHtml(msg)}</div>`
+    }
+
+    function countBy(arr, key) {
+      const out = {}
+      ;(arr || []).forEach(r => { out[r[key]] = (out[r[key]] || 0) + 1 })
+      return out
+    }
+
+    function timeAgo(iso) {
+      const t = new Date(iso).getTime()
+      const diff = Math.max(0, (Date.now() - t) / 1000)
+      if (diff < 60)        return 'just now'
+      if (diff < 3600)      return `${Math.floor(diff/60)}m ago`
+      if (diff < 86400)     return `${Math.floor(diff/3600)}h ago`
+      if (diff < 86400*7)   return `${Math.floor(diff/86400)}d ago`
+      const d = new Date(iso)
+      return d.toLocaleDateString(undefined, { day:'2-digit', month:'short' })
+    }
+
+    function escapeHtml(s) {
+      return String(s ?? '').replace(/[&<>"']/g, c => ({
+        '&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'
+      }[c]))
+    }
+    function escapeAttr(s){ return escapeHtml(s) }
+
+    // expose fallback helper for inline onerror
+    window.makeFallback = (initials) => {
+      const span = document.createElement('span')
+      span.className = 'avatar-fallback avatar-sm'
+      span.textContent = initials || '·'
+      return span
+    }
+
+    function notify(msg, isError = false) {
+      const el = document.getElementById('notice')
+      el.textContent = msg
+      el.classList.toggle('error', isError)
+      el.classList.add('show')
+      clearTimeout(notify._t)
+      notify._t = setTimeout(() => el.classList.remove('show'), 2400)
+    }
   </script>
 
 </body>

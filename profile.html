@@ -3,27 +3,540 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Profile | Bikers Portal</title>
+  <meta name="description" content="Your private dossier on the Bikers Portal." />
+  <title>Profile · Bikers Portal</title>
+
   <script src="https://cdn.tailwindcss.com"></script>
+  <script>
+    tailwind.config = {
+      theme: {
+        extend: {
+          colors: {
+            ink:   { 950: '#0d0c0a', 900: '#11100e', 800: '#181512', 700: '#211c18' },
+            bone:  { 100: '#f3ede3', 200: '#e8e0d2', 300: '#c7b9a2', 400: '#8a7d68' },
+            brass: { 400: '#c89e69', 500: '#b08d57', 600: '#8a6a3d' }
+          },
+          fontFamily: {
+            display: ['"Cormorant Garamond"', 'Georgia', 'serif'],
+            sans:    ['Satoshi', 'Inter', 'sans-serif']
+          }
+        }
+      }
+    }
+  </script>
   <link rel="stylesheet" href="./assets/style.css" />
 </head>
-<body class="bg-zinc-950 text-zinc-100 min-h-screen font-sans antialiased">
+<body>
 
   <script type="module" src="./js/auth-guard.js"></script>
 
-  <!-- ░░ NAVBAR (protected pages only) ░░ -->
-  <!-- TODO: sticky nav with logo, page links, avatar dropdown -->
+  <main>
+    <!-- ░░ HEADER ░░ -->
+    <section class="profile-head">
+      <div class="profile-head-inner">
+        <div style="position:relative">
+          <span class="avatar-fallback avatar-xl" id="avatarFallback" aria-hidden="true">·</span>
+          <img class="avatar avatar-xl hidden" id="avatarImg" alt="" />
+        </div>
+        <div class="info">
+          <p class="label-engraved" id="profileRole">Rider Dossier</p>
+          <h1 class="name" id="profileName">Loading…</h1>
+          <p class="handle" id="profileHandle">@rider</p>
+          <p class="bio" id="profileBio">—</p>
+          <div class="flex flex-wrap gap-2 mt-2">
+            <span class="badge badge-brass hidden" id="bikeBadge"></span>
+          </div>
 
-  <!-- ░░ MAIN CONTENT ░░ -->
-  <main class="container mx-auto px-4 py-8 max-w-5xl">
-    <h1 class="text-xl font-bold text-zinc-100">Profile</h1>
-    <p class="text-zinc-500 mt-1 text-sm">🚧 Page under construction</p>
-    <!-- TODO: Profile page content -->
+          <div class="profile-stats">
+            <div class="stat"><span class="num" id="statPosts">0</span><span class="lbl">Entries</span></div>
+            <div class="stat"><span class="num" id="statBikes">0</span><span class="lbl">Machines</span></div>
+            <div class="stat"><span class="num" id="statTrips">0</span><span class="lbl">Routes</span></div>
+          </div>
+        </div>
+        <div class="stack gap-2" style="min-width:160px">
+          <button class="btn btn-primary btn-sm" id="editToggleBtn">Edit Profile</button>
+          <button class="btn btn-ghost btn-sm" id="shareBtn" type="button">Share Profile</button>
+        </div>
+      </div>
+    </section>
+
+    <!-- ░░ EDIT PANEL ░░ -->
+    <div class="profile-body" id="editPanel" style="display:none">
+      <div class="edit-panel">
+        <div class="flex items-center justify-between mb-4">
+          <p class="label-engraved">Edit Dossier</p>
+          <button class="btn btn-ghost btn-sm" id="cancelEditBtn" type="button">Close</button>
+        </div>
+        <form id="profileForm" novalidate>
+          <div class="grid grid-cols-1 md:grid-cols-2 gap-4 mb-4">
+            <div class="field">
+              <label class="field-label" for="ef_full_name">Full Name</label>
+              <input id="ef_full_name" class="input" required />
+              <div class="msg-error" data-error-for="ef_full_name"></div>
+            </div>
+            <div class="field">
+              <label class="field-label" for="ef_username">Username</label>
+              <input id="ef_username" class="input" required />
+              <div class="msg-error" data-error-for="ef_username"></div>
+            </div>
+            <div class="field md:col-span-2">
+              <label class="field-label" for="ef_bio">Bio</label>
+              <textarea id="ef_bio" class="textarea" placeholder="A line or two about your riding life."></textarea>
+            </div>
+            <div class="field md:col-span-2">
+              <label class="field-label" for="ef_bike_model">Preferred Machine</label>
+              <input id="ef_bike_model" class="input" placeholder="Royal Enfield Classic 350" />
+            </div>
+            <div class="field md:col-span-2">
+              <label class="field-label" for="ef_avatar">Avatar</label>
+              <label class="file-input">
+                <input id="ef_avatar" type="file" accept="image/*" />
+                <span class="file-cta">Replace</span>
+                <span class="file-name" id="ef_avatarName">Keep current photograph</span>
+              </label>
+            </div>
+          </div>
+          <div class="flex items-center justify-end gap-2">
+            <button type="submit" class="btn btn-primary btn-sm" id="saveProfileBtn">
+              <span class="label">Save Dossier</span>
+            </button>
+          </div>
+        </form>
+      </div>
+    </div>
+
+    <!-- ░░ TABS ░░ -->
+    <div class="tabs" role="tablist" aria-label="Profile sections">
+      <button class="tab active" role="tab" data-tab="posts" aria-selected="true">Entries</button>
+      <button class="tab" role="tab" data-tab="bikes" aria-selected="false">Machines</button>
+      <button class="tab" role="tab" data-tab="trips" aria-selected="false">Routes</button>
+    </div>
+
+    <div class="profile-body">
+      <section class="tab-panel active" id="tab-posts" role="tabpanel">
+        <div id="tab-posts-body">
+          <div class="skeleton" style="height:160px;margin-bottom:0.75rem"></div>
+          <div class="skeleton" style="height:160px"></div>
+        </div>
+      </section>
+
+      <section class="tab-panel" id="tab-bikes" role="tabpanel">
+        <div id="tab-bikes-body"></div>
+      </section>
+
+      <section class="tab-panel" id="tab-trips" role="tabpanel">
+        <div id="tab-trips-body"></div>
+      </section>
+    </div>
   </main>
 
+  <div class="notice" id="notice" role="status" aria-live="polite"></div>
+
   <script type="module">
-    import { supabase } from './js/supabase.js'
-    // TODO: Profile logic
+    import { supabase } from './js/api.js'
+
+    let user = null
+    try {
+      const r = await supabase.auth.getUser()
+      user = r?.data?.user || null
+    } catch (err) { console.warn('[profile] user check failed:', err) }
+    if (!user) window.location.replace('/index.html')
+
+    let profile = null
+    let stagedAvatar = null
+
+    init()
+    async function init() {
+      await loadProfile()
+      bindUI()
+      await loadTab('posts')
+    }
+
+    // ── Profile ─────────────────────────────────────────
+    async function loadProfile() {
+      const { data, error } = await supabase
+        .from('profiles')
+        .select('*')
+        .eq('id', user.id)
+        .single()
+      if (error) { notify('Could not load your dossier.', true); return }
+      profile = data
+      paintProfile()
+    }
+
+    function paintProfile() {
+      if (!profile) return
+      document.getElementById('profileName').textContent   = profile.full_name || 'Rider'
+      document.getElementById('profileHandle').textContent = profile.username ? `@${profile.username}` : '@rider'
+      document.getElementById('profileBio').textContent    = profile.bio || 'No introduction recorded yet.'
+      const bikeBadge = document.getElementById('bikeBadge')
+      if (profile.bike_model) {
+        bikeBadge.textContent = profile.bike_model
+        bikeBadge.classList.remove('hidden')
+      } else {
+        bikeBadge.classList.add('hidden')
+      }
+      const initials = (profile.full_name || 'Rider').split(/\s+/).slice(0,2).map(w => w[0]).join('').toUpperCase()
+      const fb  = document.getElementById('avatarFallback')
+      const img = document.getElementById('avatarImg')
+      fb.textContent = initials || '·'
+      if (profile.avatar_url) {
+        img.src = profile.avatar_url
+        img.alt = profile.full_name
+        img.classList.remove('hidden')
+        fb.classList.add('hidden')
+        img.addEventListener('error', () => {
+          img.classList.add('hidden')
+          fb.classList.remove('hidden')
+        }, { once: true })
+      }
+      // Pre-fill edit form
+      document.getElementById('ef_full_name').value = profile.full_name || ''
+      document.getElementById('ef_username').value   = profile.username || ''
+      document.getElementById('ef_bio').value        = profile.bio || ''
+      document.getElementById('ef_bike_model').value = profile.bike_model || ''
+    }
+
+    // ── Stats ───────────────────────────────────────────
+    async function loadStats() {
+      const [p, b, t] = await Promise.all([
+        supabase.from('posts').select('id', { count: 'exact', head: true }).eq('user_id', user.id),
+        supabase.from('bikes').select('id', { count: 'exact', head: true }).eq('user_id', user.id),
+        supabase.from('trips').select('id', { count: 'exact', head: true }).eq('user_id', user.id)
+      ])
+      document.getElementById('statPosts').textContent = p.count || 0
+      document.getElementById('statBikes').textContent = b.count || 0
+      document.getElementById('statTrips').textContent = t.count || 0
+    }
+
+    // ── UI bindings ─────────────────────────────────────
+    function bindUI() {
+      document.getElementById('editToggleBtn').addEventListener('click', () => {
+        const panel = document.getElementById('editPanel')
+        const open = panel.style.display === 'none' || !panel.style.display
+        panel.style.display = open ? 'block' : 'none'
+        if (open) panel.scrollIntoView({ behavior: 'smooth', block: 'start' })
+      })
+      document.getElementById('cancelEditBtn').addEventListener('click', () => {
+        document.getElementById('editPanel').style.display = 'none'
+      })
+      document.getElementById('shareBtn').addEventListener('click', async () => {
+        const url = window.location.origin + '/profile.html?id=' + user.id
+        try {
+          await navigator.clipboard.writeText(url)
+          notify('Profile link copied to clipboard.')
+        } catch {
+          notify('Could not copy. Link: ' + url, true)
+        }
+      })
+      document.getElementById('ef_avatar').addEventListener('change', (e) => {
+        const f = e.target.files?.[0]
+        if (!f) return
+        stagedAvatar = f
+        document.getElementById('ef_avatarName').textContent = f.name
+      })
+      document.getElementById('profileForm').addEventListener('submit', onSaveProfile)
+
+      // Tabs
+      document.querySelectorAll('.tab').forEach(t => {
+        t.addEventListener('click', () => switchTab(t.dataset.tab))
+      })
+    }
+
+    // ── Save profile ────────────────────────────────────
+    async function onSaveProfile(e) {
+      e.preventDefault()
+      document.querySelectorAll('[data-error-for]').forEach(el => el.textContent = '')
+
+      const full_name  = document.getElementById('ef_full_name').value.trim()
+      const username   = document.getElementById('ef_username').value.trim()
+      const bio        = document.getElementById('ef_bio').value.trim()
+      const bike_model = document.getElementById('ef_bike_model').value.trim() || null
+
+      let ok = true
+      if (!full_name) { setErr('ef_full_name', 'Full name is required.'); ok = false }
+      if (!username)  { setErr('ef_username', 'Username is required.'); ok = false }
+      else if (!/^[a-z0-9_]{3,20}$/i.test(username)) {
+        setErr('ef_username', '3–20 characters, letters, numbers, underscore.'); ok = false
+      }
+      if (!ok) return
+
+      const btn = document.getElementById('saveProfileBtn')
+      btn.disabled = true
+      btn.setAttribute('aria-busy', 'true')
+      btn.innerHTML = '<span class="spinner"></span> Saving…'
+
+      try {
+        let avatar_url = profile.avatar_url || null
+        if (stagedAvatar) {
+          const ext = stagedAvatar.name.split('.').pop() || 'jpg'
+          const path = `${user.id}/avatar-${Date.now()}.${ext}`
+          const { error: upErr } = await supabase.storage
+            .from('avatars').upload(path, stagedAvatar, { upsert: true, contentType: stagedAvatar.type })
+          if (upErr) throw upErr
+          const { data: pub } = supabase.storage.from('avatars').getPublicUrl(path)
+          avatar_url = pub.publicUrl
+        }
+
+        const row = { full_name, username, bio, bike_model, avatar_url }
+        const { error } = await supabase.from('profiles').update(row).eq('id', user.id)
+        if (error) throw error
+
+        // Refresh
+        await loadProfile()
+        stagedAvatar = null
+        document.getElementById('ef_avatarName').textContent = 'Keep current photograph'
+        document.getElementById('ef_avatar').value = ''
+        document.getElementById('editPanel').style.display = 'none'
+        notify('Dossier updated.')
+      } catch (e2) {
+        if (String(e2.message || '').toLowerCase().includes('duplicate') ||
+            String(e2.code || '').includes('23505')) {
+          setErr('ef_username', 'That username is already taken.')
+        } else {
+          notify(e2.message || 'Could not save that change.', true)
+        }
+      } finally {
+        btn.disabled = false
+        btn.removeAttribute('aria-busy')
+        btn.innerHTML = '<span class="label">Save Dossier</span>'
+      }
+    }
+
+    function setErr(name, msg) {
+      const el = document.querySelector(`[data-error-for="${name}"]`)
+      if (el) el.textContent = msg
+    }
+
+    // ── Tabs ────────────────────────────────────────────
+    function switchTab(name) {
+      document.querySelectorAll('.tab').forEach(t => {
+        const on = t.dataset.tab === name
+        t.classList.toggle('active', on)
+        t.setAttribute('aria-selected', on ? 'true' : 'false')
+      })
+      document.querySelectorAll('.tab-panel').forEach(p => {
+        p.classList.toggle('active', p.id === `tab-${name}`)
+      })
+      loadTab(name)
+    }
+
+    const loadedTabs = new Set()
+    async function loadTab(name) {
+      if (name === 'posts' && loadedTabs.has('posts')) return
+      if (name === 'posts') return renderMyPosts()
+      if (name === 'bikes') return renderMyBikes()
+      if (name === 'trips') return renderMyTrips()
+    }
+
+    // ── Posts tab ───────────────────────────────────────
+    async function renderMyPosts() {
+      const wrap = document.getElementById('tab-posts-body')
+      wrap.innerHTML = `<div class="skeleton" style="height:140px;margin-bottom:0.75rem"></div>`
+      const { data, error } = await supabase
+        .from('posts')
+        .select('id, content, image_url, created_at')
+        .eq('user_id', user.id)
+        .order('created_at', { ascending: false })
+        .limit(20)
+      if (error) { wrap.innerHTML = `<div class="banner banner-error">${escapeHtml(error.message)}</div>`; return }
+      if (!data || data.length === 0) {
+        wrap.innerHTML = `<div class="empty">
+          <p class="empty-title">No entries yet.</p>
+          <p class="empty-sub">Your first journal entry is waiting at the feed.</p>
+        </div>
+        <div class="text-center mt-4"><a class="btn btn-ghost btn-sm" href="/feed.html">Open the Feed</a></div>`
+        document.getElementById('statPosts').textContent = 0
+        return
+      }
+      document.getElementById('statPosts').textContent = data.length
+      wrap.innerHTML = data.map(p => `
+        <article class="post-card" data-post-id="${p.id}">
+          ${p.content ? `<div class="post-body">${escapeHtml(p.content)}</div>` : ''}
+          ${p.image_url ? `<img class="post-image" src="${escapeAttr(p.image_url)}" alt="" loading="lazy" onerror="this.style.display='none'" />` : ''}
+          <div class="post-actions">
+            <span class="post-action" style="cursor:default">
+              <span class="mark">◇</span><span>0</span><span>Like</span>
+            </span>
+            <span class="text-xs text-faint" style="margin-left:auto">${timeAgo(p.created_at)}</span>
+            <button class="post-action" data-act="delete" style="color:var(--ink-faint)">
+              <span class="mark">×</span><span>Remove</span>
+            </button>
+          </div>
+        </article>
+      `).join('')
+      wrap.querySelectorAll('[data-act="delete"]').forEach(btn => {
+        btn.addEventListener('click', async (e) => {
+          e.stopPropagation()
+          const card = btn.closest('.post-card')
+          const id = card.dataset.postId
+          const ok = await window.bpAsk('Remove this entry from the journal?', { title: 'Remove entry?', confirmText: 'Remove', danger: true })
+          if (!ok) return
+          const { error } = await supabase.from('posts').delete().eq('id', id).eq('user_id', user.id)
+          if (error) return notify('Could not remove that entry.', true)
+          card.style.transition = 'opacity 200ms, transform 200ms'
+          card.style.opacity = '0'
+          card.style.transform = 'translateY(-4px)'
+          setTimeout(() => card.remove(), 220)
+          notify('Entry removed.')
+        })
+      })
+      loadedTabs.add('posts')
+      await loadStats()
+    }
+
+    // ── Bikes tab ───────────────────────────────────────
+    async function renderMyBikes() {
+      const wrap = document.getElementById('tab-bikes-body')
+      wrap.innerHTML = `<div class="skeleton" style="height:160px;margin-bottom:0.75rem"></div>`
+      const { data, error } = await supabase
+        .from('bikes')
+        .select('id, make, model, year, engine_cc, color, description, photo_url')
+        .eq('user_id', user.id)
+        .order('created_at', { ascending: false })
+      if (error) { wrap.innerHTML = `<div class="banner banner-error">${escapeHtml(error.message)}</div>`; return }
+      if (!data || data.length === 0) {
+        wrap.innerHTML = `<div class="empty">
+          <p class="empty-title">No machines in the garage yet.</p>
+          <p class="empty-sub">Add the first machine to your dossier.</p>
+        </div>
+        <div class="text-center mt-4"><a class="btn btn-ghost btn-sm" href="/bikes.html">Open the Registry</a></div>`
+        document.getElementById('statBikes').textContent = 0
+        return
+      }
+      document.getElementById('statBikes').textContent = data.length
+      wrap.innerHTML = `<div class="bikes-grid" style="padding:0">
+        ${data.map(b => {
+          const photo = b.photo_url
+            ? `<img src="${escapeAttr(b.photo_url)}" alt="${escapeAttr(b.make + ' ' + b.model)}" loading="lazy" onerror="this.remove()" />`
+            : ''
+          return `
+            <article class="bike-card" data-bike-id="${b.id}">
+              <div class="bike-photo">
+                ${photo}
+                <span class="badge badge-mine">Mine</span>
+              </div>
+              <div class="bike-info">
+                <div class="name">${escapeHtml(b.make || '—')} ${escapeHtml(b.model || '')}</div>
+                <div class="sub">${[b.year, b.engine_cc ? b.engine_cc + ' cc' : null, b.color].filter(Boolean).join(' · ') || '—'}</div>
+                <div class="specs">
+                  ${b.year      ? `<span class="badge">${escapeHtml(b.year)}</span>` : ''}
+                  ${b.engine_cc ? `<span class="badge">${escapeHtml(b.engine_cc)} cc</span>` : ''}
+                </div>
+                ${b.description ? `<p class="desc">${escapeHtml(b.description)}</p>` : `<p class="desc text-faint">No description recorded.</p>`}
+                <div class="bike-actions">
+                  <a class="btn btn-ghost btn-sm" href="/bikes.html">Manage</a>
+                  <button class="btn btn-burgundy btn-sm" data-del="${b.id}">Remove</button>
+                </div>
+              </div>
+            </article>
+          `
+        }).join('')}
+      </div>`
+
+      wrap.querySelectorAll('[data-del]').forEach(btn => {
+        btn.addEventListener('click', async () => {
+          const id = btn.dataset.del
+          const ok = await window.bpAsk('Remove this machine from the registry?', { title: 'Remove machine?', confirmText: 'Remove', danger: true })
+          if (!ok) return
+          const { error } = await supabase.from('bikes').delete().eq('id', id).eq('user_id', user.id)
+          if (error) return notify('Could not remove that machine.', true)
+          btn.closest('.bike-card').remove()
+          notify('Machine removed.')
+          const n = document.querySelectorAll('#tab-bikes-body .bike-card').length
+          document.getElementById('statBikes').textContent = n
+          if (n === 0) renderMyBikes()
+        })
+      })
+    }
+
+    // ── Trips tab ───────────────────────────────────────
+    async function renderMyTrips() {
+      const wrap = document.getElementById('tab-trips-body')
+      wrap.innerHTML = `<div class="skeleton" style="height:80px;margin-bottom:0.5rem"></div>`
+      const { data, error } = await supabase
+        .from('trips')
+        .select('id, title, start_loc, end_loc, trip_date, distance_km, difficulty, is_public')
+        .eq('user_id', user.id)
+        .order('trip_date', { ascending: false, nullsFirst: false })
+        .order('created_at', { ascending: false })
+      if (error) { wrap.innerHTML = `<div class="banner banner-error">${escapeHtml(error.message)}</div>`; return }
+      if (!data || data.length === 0) {
+        wrap.innerHTML = `<div class="empty">
+          <p class="empty-title">No routes in the ledger yet.</p>
+          <p class="empty-sub">Every long road begins as an intention.</p>
+        </div>
+        <div class="text-center mt-4"><a class="btn btn-ghost btn-sm" href="/trips.html">Open the Ledger</a></div>`
+        document.getElementById('statTrips').textContent = 0
+        return
+      }
+      document.getElementById('statTrips').textContent = data.length
+      wrap.innerHTML = data.map(t => {
+        const diff = (t.difficulty || 'Medium').toLowerCase()
+        const diffCls = diff === 'easy' ? 'badge-easy' : diff === 'hard' ? 'badge-hard' : 'badge-medium'
+        const date = t.trip_date
+          ? new Date(t.trip_date).toLocaleDateString(undefined, { day:'2-digit', month:'short', year:'numeric' })
+          : '—'
+        return `
+          <div class="trip-card" data-trip-id="${t.id}">
+            <div class="glyph">${t.distance_km ? Math.round(t.distance_km) : '—'}<br><span style="font-size:0.55rem;letter-spacing:0.1em">KM</span></div>
+            <div class="info">
+              <div class="title">${escapeHtml(t.title || 'Untitled route')}</div>
+              <div class="route">
+                <span>${escapeHtml(t.start_loc || '—')}</span>
+                <span style="color:var(--brass)">→</span>
+                <span>${escapeHtml(t.end_loc || '—')}</span>
+              </div>
+              <div class="meta">
+                <span>${date}</span>
+                <span class="badge ${diffCls}">${escapeHtml(t.difficulty || 'Medium')}</span>
+                <span class="badge">${t.is_public ? 'Public' : 'Private'}</span>
+              </div>
+            </div>
+            <div class="stack gap-2" style="flex-shrink:0">
+              <button class="btn btn-burgundy btn-sm" data-del="${t.id}">Remove</button>
+            </div>
+          </div>
+        `
+      }).join('')
+
+      wrap.querySelectorAll('[data-del]').forEach(btn => {
+        btn.addEventListener('click', async () => {
+          const id = btn.dataset.del
+          const ok = await window.bpAsk('Remove this route from the ledger?', { title: 'Remove route?', confirmText: 'Remove', danger: true })
+          if (!ok) return
+          const { error } = await supabase.from('trips').delete().eq('id', id).eq('user_id', user.id)
+          if (error) return notify('Could not remove that route.', true)
+          btn.closest('.trip-card').remove()
+          notify('Route removed.')
+          const n = document.querySelectorAll('#tab-trips-body .trip-card').length
+          document.getElementById('statTrips').textContent = n
+          if (n === 0) renderMyTrips()
+        })
+      })
+    }
+
+    // ── Helpers ─────────────────────────────────────────
+    function timeAgo(iso) {
+      const t = new Date(iso).getTime()
+      const diff = Math.max(0, (Date.now() - t) / 1000)
+      if (diff < 60)        return 'just now'
+      if (diff < 3600)      return `${Math.floor(diff/60)}m ago`
+      if (diff < 86400)     return `${Math.floor(diff/3600)}h ago`
+      if (diff < 86400*7)   return `${Math.floor(diff/86400)}d ago`
+      const d = new Date(iso)
+      return d.toLocaleDateString(undefined, { day:'2-digit', month:'short' })
+    }
+    function escapeHtml(s){ return String(s ?? '').replace(/[&<>"']/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c])) }
+    function escapeAttr(s){ return escapeHtml(s) }
+    function notify(msg, isError = false) {
+      const el = document.getElementById('notice')
+      el.textContent = msg
+      el.classList.toggle('error', isError)
+      el.classList.add('show')
+      clearTimeout(notify._t)
+      notify._t = setTimeout(() => el.classList.remove('show'), 2400)
+    }
   </script>
 
 </body>
