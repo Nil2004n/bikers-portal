@@ -195,8 +195,10 @@
       })
       if (error) {
         setLoading(false)
-        if (/already registered/i.test(error.message)) fieldErr('email', 'An account with that email already exists.')
-        else fieldErr('formErr', error.message)
+        const msg = error.message || ''
+        if (/already registered/i.test(msg))        fieldErr('email', 'An account with that email already exists.')
+        else if (/rate|limit|exceeded/i.test(msg))  fieldErr('formErr', 'Email service is at its hourly limit. Disable email confirmation in your Supabase dashboard (Authentication → Sign In/Up) or configure a custom SMTP, then try again.')
+        else                                         fieldErr('formErr', msg)
         return
       }
       if (!data.session) {
