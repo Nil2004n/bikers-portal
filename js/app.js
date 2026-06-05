@@ -24,27 +24,27 @@
   /* ── 1. Tailwind config (must precede CDN script) ───────── */
   window.tailwind = window.tailwind || {}
   window.tailwind.config = {
-    darkMode: 'class',
     theme: {
       extend: {
         colors: {
-          ink:      { 950:'#0c0b09', 900:'#0d0c0a', 850:'#131110', 800:'#141210', 750:'#181614', 700:'#1a1714', 600:'#201d19', 500:'#272320', 400:'#3a3129' },
-          bone:     { DEFAULT:'#f0e8d8', soft:'#e8e0d2', muted:'#a89880', dim:'#6b5c4a' },
-          brass:    { DEFAULT:'#c9a84c', light:'#e0c070', dark:'#9e7c2c', deep:'#6b5230' },
+          // Light broadsheet — token names preserved for backwards compat
+          ink:      { 950:'#0c0b09', 900:'#f5f0e8', 850:'#ede8db', 800:'#ede8db', 750:'#e6e0d0', 700:'#e6e0d0', 600:'#ddd7c5', 500:'#d4cdb8', 400:'#3a3129' },
+          bone:     { DEFAULT:'#1a1409', soft:'#1a1409', muted:'#5a4e3c', dim:'#9a8c78' },
+          brass:    { DEFAULT:'#c9a84c', light:'#d8bb5e', dark:'#9e7c2c', deep:'#6b5230' },
           burgundy: { DEFAULT:'#7a2d2d', deep:'#5a1f1f' },
-          leather:  '#7a4b2a',
-          bronze:   { DEFAULT:'rgba(255,235,195,0.14)', light:'rgba(255,235,195,0.08)' },
+          leather:  '#1a1409',
+          bronze:   { DEFAULT:'rgba(26,20,9,0.20)', light:'rgba(26,20,9,0.10)' },
         },
         fontFamily: {
-          sans:  ['"Cabinet Grotesk"','"Satoshi"','Inter','system-ui','sans-serif'],
-          serif: ['"Cormorant Garamond"','"Fraunces"','Georgia','serif'],
+          sans:  ['"DM Sans"','Inter','system-ui','sans-serif'],
+          serif: ['"Playfair Display"','"Cormorant Garamond"','Georgia','serif'],
         },
         boxShadow: {
-          'inner-deep': 'inset 0 1px 0 rgba(255,235,195,0.04), inset 0 0 0 1px rgba(0,0,0,0.4)',
-          'panel': '0 1px 0 rgba(255,235,195,0.03), 0 8px 24px rgba(0,0,0,0.35)',
-          'brass-glow': '0 0 0 1px rgba(201,168,76,0.35), 0 0 14px rgba(201,168,76,0.18)',
+          'inner-deep': 'inset 0 1px 0 rgba(26,20,9,0.04), inset 0 0 0 1px rgba(26,20,9,0.10)',
+          'panel':      '0 1px 0 rgba(26,20,9,0.04), 0 8px 24px rgba(26,20,9,0.10)',
+          'brass-glow': '0 0 0 1px rgba(201,168,76,0.40), 0 0 14px rgba(201,168,76,0.18)',
         },
-        borderRadius: { sm:'3px', DEFAULT:'6px', md:'6px', lg:'8px', xl:'12px' },
+        borderRadius: { sm:'3px', DEFAULT:'5px', md:'5px', lg:'8px', xl:'12px' },
       },
     },
     safelist: [
@@ -97,7 +97,7 @@
     const px = size || 36
     const initials = bp.initialsOf(name)
     if (url) {
-      return `<img src="${bp.esc(url)}" alt="" class="rounded-full object-cover bg-ink-700" style="width:${px}px;height:${px}px" onerror="this.outerHTML=window.bp.fallbackAvatar(window.bp.initialsOf('${bp.esc(name || '').replace(/'/g, "\\'")}'),${px})" />`
+      return `<img src="${bp.esc(url)}" alt="" class="avatar-img" style="width:${px}px;height:${px}px" onerror="this.outerHTML=window.bp.fallbackAvatar(window.bp.initialsOf('${bp.esc(name || '').replace(/'/g, "\\'")}'),${px})" />`
     }
     return bp.fallbackAvatar(initials, px)
   }
@@ -162,7 +162,6 @@
         .eq('id', u.id)
         .maybeSingle()
       if (error) {
-        // RLS or table missing — fall back to auth metadata so the navbar still renders
         bp.currentProfile = {
           id: u.id,
           username: u.user_metadata?.username || (u.email ? u.email.split('@')[0] : 'rider'),
@@ -224,65 +223,69 @@
       })
       if (insErr) throw insErr
       localStorage.removeItem('bp_pending_profile')
-      // refresh cached profile
       bp.currentProfile = null
       return { ok: true }
     } catch (e) {
-      // keep pending data so the user can retry
       return { ok: false, reason: (e && e.message) || 'unknown' }
     }
   }
 
   /* ── 4. Navbar ──────────────────────────────────────────── */
   const NAV = [
-    { key: 'feed',            label: 'Feed',        href: '/feed.html' },
-    { key: 'bikes',           label: 'Machines',    href: '/bikes.html' },
-    { key: 'trips',           label: 'Routes',      href: '/trips.html' },
-    { key: 'recommendations', label: 'Concierge',   href: '/recommendations.html' },
+    { key: 'feed',            label: 'Journal',   href: '/feed.html' },
+    { key: 'bikes',           label: 'Machines',  href: '/bikes.html' },
+    { key: 'trips',           label: 'Routes',    href: '/trips.html' },
+    { key: 'recommendations', label: 'Concierge', href: '/recommendations.html' },
   ]
 
   function navLinkHTML(item, active) {
     const on = item.key === active
     return `<a href="${item.href}" class="nav-link ${on ? 'is-active' : ''}">${item.label}</a>`
   }
-  function mobileLinkHTML(item, active) {
-    const on = item.key === active
-    return `<a href="${item.href}" class="nav-link ${on ? 'is-active' : ''}">${item.label}</a>`
-  }
 
-  const LOGO_SVG = `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 48 48" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
-    <circle cx="24" cy="24" r="22" stroke-width="1.6"/>
-    <circle cx="24" cy="24" r="18.4" stroke-width="0.5" stroke-opacity="0.45"/>
-    <g stroke-width="0.9" stroke-opacity="0.45">
-      <line x1="24" y1="5.6" x2="24" y2="42.4"/>
-      <line x1="5.6" y1="24" x2="42.4" y2="24"/>
-      <line x1="10.6" y1="10.6" x2="37.4" y2="37.4"/>
-      <line x1="37.4" y1="10.6" x2="10.6" y2="37.4"/>
+  const LOGO_SVG = `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+    <circle cx="12" cy="12" r="11" stroke-width="1.5"/>
+    <circle cx="12" cy="12" r="9.4" stroke-width="0.4" stroke-opacity="0.45"/>
+    <g stroke-width="0.45" stroke-opacity="0.45">
+      <line x1="12" y1="3" x2="12" y2="21"/>
+      <line x1="3"  y1="12" x2="21" y2="12"/>
     </g>
-    <circle cx="24" cy="24" r="9" stroke-width="1.1"/>
-    <text x="24" y="28.5" text-anchor="middle" font-family="Cormorant Garamond, Georgia, serif" font-size="12.5" font-weight="600" fill="currentColor" stroke="none" letter-spacing="0.4">BP</text>
+    <g stroke-width="0.35" stroke-opacity="0.30">
+      <line x1="6.4"  y1="6.4"  x2="17.6" y2="17.6"/>
+      <line x1="17.6" y1="6.4"  x2="6.4"  y2="17.6"/>
+    </g>
+    <circle cx="12" cy="12" r="1.6" fill="currentColor" stroke="none"/>
+    <g stroke-width="0.8" stroke-opacity="0.65">
+      <line x1="12" y1="0.6" x2="12" y2="2.2"/>
+      <line x1="12" y1="21.8" x2="12" y2="23.4"/>
+      <line x1="0.6" y1="12" x2="2.2" y2="12"/>
+      <line x1="21.8" y1="12" x2="23.4" y2="12"/>
+    </g>
   </svg>`
 
   function renderNavbarSkeleton(active) {
     const host = document.getElementById('bp-navbar')
     if (!host) return
-    host.className = 'navbar'
+    host.className = 'site-nav'
     host.setAttribute('data-active', active || '')
+    const onSearch = /\/search\.html?(\?|$)/.test(window.location.pathname + window.location.search)
+    const searchLink = `<a href="/search.html" class="nav-search ${onSearch ? 'is-on' : ''}" id="bp-search-link" aria-label="Search the portal" aria-current="${onSearch ? 'page' : 'false'}">
+      <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="11" cy="11" r="7"/><path d="m20 20-3.5-3.5"/></svg>
+    </a>`
     host.innerHTML = `
       <div class="page-wide">
-        <div class="navbar-inner">
-          <a href="/feed.html" class="navbar-brand" aria-label="Bikers Portal — home">
+        <div class="nav-inner">
+          <a href="/feed.html" class="nav-brand" aria-label="Bikers Portal — home">
             <span class="brand-icon">${LOGO_SVG}</span>
-            <span class="brand-word">
-              <strong>Bikers Portal</strong>
-              <em>Riding Society</em>
-            </span>
+            <span class="brand-word">Bikers Portal</span>
           </a>
-          <nav class="navbar-nav" aria-label="Primary">${NAV.map((i) => navLinkHTML(i, active)).join('')}</nav>
-          <div class="navbar-actions">
-            <div class="relative">
+          <nav class="nav-links" aria-label="Primary">${NAV.map((i) => navLinkHTML(i, active)).join('')}</nav>
+          <div class="nav-actions">
+            ${searchLink}
+            <div style="position:relative">
               <button id="bp-avatar-btn" class="nav-avatar" aria-haspopup="menu" aria-expanded="false" aria-label="Account menu">
-                <span class="skeleton avatar" style="width:36px;height:36px"></span>
+                <span class="nav-avatar-inner"><span class="skeleton" style="width:36px;height:36px;border-radius:9999px;display:inline-block"></span></span>
+                <span id="bp-pending-dot" class="bp-pending-dot" hidden aria-label="Pending follow requests"></span>
               </button>
               <div id="bp-avatar-menu" class="hidden user-menu">
                 <div class="user-menu-header">
@@ -297,19 +300,19 @@
               </div>
             </div>
             <button id="bp-burger" class="nav-burger" aria-label="Toggle menu" aria-expanded="false">
-              <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"><path d="M3 6h18M3 12h18M3 18h18"/></svg>
+              <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"><path d="M3 6h18M3 12h18M3 18h18"/></svg>
             </button>
           </div>
         </div>
       </div>
-      <div id="bp-mobile-menu" class="navbar-mobile">
-        <nav aria-label="Primary mobile">${NAV.map((i) => mobileLinkHTML(i, active)).join('')}</nav>
-        <div class="mobile-actions" style="padding:0 var(--r-page-pad)">
+      <div id="bp-mobile-menu" class="nav-mobile">
+        <nav aria-label="Primary mobile">${NAV.map((i) => navLinkHTML(i, active)).join('')}</nav>
+        <div class="mobile-actions">
+          <a href="/search.html" class="nav-link">Search</a>
           <a href="/profile.html" class="nav-link">Profile</a>
         </div>
       </div>`
 
-    // burger
     const burger = document.getElementById('bp-burger')
     const mobile = document.getElementById('bp-mobile-menu')
     if (burger && mobile) burger.addEventListener('click', () => {
@@ -317,8 +320,7 @@
       burger.setAttribute('aria-expanded', String(open))
     })
 
-    // scroll shadow
-    const scroller = () => host.classList.toggle('is-scrolled', window.scrollY > 8)
+    const scroller = () => host.classList.toggle('nav-scrolled', window.scrollY > 8)
     scroller()
     window.addEventListener('scroll', scroller, { passive: true })
   }
@@ -330,7 +332,7 @@
 
     const name  = (profile && (profile.full_name || profile.username)) || 'Rider'
     const handle = profile && profile.username ? '@' + profile.username : '@rider'
-    btn.innerHTML = bp.avatarHTML(profile && profile.avatar_url, name, 36)
+    btn.innerHTML = `<span class="nav-avatar-inner">${bp.avatarHTML(profile && profile.avatar_url, name, 36)}</span><span id="bp-pending-dot" class="bp-pending-dot" hidden aria-label="Pending follow requests"></span>`
 
     const nameEl = document.getElementById('bp-menu-name')
     const handleEl = document.getElementById('bp-menu-handle')
@@ -364,6 +366,26 @@
         await mod.supabase.auth.signOut()
       } catch (_) { window.location.href = '/index.html' }
     })
+
+    paintPendingDot()
+  }
+
+  async function paintPendingDot() {
+    const dot = document.getElementById('bp-pending-dot')
+    if (!dot) return
+    try {
+      const mod = await import('./follow.js')
+      const list = await mod.getPendingRequests()
+      if (Array.isArray(list) && list.length > 0) {
+        dot.hidden = false
+        dot.setAttribute('aria-label', `${list.length} pending follow request${list.length === 1 ? '' : 's'}`)
+        dot.title = `${list.length} pending follow request${list.length === 1 ? '' : 's'}`
+      } else {
+        dot.hidden = true
+      }
+    } catch (_) {
+      dot.hidden = true
+    }
   }
 
   bp.renderNavbar = function (active) { renderNavbarSkeleton(active) }

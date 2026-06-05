@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="en" class="dark">
+<html lang="en">
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
@@ -9,17 +9,21 @@
   <script src="https://cdn.tailwindcss.com"></script>
   <link rel="stylesheet" href="./assets/style.css" />
 </head>
-<body class="bg-ink-900 text-bone">
-  <div class="canvas-grain"></div>
-
+<body>
   <script type="module" src="./js/auth-guard.js"></script>
   <header id="bp-navbar" data-active="recommendations"></header>
 
-  <main class="page-narrow" style="padding-top:32px;padding-bottom:80px">
+  <div class="founding-strip">
+    Vol. III <span class="ornament">·</span> The concierge <span class="ornament">·</span> est. MMXXIV
+  </div>
+
+  <main class="page-narrow" style="padding-top:40px;padding-bottom:80px">
 
     <header class="page-header" style="padding:24px 0 36px;text-align:center">
-      <p class="eyebrow brass" style="margin-bottom:18px;justify-content:center;display:inline-flex">The concierge</p>
-      <h1 style="text-align:center">Road Concierge</h1>
+      <p class="eyebrow eyebrow-brass" style="margin-bottom:18px;justify-content:center;display:inline-flex">The concierge</p>
+      <h1 style="font-family:var(--font-display);font-style:italic;font-weight:500;line-height:1.05;letter-spacing:-0.01em;text-align:center">
+        Road Concierge
+      </h1>
       <p class="lede" style="text-align:center;margin-left:auto;margin-right:auto">Refined route suggestions, considered by your appetite for distance, terrain, and temperament.</p>
     </header>
 
@@ -56,7 +60,7 @@
       <div class="field mb-6">
         <div class="row row-between" style="align-items:baseline;margin-bottom:8px">
           <label class="field-label" for="maxDist" style="margin:0">Max distance</label>
-          <span id="distLabel" style="font-family:var(--font-display);font-size:18px;color:var(--c-text)">300 km</span>
+          <span id="distLabel" style="font-family:var(--font-display);font-size:20px;color:var(--c-text)">300 km</span>
         </div>
         <input id="maxDist" type="range" min="50" max="1200" step="25" value="300" class="range" />
         <div class="row row-between" style="font-size:10.5px;letter-spacing:0.18em;color:var(--c-text-3);text-transform:uppercase;margin-top:6px;font-weight:500">
@@ -65,7 +69,7 @@
       </div>
 
       <div class="field mb-6">
-        <label class="field-label" for="mood">Mood <span style="color:var(--c-text-3);text-transform:none;letter-spacing:0.02em;font-size:11px">(optional)</span></label>
+        <label class="field-label" for="mood">Mood <span style="color:var(--c-text-3);text-transform:none;letter-spacing:0.02em;font-size:11px;font-weight:500">(optional)</span></label>
         <input id="mood" class="input" placeholder="calm · spirited · long-haul · scenic · technical" />
       </div>
 

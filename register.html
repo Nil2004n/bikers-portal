@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="en" class="dark">
+<html lang="en">
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
@@ -9,53 +9,35 @@
   <script src="https://cdn.tailwindcss.com"></script>
   <link rel="stylesheet" href="./assets/style.css" />
 </head>
-<body class="bg-ink-900 text-bone">
-  <div class="canvas-grain"></div>
+<body>
+  <div class="founding-strip">
+    Vol. III <span class="ornament">·</span> Membership <span class="ornament">·</span> est. MMXXIV
+  </div>
 
-  <header style="padding:32px var(--r-page-pad) 0;max-width:1280px;margin:0 auto;position:relative;z-index:1">
-    <a href="/index.html" class="navbar-brand">
-      <span class="brand-icon">
-        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 48 48" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
-          <circle cx="24" cy="24" r="22" stroke-width="1.6"/>
-          <circle cx="24" cy="24" r="18.4" stroke-width="0.5" stroke-opacity="0.45"/>
-          <g stroke-width="0.9" stroke-opacity="0.45">
-            <line x1="24" y1="5.6" x2="24" y2="42.4"/>
-            <line x1="5.6" y1="24" x2="42.4" y2="24"/>
-            <line x1="10.6" y1="10.6" x2="37.4" y2="37.4"/>
-            <line x1="37.4" y1="10.6" x2="10.6" y2="37.4"/>
-          </g>
-          <circle cx="24" cy="24" r="9" stroke-width="1.1"/>
-          <text x="24" y="28.5" text-anchor="middle" font-family="Cormorant Garamond, Georgia, serif" font-size="12.5" font-weight="600" fill="currentColor" stroke="none" letter-spacing="0.4">BP</text>
-        </svg>
-      </span>
-      <span class="brand-word">
-        <strong>Bikers Portal</strong>
-        <em>Riding Society</em>
-      </span>
+  <main class="page-splash" style="padding:48px var(--r-page-pad) 64px;position:relative;z-index:1">
+
+    <a href="/index.html" class="nav-brand" style="margin-bottom:36px;display:inline-flex">
+      <span class="brand-icon"><img src="/assets/logo.svg" alt="" /></span>
+      <span class="brand-word">Bikers Portal</span>
     </a>
-  </header>
-
-  <main class="page-narrow" style="padding:48px var(--r-page-pad) 64px;position:relative;z-index:1">
 
     <!-- ░░░ Introduction ░░░ -->
-    <header style="text-align:left;margin-bottom:36px;max-width:60ch" class="page-enter">
-      <p class="eyebrow brass" style="margin-bottom:16px">Membership begins</p>
-      <h1 style="font-size:clamp(28px,3.6vw,38px);line-height:1.08;letter-spacing:-0.01em">Begin your record on the road.</h1>
+    <header style="margin:24px 0 36px;max-width:60ch" class="page-enter">
+      <p class="eyebrow eyebrow-brass" style="margin-bottom:18px">Membership begins</p>
+      <h1 style="font-family:var(--font-display);font-style:italic;font-weight:500;line-height:1.05;letter-spacing:-0.01em">
+        Begin your record on the road.
+      </h1>
       <p class="lede" style="font-size:15px;line-height:1.6;color:var(--c-text-2);margin-top:18px">
         Three things shape a rider: <em>identity</em>, <em>discipline</em>, and <em>taste</em>. We ask for all three.
       </p>
     </header>
 
     <!-- ░░░ The Card ░░░ -->
-    <form id="regForm" class="card card-stitched page-enter delay-1" style="padding:clamp(22px, 4vw, 36px)" novalidate>
+    <form id="regForm" class="card card-stitched page-enter delay-1" style="padding:clamp(24px, 4vw, 40px)" novalidate>
 
       <!-- Identity -->
-      <section>
-        <div class="form-roman">
-          <span class="roman">I.</span>
-          <span class="form-roman-text">Identity</span>
-          <span class="line"></span>
-        </div>
+      <section class="form-section">
+        <div class="section-label">I · Identity</div>
 
         <div class="form-grid-2">
           <div class="field">
@@ -72,15 +54,9 @@
         </div>
       </section>
 
-      <div class="rule" style="margin:32px 0"></div>
-
       <!-- Access -->
-      <section>
-        <div class="form-roman">
-          <span class="roman">II.</span>
-          <span class="form-roman-text">Access</span>
-          <span class="line"></span>
-        </div>
+      <section class="form-section">
+        <div class="section-label">II · Access</div>
 
         <div class="field mb-5">
           <label for="email" class="field-label">Email</label>
@@ -102,15 +78,9 @@
         </div>
       </section>
 
-      <div class="rule" style="margin:32px 0"></div>
-
       <!-- Machine -->
-      <section>
-        <div class="form-roman">
-          <span class="roman">III.</span>
-          <span class="form-roman-text">The machine</span>
-          <span class="line"></span>
-        </div>
+      <section class="form-section">
+        <div class="section-label">III · The machine</div>
 
         <div class="field">
           <label for="bike_model" class="field-label">Preferred machine</label>
@@ -119,7 +89,7 @@
         </div>
 
         <div class="field" style="margin-top:24px">
-          <label class="field-label">Avatar <span style="color:var(--c-text-3);text-transform:none;letter-spacing:0.02em;font-size:11px">(optional)</span></label>
+          <label class="field-label">Avatar <span style="color:var(--c-text-3);text-transform:none;letter-spacing:0.02em;font-size:11px;font-weight:500">(optional)</span></label>
           <div class="avatar-uploader">
             <div id="avatarPreview" class="avatar avatar-md">?</div>
             <div class="avatar-uploader-info">
@@ -134,11 +104,9 @@
         </div>
       </section>
 
-      <div class="rule" style="margin:32px 0"></div>
+      <p id="formErr" class="msg msg-error hidden" style="margin:20px 0 0"></p>
 
-      <p id="formErr" class="msg msg-error hidden" style="margin-bottom:16px"></p>
-
-      <button id="submitBtn" type="submit" class="btn btn-primary full" style="margin-top:8px">
+      <button id="submitBtn" type="submit" class="btn btn-primary full" style="margin-top:24px">
         <span class="btn-label">Take the oath</span>
       </button>
 
@@ -149,11 +117,11 @@
     </form>
 
     <!-- ░░░ The doctrine — small editorial footer ░░░ -->
-    <section style="margin-top:48px;display:grid;grid-template-columns:1fr;gap:24px" class="fade-up delay-2">
-      <p class="editorial-quote" style="max-width:60ch;margin:0">
+    <section class="fade-up delay-2" style="margin-top:48px">
+      <div class="editorial-quote" style="max-width:60ch">
         Membership is not a feature. It is a quiet commitment to ride well, write honestly, and respect the road and the people on it.
-      </p>
-      <p class="eyebrow eyebrow-dim" style="margin-top:8px">House doctrine</p>
+      </div>
+      <p class="eyebrow eyebrow-dim" style="margin-top:12px">House doctrine</p>
     </section>
   </main>
 
@@ -173,7 +141,6 @@
       window.location.replace('/feed.html')
     }
 
-    // Avatar preview
     avatarFile.addEventListener('change', () => {
       const f = avatarFile.files && avatarFile.files[0]
       if (!f) return
@@ -248,8 +215,8 @@
         setLoading(false)
         form.innerHTML = `
           <div class="stack stack-4" style="text-align:center;padding:32px 0">
-            <p class="eyebrow" style="color:var(--c-brass)">Confirmation sent</p>
-            <h2 style="font-size:24px;margin:8px 0 0">Check your email, rider.</h2>
+            <p class="eyebrow eyebrow-brass">Confirmation sent</p>
+            <h2 style="font-family:var(--font-display);font-style:italic;font-weight:500;font-size:26px;margin:8px 0 0">Check your email, rider.</h2>
             <p style="color:var(--c-text-2);font-size:14px;line-height:1.6;max-width:36ch;margin:14px auto 0">
               We sent a confirmation link to <span style="color:var(--c-text)">${email}</span>.
               Click it, then return here to sign in and your record will be waiting.

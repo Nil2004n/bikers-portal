@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="en" class="dark">
+<html lang="en">
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
@@ -9,21 +9,25 @@
   <script src="https://cdn.tailwindcss.com"></script>
   <link rel="stylesheet" href="./assets/style.css" />
 </head>
-<body class="bg-ink-900 text-bone">
-  <div class="canvas-grain"></div>
-
+<body>
   <script type="module" src="./js/auth-guard.js"></script>
   <header id="bp-navbar" data-active="trips"></header>
 
-  <main class="page" style="padding-top:32px;padding-bottom:80px">
+  <div class="founding-strip">
+    Vol. III <span class="ornament">·</span> The route desk <span class="ornament">·</span> est. MMXXIV
+  </div>
 
-    <header class="page-header" style="padding:24px 0 32px">
-      <p class="eyebrow brass" style="margin-bottom:14px">The route desk</p>
-      <h1>Plan the next long road with intention.</h1>
+  <main class="page" style="padding-top:40px;padding-bottom:80px">
+
+    <header class="page-header" style="padding:24px 0 36px">
+      <p class="eyebrow eyebrow-brass" style="margin-bottom:14px">The route desk</p>
+      <h1 style="font-family:var(--font-display);font-style:italic;font-weight:500;line-height:1.05;letter-spacing:-0.01em">
+        Plan the next long road with intention.
+      </h1>
       <p class="lede">Every long road begins as an intention. Sketch it, then ride it.</p>
     </header>
 
-    <div class="bp-grid-2col">
+    <div class="trips-grid">
 
       <!-- ░░░ LEFT — planner + ledger ░░░ -->
       <section class="col-main stack stack-7" style="min-width:0">
@@ -31,7 +35,7 @@
         <!-- Planner form -->
         <form id="tripForm" class="card card-body card-stitched fade-up" novalidate>
           <div class="row row-between mb-5" style="align-items:center">
-            <p class="eyebrow brass" id="tripFormTitle">A new route</p>
+            <p class="eyebrow eyebrow-brass" id="tripFormTitle">A new route</p>
             <button type="button" id="tripFormClose" class="btn-subtle hidden">Close</button>
           </div>
 
@@ -125,20 +129,20 @@
       <!-- ░░░ RIGHT — cartography + house note ░░░ -->
       <aside class="col-aside stack stack-5">
         <section class="map-board" style="min-height:340px;padding:24px;display:flex;flex-direction:column;justify-content:flex-end;position:relative;z-index:1">
-          <p class="eyebrow brass" style="margin-bottom:12px;position:relative;z-index:2">Cartography</p>
-          <p style="font-family:var(--font-display);font-size:19px;color:var(--c-text);line-height:1.25;position:relative;z-index:2;max-width:24ch">Route cartography arrives in the next build.</p>
+          <p class="eyebrow eyebrow-brass" style="margin-bottom:12px;position:relative;z-index:2">Cartography</p>
+          <p style="font-family:var(--font-display);font-style:italic;font-size:20px;color:var(--c-text);line-height:1.25;position:relative;z-index:2;max-width:24ch">Route cartography arrives in the next build.</p>
           <p style="color:var(--c-text-2);font-size:12.5px;line-height:1.55;margin-top:10px;position:relative;z-index:2;max-width:30ch">Until then, sketch your intentions on paper and let the road surprise you.</p>
         </section>
 
         <section class="card card-body card-stitched">
-          <p class="eyebrow brass" style="margin-bottom:14px">House note</p>
+          <p class="eyebrow eyebrow-brass" style="margin-bottom:14px">House note</p>
           <p class="italic-serif" style="font-size:17px;line-height:1.45">"Journeys carved in dust and chrome."</p>
           <div class="rule" style="margin:18px 0 12px"></div>
           <p class="eyebrow eyebrow-dim">Riding Brotherhood</p>
         </section>
 
         <section class="card card-body">
-          <p class="eyebrow brass" style="margin-bottom:14px">Doctrine</p>
+          <p class="eyebrow eyebrow-brass" style="margin-bottom:14px">Doctrine</p>
           <ol class="feature-list" style="margin:0">
             <li>
               <span class="num">i.</span>
@@ -159,13 +163,13 @@
   </main>
 
   <style>
-    .bp-grid-2col {
+    .trips-grid {
       display: grid;
       grid-template-columns: 1fr;
       gap: 32px;
     }
     @media (min-width: 1024px) {
-      .bp-grid-2col { grid-template-columns: minmax(0, 1fr) 340px; gap: 40px; }
+      .trips-grid { grid-template-columns: minmax(0, 1fr) 340px; gap: 40px; }
     }
     .grid-trips {
       display: grid;
@@ -179,6 +183,29 @@
       gap: 16px;
     }
     @media (min-width: 700px) { .grid-tripform { grid-template-columns: 1fr 1fr; } }
+    .feature-list li {
+      display: flex;
+      align-items: flex-start;
+      gap: 12px;
+      padding: 12px 0;
+      border-bottom: 1px solid var(--c-border);
+      font-size: 13.5px;
+      line-height: 1.55;
+      color: var(--c-text-2);
+    }
+    .feature-list li:last-child { border-bottom: 0; }
+    .feature-list .num {
+      font-family: var(--font-display);
+      font-style: italic;
+      color: var(--c-text-3);
+      font-size: 14px;
+      flex-shrink: 0;
+      min-width: 22px;
+    }
+    .feature-list .text strong {
+      color: var(--c-text);
+      font-weight: 600;
+    }
   </style>
 
   <script type="module">

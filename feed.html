@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="en" class="dark">
+<html lang="en">
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
@@ -9,22 +9,26 @@
   <script src="https://cdn.tailwindcss.com"></script>
   <link rel="stylesheet" href="./assets/style.css" />
 </head>
-<body class="bg-ink-900 text-bone">
-  <div class="canvas-grain"></div>
-
+<body>
   <script type="module" src="./js/auth-guard.js"></script>
   <header id="bp-navbar" data-active="feed"></header>
 
-  <main class="page" style="padding-top:32px;padding-bottom:80px">
+  <div class="founding-strip">
+    Vol. III <span class="ornament">·</span> The journal <span class="ornament">·</span> est. MMXXIV
+  </div>
+
+  <main class="page" style="padding-top:40px;padding-bottom:80px">
 
     <!-- ░░ Page header ░░ -->
-    <header class="page-header" style="padding:24px 0 32px">
-      <p class="eyebrow brass" style="margin-bottom:14px">The journal</p>
-      <h1>Notes from the road.</h1>
+    <header class="page-header" style="padding:24px 0 36px">
+      <p class="eyebrow eyebrow-brass" style="margin-bottom:16px">The journal</p>
+      <h1 style="font-family:var(--font-display);font-style:italic;font-weight:500;line-height:1.05;letter-spacing:-0.01em">
+        Notes from the road.
+      </h1>
       <p class="lede">Where the brotherhood leaves its marks — routes, machines, and the quiet reflections between them.</p>
     </header>
 
-    <div class="bp-grid-3col">
+    <div class="feed-grid">
 
       <!-- ░░░ LEFT RAIL ░░░ -->
       <aside class="col-left stack stack-5">
@@ -49,7 +53,7 @@
         </section>
 
         <section class="card card-body card-stitched fade-up delay-1">
-          <p class="eyebrow brass" style="margin-bottom:14px">Motto</p>
+          <p class="eyebrow eyebrow-brass" style="margin-bottom:14px">Motto</p>
           <p class="editorial-quote">"Keep your machine, miles, and memories in one place."</p>
           <div class="rule" style="margin:18px 0 12px"></div>
           <p class="eyebrow eyebrow-dim">Riding Brotherhood</p>
@@ -133,17 +137,17 @@
       <aside class="col-right stack stack-5">
 
         <section class="card card-body fade-up">
-          <p class="eyebrow brass" style="margin-bottom:16px">Riders of note</p>
+          <p class="eyebrow eyebrow-brass" style="margin-bottom:16px">Riders of note</p>
           <ul id="ridersList" class="stack stack-4"></ul>
         </section>
 
         <section class="card card-body fade-up delay-1">
-          <p class="eyebrow brass" style="margin-bottom:16px">Routes in conversation</p>
+          <p class="eyebrow eyebrow-brass" style="margin-bottom:16px">Routes in conversation</p>
           <ul id="routesList" class="stack stack-4"></ul>
         </section>
 
         <section class="card card-body card-stitched fade-up delay-2">
-          <p class="eyebrow brass" style="margin-bottom:14px">Garage signals</p>
+          <p class="eyebrow eyebrow-brass" style="margin-bottom:14px">Garage signals</p>
           <p class="italic-serif" style="font-size:16px;line-height:1.45">"Maintain the machine. Respect the road. The rest is noise."</p>
           <div class="rule" style="margin:18px 0 12px"></div>
           <p class="eyebrow eyebrow-dim">House note</p>
@@ -159,22 +163,22 @@
 
   <style>
     /* 3-col grid that collapses gracefully on mobile */
-    .bp-grid-3col {
+    .feed-grid {
       display: grid;
       grid-template-columns: 1fr;
       gap: 24px;
     }
     @media (min-width: 900px) {
-      .bp-grid-3col {
-        grid-template-columns: 260px minmax(0, 1fr);
+      .feed-grid {
+        grid-template-columns: 240px minmax(0, 1fr);
         gap: 28px;
       }
       .col-right { display: none; }
     }
     @media (min-width: 1200px) {
-      .bp-grid-3col {
-        grid-template-columns: 260px minmax(0, 1fr) 280px;
-        gap: 36px;
+      .feed-grid {
+        grid-template-columns: 240px minmax(0, 1fr) 280px;
+        gap: 40px;
       }
       .col-right { display: block; }
     }
@@ -183,10 +187,52 @@
       .col-main { order: 1; }
       .col-right { order: 3; }
     }
+
+    /* ── Right-rail follow button (lightweight, no full .btn) ─ */
+    .rail-follow {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      width: 44px;
+      height: 44px;
+      min-width: 44px;
+      min-height: 44px;
+      flex-shrink: 0;
+      color: var(--c-text-3);
+      background: transparent;
+      border: 0;
+      border-radius: 9999px;
+      cursor: pointer;
+      transition: color var(--t-fast), background var(--t-fast);
+    }
+    .rail-follow:hover { background: var(--c-surface); color: var(--c-text); }
+    .rail-follow:focus-visible { outline: 2px solid var(--c-text); outline-offset: 2px; }
+    .rail-follow[disabled] { opacity: 0.45; cursor: not-allowed; }
+    .rail-follow .glyph {
+      font-family: var(--font-body);
+      font-size: 18px;
+      font-weight: 500;
+      line-height: 1;
+      letter-spacing: 0;
+    }
+    .rail-follow.is-follow   { color: var(--c-brass); }
+    .rail-follow.is-follow:hover  { color: var(--c-brass-deep); }
+    .rail-follow.is-pending  { color: var(--c-text-3); }
+    .rail-follow.is-accepted { color: var(--c-text-3); }
+    .rail-follow.pop { animation: railFollowPop 220ms cubic-bezier(0.16, 1, 0.3, 1); }
+    @keyframes railFollowPop {
+      0%   { transform: scale(1); }
+      50%  { transform: scale(0.88); }
+      100% { transform: scale(1); }
+    }
   </style>
 
   <script type="module">
     import { supabase } from './js/supabase.js'
+    import {
+      getFollowStatus, sendFollowRequest, cancelFollowRequest,
+      acceptFollowRequest, unfollowUser,
+    } from './js/follow.js'
     const { esc, timeAgo, avatarHTML, toast } = window.bp
     const confirmModal = window.bp.confirm
 
@@ -234,22 +280,99 @@
     }
 
     /* ── Right sidebars ─────────────────────────────────── */
+
+    /* Compact follow button factory — small glyph only, no .btn chrome */
+    function railFollowBtnHTML(targetId, status) {
+      let glyph, extra, ariaLabel
+      switch (status) {
+        case 'accepted':
+          glyph = '✓'; extra = 'is-accepted'; ariaLabel = 'Unfollow'; break
+        case 'pending_sent':
+          glyph = '•'; extra = 'is-pending';  ariaLabel = 'Cancel follow request'; break
+        case 'pending_received':
+          glyph = '+'; extra = 'is-follow';   ariaLabel = 'Accept follow request'; break
+        default: // 'none'
+          glyph = '+'; extra = 'is-follow';   ariaLabel = 'Follow'; break
+      }
+      return `<button class="rail-follow ${extra}" data-target="${esc(targetId)}" data-state="${esc(status)}" aria-label="${esc(ariaLabel)}" title="${esc(ariaLabel)}"><span class="glyph">${glyph}</span></button>`
+    }
+    function railSwap(btn, newStatus) {
+      const target = btn.getAttribute('data-target')
+      btn.outerHTML = railFollowBtnHTML(target, newStatus)
+    }
+
     async function paintRiders() {
       const list = document.getElementById('ridersList')
+      if (!list) return
       const { data } = await supabase.from('profiles')
         .select('id, username, full_name, avatar_url, bike_model')
         .neq('id', me.id).limit(20)
       const picks = (data || []).sort(() => Math.random() - 0.5).slice(0, 5)
       if (!picks.length) { list.innerHTML = `<li style="font-size:12.5px;color:var(--c-text-3);font-style:italic">No fellow riders yet.</li>`; return }
-      list.innerHTML = picks.map(p => `
+      // Resolve follow status for every pick in parallel
+      const decorated = await Promise.all(picks.map(async (p) => {
+        let status = 'none'
+        try { status = await getFollowStatus(p.id) } catch (_) { /* keep none */ }
+        return { ...p, __status: status }
+      }))
+      list.innerHTML = decorated.map(p => `
         <li class="row row-3" style="align-items:center">
           ${avatarHTML(p.avatar_url, p.full_name || p.username, 36)}
           <div class="stack stack-1 min-w-0" style="flex:1">
             <p class="truncate" style="font-size:13.5px;color:var(--c-text)">${esc(p.full_name || p.username)}</p>
             <p class="truncate" style="font-size:11.5px;color:var(--c-text-3)">${p.bike_model ? esc(p.bike_model) : '@' + esc(p.username)}</p>
           </div>
+          ${railFollowBtnHTML(p.id, p.__status)}
         </li>`).join('')
     }
+
+    /* Rail follow click — optimistic UI + in-flight guard */
+    const railInFlight = new Set()
+    document.getElementById('ridersList').addEventListener('click', async (e) => {
+      const btn = e.target.closest('.rail-follow')
+      if (!btn || btn.disabled) return
+      const targetId = btn.getAttribute('data-target')
+      const cur      = btn.getAttribute('data-state') || 'none'
+      if (railInFlight.has(targetId)) return
+      railInFlight.add(targetId)
+      btn.disabled = true
+      btn.classList.add('pop')
+      setTimeout(() => btn.classList.remove('pop'), 240)
+      try {
+        let next
+        if (cur === 'none') {
+          const r = await sendFollowRequest(targetId)
+          if (!r.success) throw new Error(r.error)
+          next = 'pending_sent'
+        } else if (cur === 'pending_sent') {
+          const r = await cancelFollowRequest(targetId)
+          if (!r.success) throw new Error(r.error)
+          next = 'none'
+        } else if (cur === 'pending_received') {
+          const r = await acceptFollowRequest(targetId)
+          if (!r.success) throw new Error(r.error)
+          next = 'accepted'
+        } else if (cur === 'accepted') {
+          const r = await unfollowUser(targetId)
+          if (!r.success) throw new Error(r.error)
+          next = 'none'
+        }
+        railSwap(btn, next)
+        if (window.bp.toast) {
+          const msgs = {
+            pending_sent:    'Request sent.',
+            none:            'Unfollowed.',
+            accepted:        'Now following each other.',
+          }
+          if (msgs[next]) window.bp.toast(msgs[next])
+        }
+      } catch (err) {
+        if (window.bp.toast) window.bp.toast(err.message || 'Couldn’t update follow.', 'error')
+        btn.disabled = false
+      } finally {
+        railInFlight.delete(targetId)
+      }
+    })
     async function paintRoutes() {
       const list = document.getElementById('routesList')
       const { data } = await supabase.from('trips')
@@ -417,7 +540,6 @@
       const cur = state.likeCounts.get(postId) || 0
       state.likeCounts.set(postId, isLiked ? Math.max(0, cur - 1) : cur + 1)
       paintLike(btn, postId)
-      // pop animation on the svg
       const svg = btn.querySelector('svg')
       if (svg) { svg.classList.remove('like-pop'); void svg.offsetWidth; svg.classList.add('like-pop') }
       try {

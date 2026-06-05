@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="en" class="dark">
+<html lang="en">
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
@@ -9,20 +9,24 @@
   <script src="https://cdn.tailwindcss.com"></script>
   <link rel="stylesheet" href="./assets/style.css" />
 </head>
-<body class="bg-ink-900 text-bone">
-  <div class="canvas-grain"></div>
-
+<body>
   <script type="module" src="./js/auth-guard.js"></script>
   <header id="bp-navbar" data-active="bikes"></header>
 
-  <main class="page" style="padding-top:32px;padding-bottom:80px">
+  <div class="founding-strip">
+    Vol. III <span class="ornament">·</span> The garage <span class="ornament">·</span> est. MMXXIV
+  </div>
+
+  <main class="page" style="padding-top:40px;padding-bottom:80px">
 
     <!-- ░░ Header ░░ -->
-    <header class="page-header" style="padding:24px 0 32px;display:grid;grid-template-columns:1fr;gap:24px">
+    <header class="page-header" style="padding:24px 0 36px;display:grid;grid-template-columns:1fr;gap:24px">
       <div class="row row-between" style="align-items:flex-end;flex-wrap:wrap;gap:16px">
         <div style="max-width:60ch">
-          <p class="eyebrow brass" style="margin-bottom:14px">The garage</p>
-          <h1>Machines worth remembering.</h1>
+          <p class="eyebrow eyebrow-brass" style="margin-bottom:14px">The garage</p>
+          <h1 style="font-family:var(--font-display);font-style:italic;font-weight:500;line-height:1.05;letter-spacing:-0.01em">
+            Machines worth remembering.
+          </h1>
           <p class="lede">A quiet registry of the motorcycles that carry us — kept by the riders who love them.</p>
         </div>
         <button id="addBtn" class="btn btn-primary">
@@ -36,7 +40,7 @@
     <section id="formPanel" class="hidden mb-7">
       <form id="bikeForm" class="card card-body card-stitched" novalidate>
         <div class="row row-between mb-6" style="align-items:center">
-          <p class="eyebrow brass" id="formTitle">A new entry</p>
+          <p class="eyebrow eyebrow-brass" id="formTitle">A new entry</p>
           <button type="button" id="formClose" class="btn-subtle">Close</button>
         </div>
 
