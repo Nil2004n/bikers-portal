@@ -1,39 +1,15 @@
-<?xml version="1.0" encoding="UTF-8"?>
-<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 240 60" aria-label="Bikers Portal — Road Society">
-  <defs>
-    <linearGradient id="brass" x1="0%" y1="0%" x2="0%" y2="100%">
-      <stop offset="0%" stop-color="#c89e69"/>
-      <stop offset="50%" stop-color="#b08d57"/>
-      <stop offset="100%" stop-color="#8a6a3d"/>
-    </linearGradient>
-  </defs>
-
-  <!-- Outer brass ring -->
-  <circle cx="30" cy="30" r="25" fill="none" stroke="url(#brass)" stroke-width="1.2"/>
-  <!-- Inner hairline ring -->
-  <circle cx="30" cy="30" r="20.5" fill="none" stroke="#b08d57" stroke-width="0.4" opacity="0.55"/>
-
-  <!-- Horizontal road line -->
-  <line x1="6" y1="30" x2="54" y2="30" stroke="#b08d57" stroke-width="0.5" opacity="0.45"/>
-
-  <!-- Stylised handlebar curve (upper) -->
-  <path d="M17 26 Q23.5 16.5, 30 16.5 Q36.5 16.5, 43 26"
-        stroke="url(#brass)" stroke-width="1.6" fill="none" stroke-linecap="round"/>
-  <!-- Stylised tank curve (lower) -->
-  <path d="M17 34 Q23.5 43.5, 30 43.5 Q36.5 43.5, 43 34"
-        stroke="url(#brass)" stroke-width="1.6" fill="none" stroke-linecap="round"/>
-
-  <!-- Central spine -->
-  <line x1="30" y1="16.5" x2="30" y2="43.5" stroke="#b08d57" stroke-width="0.6" opacity="0.55"/>
-
-  <!-- Center stud -->
-  <circle cx="30" cy="30" r="1.6" fill="#b08d57"/>
-
-  <!-- Wordmark -->
-  <text x="70" y="28"
-        font-family="'Cormorant Garamond', 'Playfair Display', Georgia, serif"
-        font-size="24" font-weight="600" fill="#f3ede3" letter-spacing="3.5">BIKERS</text>
-  <text x="70" y="44"
-        font-family="'Satoshi', 'Inter', sans-serif"
-        font-size="7.5" font-weight="500" fill="#b08d57" letter-spacing="5">PORTAL  ·  EST. MMXXVI</text>
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 156 36" fill="none" aria-label="Bikers Portal" role="img">
+  <!-- heritage crest -->
+  <g transform="translate(2,2)">
+    <path d="M16 1 L30 7 L30 22 L16 33 L2 22 L2 7 Z" stroke="#b08d57" stroke-width="1.1" fill="#15130f"/>
+    <path d="M16 4 L27 8.5 L27 21 L16 30 L5 21 L5 8.5 Z" stroke="#3a3129" stroke-width="0.5" fill="none"/>
+    <text x="16" y="21" text-anchor="middle" font-family="Fraunces, Georgia, serif" font-size="12.5" font-weight="600" fill="#f3ede3" letter-spacing="0.6">BP</text>
+    <line x1="11" y1="25.5" x2="21" y2="25.5" stroke="#b08d57" stroke-width="0.5"/>
+  </g>
+  <!-- wordmark -->
+  <text x="44" y="17" font-family="Fraunces, Georgia, serif" font-size="13" font-weight="600" fill="#f3ede3" letter-spacing="2.6">BIKERS</text>
+  <text x="44" y="29" font-family="Satoshi, Inter, sans-serif" font-size="7.2" font-weight="500" fill="#c7b9a2" letter-spacing="4.4">PORTAL</text>
+  <!-- engraved divider -->
+  <line x1="44" y1="20" x2="150" y2="20" stroke="#3a3129" stroke-width="0.6"/>
+  <circle cx="150" cy="20" r="1.2" fill="#b08d57"/>
 </svg>

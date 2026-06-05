@@ -1,333 +1,235 @@
 <!DOCTYPE html>
-<html lang="en" data-theme="dark">
+<html lang="en" class="dark">
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <meta name="description" content="Join the Bikers Portal — a private road society for distinguished riders." />
   <title>Create Account · Bikers Portal</title>
-
+  <link rel="icon" href="/assets/logo.svg" type="image/svg+xml" />
+  <script src="./js/app.js"></script>
   <script src="https://cdn.tailwindcss.com"></script>
-  <script>
-    tailwind.config = {
-      theme: {
-        extend: {
-          colors: {
-            ink:    { 950: '#0d0c0a', 900: '#11100e', 800: '#181512', 700: '#211c18' },
-            bone:   { 100: '#f3ede3', 200: '#e8e0d2', 300: '#c7b9a2', 400: '#8a7d68' },
-            brass:  { 400: '#c89e69', 500: '#b08d57', 600: '#8a6a3d' },
-            burgundy:{ 500: '#6e2f2f', 600: '#5a2626' }
-          },
-          fontFamily: {
-            display: ['"Cormorant Garamond"', 'Georgia', 'serif'],
-            sans:    ['Satoshi', 'Inter', 'sans-serif']
-          }
-        }
-      }
-    }
-  </script>
   <link rel="stylesheet" href="./assets/style.css" />
 </head>
-<body>
+<body class="min-h-screen bg-ink-900 text-bone font-sans antialiased">
 
-  <main class="split">
-    <!-- ░░ Left: Visual ░░ -->
-    <section class="split-visual" aria-hidden="true">
-      <div class="split-visual-content">
-        <div class="top">
-          <a href="/index.html"><img src="./assets/logo.svg" alt="Bikers Portal" /></a>
-        </div>
+  <div class="min-h-screen flex flex-col">
+    <header class="px-5 md:px-10 pt-7 pb-2">
+      <a href="/index.html" class="inline-flex items-center">
+        <img src="/assets/logo.svg" alt="Bikers Portal" class="h-8 w-auto" />
+      </a>
+    </header>
 
-        <div class="middle">
-          <p class="label-engraved mb-6">Membership</p>
-          <h1 class="headline">Membership begins with identity, discipline, and taste.</h1>
-          <p class="sub">
-            The Portal is not a forum. It is a quiet register of riders, machines,
-            and roads that deserve to be remembered. Take a moment to introduce yourself.
+    <main class="flex-1 flex items-center justify-center px-5 py-8">
+      <div class="w-full max-w-lg">
+        <div class="text-center mb-7">
+          <p class="bp-section-label justify-center mb-3">Membership</p>
+          <h1 class="font-serif text-[26px] md:text-[30px] text-bone">Begin your record on the road.</h1>
+          <p class="text-bone-muted text-[13.5px] mt-2 max-w-sm mx-auto leading-relaxed">
+            Membership begins with identity, discipline, and taste.
           </p>
         </div>
 
-        <div class="bottom">
-          <span>By Invitation of the Road</span>
-        </div>
-      </div>
-    </section>
-
-    <!-- ░░ Right: Form ░░ -->
-    <section class="split-form">
-      <div class="split-form-inner">
-        <div class="auth-panel">
-          <div class="text-center mb-6 lg:hidden">
-            <a href="/index.html"><img src="./assets/logo.svg" alt="Bikers Portal" class="mx-auto" style="height:40px" /></a>
-          </div>
-
-          <p class="label-engraved text-center">Begin</p>
-          <h1 class="font-display text-center mt-2 mb-6" style="font-size:1.875rem">Create Your Account</h1>
-
-          <div id="formError" class="banner banner-error mb-4 hidden" role="alert"></div>
-
-          <form id="registerForm" novalidate>
-            <!-- Section: Identity -->
-            <p class="label-engraved mb-3">I · Identity</p>
-
-            <div class="stack gap-4 mb-6">
-              <div class="field">
-                <label class="field-label" for="full_name">Full Name</label>
-                <input id="full_name" name="full_name" type="text" class="input" placeholder="Arjun Mehta" autocomplete="name" required />
-                <div class="msg-error" data-error-for="full_name"></div>
+        <form id="regForm" class="bp-card p-6 md:p-8 space-y-7" novalidate>
+          <!-- Identity -->
+          <section>
+            <p class="bp-section-label mb-4">I · Identity</p>
+            <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+              <div>
+                <label class="bp-label" for="full_name">Full Name</label>
+                <input id="full_name" name="full_name" type="text" required class="bp-input" placeholder="e.g. Aarav Mehta" />
+                <p class="bp-msg bp-msg-error hidden" data-err="full_name"></p>
               </div>
-
-              <div class="field">
-                <label class="field-label" for="username">Username</label>
-                <input id="username" name="username" type="text" class="input" placeholder="@dustline" autocomplete="username" required />
-                <div class="msg-error" data-error-for="username"></div>
+              <div>
+                <label class="bp-label" for="username">Username</label>
+                <input id="username" name="username" type="text" required class="bp-input" placeholder="aarav_rides" autocomplete="username" />
+                <p class="bp-msg bp-msg-error hidden" data-err="username"></p>
+                <p class="bp-msg bp-msg-muted">Letters, numbers, underscores.</p>
               </div>
             </div>
+          </section>
 
-            <div class="divider-stitched mb-6"></div>
+          <div class="bp-divider"></div>
 
-            <!-- Section: Access -->
-            <p class="label-engraved mb-3">II · Access</p>
-
-            <div class="stack gap-4 mb-6">
-              <div class="field">
-                <label class="field-label" for="email">Email <span class="text-faint" style="text-transform:none;letter-spacing:0">(optional, never shared)</span></label>
-                <input id="email" name="email" type="email" class="input" placeholder="rider@portal.club" autocomplete="email" />
-                <div class="msg-error" data-error-for="email"></div>
+          <!-- Access -->
+          <section>
+            <p class="bp-section-label mb-4">II · Access</p>
+            <div class="space-y-4">
+              <div>
+                <label class="bp-label" for="email">Email</label>
+                <input id="email" name="email" type="email" required class="bp-input" placeholder="you@domain.com" autocomplete="email" />
+                <p class="bp-msg bp-msg-error hidden" data-err="email"></p>
               </div>
-
-              <div class="field">
-                <label class="field-label" for="password">Password</label>
-                <input id="password" name="password" type="password" class="input" placeholder="Minimum 8 characters" autocomplete="new-password" required />
-                <div class="input-hint">Eight characters or more. Something you will remember on a long road.</div>
-                <div class="msg-error" data-error-for="password"></div>
-              </div>
-
-              <div class="field">
-                <label class="field-label" for="confirm">Confirm Password</label>
-                <input id="confirm" name="confirm" type="password" class="input" placeholder="Repeat password" autocomplete="new-password" required />
-                <div class="msg-error" data-error-for="confirm"></div>
-              </div>
-            </div>
-
-            <div class="divider-stitched mb-6"></div>
-
-            <!-- Section: The Machine -->
-            <p class="label-engraved mb-3">III · The Machine</p>
-
-            <div class="stack gap-4 mb-6">
-              <div class="field">
-                <label class="field-label" for="bike_model">Preferred Machine</label>
-                <input id="bike_model" name="bike_model" type="text" class="input" placeholder="Royal Enfield Classic 350" />
-                <div class="input-hint">The bike that defines you on the road.</div>
-                <div class="msg-error" data-error-for="bike_model"></div>
-              </div>
-
-              <div class="field">
-                <label class="field-label" for="avatar">Avatar <span class="text-faint" style="text-transform:none;letter-spacing:0">(optional)</span></label>
-                <label class="file-input">
-                  <input id="avatar" name="avatar" type="file" accept="image/*" />
-                  <span class="file-cta">Choose</span>
-                  <span class="file-name" id="avatarName">No file chosen</span>
-                </label>
+              <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                <div>
+                  <label class="bp-label" for="password">Password</label>
+                  <input id="password" name="password" type="password" required minlength="8" class="bp-input" placeholder="Min. 8 characters" autocomplete="new-password" />
+                  <p class="bp-msg bp-msg-error hidden" data-err="password"></p>
+                </div>
+                <div>
+                  <label class="bp-label" for="password2">Confirm</label>
+                  <input id="password2" name="password2" type="password" required minlength="8" class="bp-input" placeholder="Repeat password" autocomplete="new-password" />
+                  <p class="bp-msg bp-msg-error hidden" data-err="password2"></p>
+                </div>
               </div>
             </div>
+          </section>
 
-            <button id="submitBtn" type="submit" class="btn btn-primary btn-full mt-2">
-              <span class="label">Begin Membership</span>
-            </button>
-          </form>
+          <div class="bp-divider"></div>
 
-          <div class="divider-stitched my-6"></div>
+          <!-- Machine -->
+          <section>
+            <p class="bp-section-label mb-4">III · The Machine</p>
+            <div class="grid grid-cols-1 sm:grid-cols-[1fr_auto] gap-4 items-end">
+              <div>
+                <label class="bp-label" for="bike_model">Preferred Machine</label>
+                <input id="bike_model" name="bike_model" type="text" class="bp-input" placeholder="e.g. Royal Enfield Classic 350" />
+              </div>
+              <div>
+                <label class="bp-label">Avatar (optional)</label>
+                <div class="flex items-center gap-3">
+                  <div id="avatarPreview" class="bp-avatar-fallback" style="width:44px;height:44px;font-size:14px">?</div>
+                  <label class="bp-btn bp-btn-ghost cursor-pointer">
+                    <span>Choose image</span>
+                    <input id="avatarFile" type="file" accept="image/*" class="hidden" />
+                  </label>
+                </div>
+                <p class="bp-msg bp-msg-error hidden" data-err="avatar"></p>
+              </div>
+            </div>
+          </section>
 
-          <p class="text-center text-sm text-muted">
+          <p id="formErr" class="bp-msg bp-msg-error hidden"></p>
+
+          <button id="submitBtn" type="submit" class="bp-btn bp-btn-primary w-full justify-center">
+            <span class="btn-label">Take the oath</span>
+          </button>
+
+          <p class="text-center text-bone-muted text-[13px]">
             Already a member?
-            <a href="/index.html" class="btn-link">Enter the Portal</a>
+            <a href="/index.html" class="text-brass hover:text-brass-light ml-1">Sign in</a>
           </p>
-        </div>
+        </form>
       </div>
-    </section>
-  </main>
+    </main>
+  </div>
 
   <script type="module">
-    import { supabase } from './js/api.js'
+    import { supabase } from './js/supabase.js'
 
-    // Connection status indicator
-    const connEl = document.createElement('p')
-    connEl.className = 'text-center text-xs mt-6'
-    connEl.style.cssText = 'color:var(--ink-ghost);letter-spacing:0.12em'
-    connEl.innerHTML = '<span class="spinner" style="width:10px;height:10px;border-width:1px;margin-right:0.4rem;vertical-align:-1px"></span><span data-conn>Opening the road…</span>'
-    document.querySelector('.split-form-inner')?.appendChild(connEl)
-    ;(async () => {
-      try {
-        const res = await fetch('/api/health')
-        const data = await res.json()
-        const span = connEl.querySelector('[data-conn]')
-        const spin = connEl.querySelector('.spinner')
-        spin?.remove()
-        if (res.ok) {
-          connEl.style.color = 'var(--brass)'
-          const c = data.counts || {}
-          span.textContent = `Connected · SQLite · ${c.profiles || 0} riders, ${c.posts || 0} entries`
-        } else {
-          connEl.style.color = '#d97a7a'
-          span.textContent = `Server responded with ${res.status}`
-        }
-      } catch (e) {
-        const span = connEl.querySelector('[data-conn]')
-        const spin = connEl.querySelector('.spinner')
-        spin?.remove()
-        connEl.style.color = '#d97a7a'
-        span.textContent = 'Server unreachable — run `npm start`'
-      }
-    })()
+    const form  = document.getElementById('regForm')
+    const btn   = document.getElementById('submitBtn')
+    const label = btn.querySelector('.btn-label')
+    const formErr = document.getElementById('formErr')
+    const avatarFile = document.getElementById('avatarFile')
+    const avatarPrev = document.getElementById('avatarPreview')
 
-    // Already authenticated? Skip the form.
-    try {
-      const { data: { session } } = await supabase.auth.getSession()
-      if (session) window.location.replace('/feed.html')
-    } catch (err) {
-      console.warn('[register] session check failed:', err)
+    // If already signed in, complete any pending profile then go to feed
+    const { data: { session } } = await supabase.auth.getSession()
+    if (session) {
+      await window.bp.completePendingProfile()
+      window.location.replace('/feed.html')
     }
 
-    const form      = document.getElementById('registerForm')
-    const submitBtn = document.getElementById('submitBtn')
-    const formError = document.getElementById('formError')
-    const avatarIn  = document.getElementById('avatar')
-    const avatarNm  = document.getElementById('avatarName')
-
-    let selectedAvatar = null
-    avatarIn.addEventListener('change', () => {
-      const f = avatarIn.files?.[0]
-      if (f) {
-        selectedAvatar = f
-        avatarNm.textContent = f.name
+    // Avatar preview
+    avatarFile.addEventListener('change', () => {
+      const f = avatarFile.files && avatarFile.files[0]
+      if (!f) return
+      const reader = new FileReader()
+      reader.onload = () => {
+        avatarPrev.outerHTML = `<img id="avatarPreview" src="${reader.result}" alt="" class="rounded-full object-cover border border-bronze" style="width:44px;height:44px" />`
       }
+      reader.readAsDataURL(f)
     })
 
-    const fields = ['full_name', 'username', 'email', 'password', 'confirm', 'bike_model']
-    const refs = Object.fromEntries(fields.map(n => [n, document.getElementById(n)]))
-
-    function setFieldError(name, msg) {
-      const el = document.querySelector(`[data-error-for="${name}"]`)
-      if (el) el.textContent = msg || ''
+    function setLoading(on) {
+      btn.disabled = on
+      btn.innerHTML = on
+        ? '<span class="spinner"></span><span class="btn-label">Forging your record</span>'
+        : '<span class="btn-label">Take the oath</span>'
     }
-    function setFormError(msg) {
-      if (!msg) { formError.classList.add('hidden'); formError.textContent = '' }
-      else      { formError.textContent = msg; formError.classList.remove('hidden') }
+    function clearErrs() {
+      formErr.classList.add('hidden')
+      document.querySelectorAll('[data-err]').forEach(e => e.classList.add('hidden'))
     }
-    function setLoading(loading) {
-      submitBtn.disabled = loading
-      submitBtn.setAttribute('aria-busy', loading ? 'true' : 'false')
-      submitBtn.innerHTML = loading
-        ? '<span class="spinner"></span> Preparing your dossier…'
-        : '<span class="label">Begin Membership</span>'
+    function fieldErr(name, msg) {
+      const el = document.querySelector(`[data-err="${name}"]`)
+      if (!el) { formErr.textContent = msg; formErr.classList.remove('hidden'); return }
+      el.textContent = msg; el.classList.remove('hidden')
     }
-
-    function clearErrors() {
-      fields.forEach(f => setFieldError(f, ''))
-      setFormError('')
-    }
-
-    function validate() {
-      clearErrors()
-      let ok = true
-      const v = Object.fromEntries(fields.map(n => [n, refs[n].value.trim()]))
-
-      if (!v.full_name)        { setFieldError('full_name', 'Please share your full name.'); ok = false }
-      if (!v.username)         { setFieldError('username', 'Choose a username.'); ok = false }
-      else if (!/^[a-z0-9_]{3,20}$/i.test(v.username)) {
-        setFieldError('username', '3–20 characters, letters, numbers, underscore.'); ok = false
-      }
-      if (v.email && !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(v.email)) {
-        setFieldError('email', 'Enter a valid email.'); ok = false
-      }
-      if (!v.password)         { setFieldError('password', 'Password is required.'); ok = false }
-      else if (v.password.length < 8) {
-        setFieldError('password', 'At least 8 characters please.'); ok = false
-      }
-      if (v.password !== v.confirm) {
-        setFieldError('confirm', 'Passwords do not match.'); ok = false
-      }
-      return ok
-    }
-
-    fields.forEach(n => refs[n].addEventListener('input', () => setFieldError(n, '')))
 
     form.addEventListener('submit', async (e) => {
       e.preventDefault()
-      if (!validate()) return
-      setLoading(true)
+      clearErrs()
+      const full_name = document.getElementById('full_name').value.trim()
+      const username  = document.getElementById('username').value.trim()
+      const email     = document.getElementById('email').value.trim()
+      const pw        = document.getElementById('password').value
+      const pw2       = document.getElementById('password2').value
+      const bike_model= document.getElementById('bike_model').value.trim()
+      const file      = avatarFile.files && avatarFile.files[0]
 
-      // 1) Sign up
-      const { data: signUpData, error: signUpErr } = await supabase.auth.signUp({
-        email: refs.email.value.trim(),
-        password: refs.password.value,
-        options: { data: { full_name: refs.full_name.value.trim(), username: refs.username.value.trim() } }
+      let bad = false
+      if (!full_name) { fieldErr('full_name', 'Enter your full name.'); bad = true }
+      if (!username)  { fieldErr('username',  'Pick a username.');       bad = true }
+      else if (!/^[a-zA-Z0-9_]{3,20}$/.test(username)) { fieldErr('username', '3–20 chars: letters, numbers, underscore.'); bad = true }
+      if (!email)              { fieldErr('email', 'Enter your email.'); bad = true }
+      else if (!/^\S+@\S+\.\S+$/.test(email)) { fieldErr('email', 'That email doesn’t look right.'); bad = true }
+      if (pw.length < 8)       { fieldErr('password', 'At least 8 characters.'); bad = true }
+      if (pw !== pw2)           { fieldErr('password2', 'Passwords don’t match.'); bad = true }
+      if (file && file.size > 1.5 * 1024 * 1024) { fieldErr('avatar', 'Avatar must be under 1.5 MB.'); bad = true }
+      if (bad) return
+
+      // Convert avatar to data URL for cross-session persistence if confirmation is on
+      let avatarDataUrl = null
+      if (file) avatarDataUrl = await new Promise((r) => {
+        const fr = new FileReader(); fr.onload = () => r(fr.result); fr.readAsDataURL(file)
       })
-      if (signUpErr) { setLoading(false); setFormError(humaniseError(signUpErr)); return }
 
-      const user = signUpData.user
-      if (!user) { setLoading(false); setFormError('Sign-up could not be completed. Please try again.'); return }
+      localStorage.setItem('bp_pending_profile', JSON.stringify({
+        full_name, username, bio: '', bike_model, avatarDataUrl,
+      }))
 
-      // 2) Upload avatar (if any)
-      let avatarUrl = null
-      if (selectedAvatar) {
-        try {
-          const ext = selectedAvatar.name.split('.').pop() || 'jpg'
-          const path = `${user.id}/avatar-${Date.now()}.${ext}`
-          const { error: upErr } = await supabase.storage
-            .from('avatars')
-            .upload(path, selectedAvatar, { upsert: true, contentType: selectedAvatar.type })
-          if (upErr) throw upErr
-          const { data: pub } = supabase.storage.from('avatars').getPublicUrl(path)
-          avatarUrl = pub.publicUrl
-        } catch (err) {
-          // Continue without avatar — non-fatal
-          avatarUrl = null
-        }
+      setLoading(true)
+      const { data, error } = await supabase.auth.signUp({
+        email, password: pw,
+        options: { data: { full_name, username, bike_model } },
+      })
+      if (error) {
+        setLoading(false)
+        if (/already registered/i.test(error.message)) fieldErr('email', 'An account with that email already exists.')
+        else fieldErr('formErr', error.message)
+        return
       }
-
-      // 3) Update profile (avatar URL, bike_model, etc.) — the signup route
-      //    already created the profile with username/full_name; this call
-      //    patches the remaining optional fields on the current user.
-      if (avatarUrl || refs.bike_model.value.trim()) {
-        const profileRow = {
-          full_name: refs.full_name.value.trim(),
-          username: refs.username.value.trim(),
-          bike_model: refs.bike_model.value.trim() || null,
-          avatar_url: avatarUrl
-        }
-        const { error: profileErr } = await supabase
-          .from('profiles')
-          .upsert(profileRow, { onConflict: 'id' })
-
-        if (profileErr) {
-          if (String(profileErr.message).toLowerCase().includes('already taken')) {
-            setLoading(false)
-            setFieldError('username', 'That username is already taken.')
-            setFormError('Please choose a different username.')
-            return
-          }
-          setLoading(false)
-          setFormError('Profile could not be saved. Please try the concierge.')
-          return
-        }
+      if (!data.session) {
+        // Email confirmation required — keep pending profile, tell user to check email
+        setLoading(false)
+        form.innerHTML = `
+          <div class="text-center py-4">
+            <p class="bp-section-label justify-center mb-4">Confirmation Sent</p>
+            <h2 class="font-serif text-[20px] text-bone">Check your email, rider.</h2>
+            <p class="text-bone-muted text-[13.5px] mt-3 leading-relaxed max-w-sm mx-auto">
+              We sent a confirmation link to <span class="text-bone">${email}</span>.
+              Click it, then return here to sign in and your record will be waiting.
+            </p>
+            <a href="/index.html" class="bp-btn bp-btn-primary mt-7 inline-flex">Back to sign in</a>
+          </div>`
+        return
       }
-
-      // 4) Done — go to the feed (signup already returns a session, no email gate)
-      window.location.replace('/feed.html')
+      // Session exists (autoconfirm on) — complete profile now
+      const result = await window.bp.completePendingProfile()
+      if (!result.ok) {
+        setLoading(false)
+        const msg = result.reason || ''
+        if (/duplicate|unique/i.test(msg)) {
+          fieldErr('username', 'That username is already taken. Try another.')
+          try { await supabase.auth.signOut() } catch (_) {}
+        } else {
+          fieldErr('formErr', 'Couldn’t complete your profile. ' + msg)
+        }
+        return
+      }
+      window.bp.toast('Welcome to the society.', 'success')
+      window.location.href = '/feed.html'
     })
-
-    function humaniseError(err) {
-      const m = (err?.message || '').toLowerCase()
-      if (m.includes('already registered') || m.includes('already been registered')) {
-        return 'That email is already a member. Try signing in.'
-      }
-      if (m.includes('password')) return 'Please choose a stronger password.'
-      if (m.includes('rate limit')) return 'Too many attempts. Please wait a moment.'
-      return 'Membership could not be completed. Please try again shortly.'
-    }
   </script>
-
 </body>
 </html>

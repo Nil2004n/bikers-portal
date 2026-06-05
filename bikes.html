@@ -1,516 +1,286 @@
 <!DOCTYPE html>
-<html lang="en" data-theme="dark">
+<html lang="en" class="dark">
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <meta name="description" content="The Bikers Portal registry — machines worth remembering." />
   <title>Machines · Bikers Portal</title>
-
+  <link rel="icon" href="/assets/logo.svg" type="image/svg+xml" />
+  <script src="./js/app.js"></script>
   <script src="https://cdn.tailwindcss.com"></script>
-  <script>
-    tailwind.config = {
-      theme: {
-        extend: {
-          colors: {
-            ink:   { 950: '#0d0c0a', 900: '#11100e', 800: '#181512', 700: '#211c18' },
-            bone:  { 100: '#f3ede3', 200: '#e8e0d2', 300: '#c7b9a2', 400: '#8a7d68' },
-            brass: { 400: '#c89e69', 500: '#b08d57', 600: '#8a6a3d' }
-          },
-          fontFamily: {
-            display: ['"Cormorant Garamond"', 'Georgia', 'serif'],
-            sans:    ['Satoshi', 'Inter', 'sans-serif']
-          }
-        }
-      }
-    }
-  </script>
   <link rel="stylesheet" href="./assets/style.css" />
 </head>
-<body>
+<body class="min-h-screen bg-ink-900 text-bone font-sans antialiased">
 
   <script type="module" src="./js/auth-guard.js"></script>
 
-  <main>
-    <div class="page-head">
-      <p class="eyebrow">The Registry</p>
-      <h1 class="font-display">Machines worth remembering.</h1>
-      <p class="lede">A quiet register of motorcycles, kept by their riders. Each entry is a portrait of the machine, the road it has travelled, and the hand that keeps it polished.</p>
-      <div class="page-actions">
-        <button class="btn btn-primary" id="toggleAddBtn">＋ Add a Machine</button>
+  <header id="bp-navbar" data-active="bikes"></header>
+
+  <main class="max-w-6xl mx-auto px-4 md:px-6 py-8 md:py-12">
+    <!-- Header -->
+    <div class="flex items-end justify-between gap-4 flex-wrap">
+      <div>
+        <p class="bp-section-label">The Garage</p>
+        <h1 class="font-serif text-[28px] md:text-[34px] text-bone mt-2">Machines worth remembering.</h1>
+        <p class="text-bone-muted text-[14px] mt-2 max-w-xl">A quiet registry of the motorcycles that carry us — kept by the riders who love them.</p>
       </div>
+      <button id="addBtn" class="bp-btn bp-btn-primary">
+        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"><path d="M12 5v14M5 12h14"/></svg>
+        <span>Add a machine</span>
+      </button>
     </div>
 
-    <!-- ░░ ADD / EDIT FORM PANEL ░░ -->
-    <section id="formPanel" class="hidden" style="max-width:880px;margin:0 auto;padding:0 1.25rem 1.5rem">
-      <div class="surface" style="padding:1.5rem">
-        <div class="flex items-center justify-between mb-4">
-          <p class="label-engraved" id="formTitle">New Entry</p>
-          <button class="btn btn-ghost btn-sm" id="closeFormBtn" type="button">Cancel</button>
+    <!-- Form panel (hidden by default) -->
+    <section id="formPanel" class="hidden mt-7">
+      <form id="bikeForm" class="bp-card p-5 md:p-6 bp-stitched" novalidate>
+        <div class="flex items-center justify-between mb-5">
+          <p class="bp-section-label" style="justify-content:flex-start" id="formTitle">A New Entry</p>
+          <button type="button" id="formClose" class="bp-btn-subtle">Close</button>
         </div>
+        <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
+          <div><label class="bp-label">Make</label><input name="make" required class="bp-input" placeholder="Royal Enfield" /><p class="bp-msg bp-msg-error hidden" data-err="make"></p></div>
+          <div><label class="bp-label">Model</label><input name="model" required class="bp-input" placeholder="Classic 350" /><p class="bp-msg bp-msg-error hidden" data-err="model"></p></div>
+          <div><label class="bp-label">Year</label><input name="year" type="number" min="1900" max="2099" class="bp-input" placeholder="2021" /><p class="bp-msg bp-msg-error hidden" data-err="year"></p></div>
+          <div><label class="bp-label">Engine (cc)</label><input name="engine_cc" type="number" min="0" class="bp-input" placeholder="349" /></div>
+          <div><label class="bp-label">Color</label><input name="color" class="bp-input" placeholder="Chrome Bronze" /></div>
+          <div><label class="bp-label">Photograph</label><input name="photo" type="file" accept="image/*" class="bp-input" style="padding:7px" /><p class="bp-msg bp-msg-muted">Optional, under 4 MB.</p><p class="bp-msg bp-msg-error hidden" data-err="photo"></p></div>
+        </div>
+        <div class="mt-4"><label class="bp-label">Description</label><textarea name="description" rows="3" class="bp-textarea" placeholder="A few words about the machine — its character, its story."></textarea></div>
+        <p id="formErr" class="bp-msg bp-msg-error hidden mt-3"></p>
+        <div class="flex justify-end gap-2 mt-5">
+          <button type="button" id="formCancel" class="bp-btn bp-btn-ghost">Cancel</button>
+          <button type="submit" id="formSubmit" class="bp-btn bp-btn-primary"><span class="btn-label">Save machine</span></button>
+        </div>
+      </form>
+    </section>
 
-        <form id="bikeForm" novalidate>
-          <input type="hidden" id="editId" />
-          <div class="grid grid-cols-1 md:grid-cols-2 gap-4 mb-4">
-            <div class="field">
-              <label class="field-label" for="make">Make</label>
-              <input id="make" class="input" placeholder="Royal Enfield" required />
-              <div class="msg-error" data-error-for="make"></div>
-            </div>
-            <div class="field">
-              <label class="field-label" for="model">Model</label>
-              <input id="model" class="input" placeholder="Classic 350" required />
-              <div class="msg-error" data-error-for="model"></div>
-            </div>
-            <div class="field">
-              <label class="field-label" for="year">Year</label>
-              <input id="year" type="number" min="1900" max="2099" class="input" placeholder="2022" />
-              <div class="msg-error" data-error-for="year"></div>
-            </div>
-            <div class="field">
-              <label class="field-label" for="engine_cc">Engine CC</label>
-              <input id="engine_cc" type="number" min="0" class="input" placeholder="349" />
-              <div class="msg-error" data-error-for="engine_cc"></div>
-            </div>
-            <div class="field md:col-span-2">
-              <label class="field-label" for="color">Colour</label>
-              <input id="color" class="input" placeholder="Chrome over Chrome" />
-            </div>
-            <div class="field md:col-span-2">
-              <label class="field-label" for="description">Description</label>
-              <textarea id="description" class="textarea" placeholder="A few honest words about the machine, the miles, the stories it carries." style="min-height:90px"></textarea>
-            </div>
-            <div class="field md:col-span-2">
-              <label class="field-label" for="photo">Photograph</label>
-              <label class="file-input">
-                <input id="photo" type="file" accept="image/*" />
-                <span class="file-cta">Choose</span>
-                <span class="file-name" id="photoName">No file chosen</span>
-              </label>
-              <div class="msg-error mt-1" data-error-for="photo"></div>
-              <div id="photoPreviewWrap" class="mt-3 hidden">
-                <img id="photoPreview" class="bike-photo" style="width:100%;height:200px;object-fit:cover;border:1px solid var(--border);border-radius:4px" alt="" />
-              </div>
-            </div>
-          </div>
-
-          <div class="flex items-center justify-end gap-2">
-            <button type="button" class="btn btn-ghost btn-sm" id="cancelFormBtn">Cancel</button>
-            <button type="submit" class="btn btn-primary btn-sm" id="saveBtn">
-              <span class="label">Save to Registry</span>
-            </button>
-          </div>
-        </form>
+    <!-- Filters -->
+    <section class="mt-8 mb-6 bp-card p-4">
+      <div class="grid grid-cols-2 md:grid-cols-4 gap-3">
+        <div>
+          <label class="bp-label">Make</label>
+          <select id="fMake" class="bp-select"><option value="">All makes</option></select>
+        </div>
+        <div>
+          <label class="bp-label">Year — from</label>
+          <select id="fYearFrom" class="bp-select"><option value="">Any</option></select>
+        </div>
+        <div>
+          <label class="bp-label">Engine — min cc</label>
+          <select id="fCc" class="bp-select"><option value="">Any</option></select>
+        </div>
+        <div class="flex items-end">
+          <button id="fReset" class="bp-btn bp-btn-ghost w-full">Reset filters</button>
+        </div>
       </div>
     </section>
 
-    <!-- ░░ FILTERS ░░ -->
-    <div class="filter-bar">
-      <div class="field" style="min-width:160px;flex:1">
-        <label class="field-label" for="filterMake">Make</label>
-        <select id="filterMake" class="select">
-          <option value="">All makes</option>
-        </select>
-      </div>
-      <div class="field" style="min-width:100px">
-        <label class="field-label" for="filterYearMin">Year from</label>
-        <input id="filterYearMin" type="number" class="input" placeholder="1990" min="1900" max="2099" />
-      </div>
-      <div class="field" style="min-width:100px">
-        <label class="field-label" for="filterYearMax">Year to</label>
-        <input id="filterYearMax" type="number" class="input" placeholder="2026" min="1900" max="2099" />
-      </div>
-      <div class="field" style="min-width:140px">
-        <label class="field-label" for="filterEngine">Engine</label>
-        <select id="filterEngine" class="select">
-          <option value="">All sizes</option>
-          <option value="0-250">≤ 250 cc</option>
-          <option value="250-650">250 – 650 cc</option>
-          <option value="650-1000">650 – 1000 cc</option>
-          <option value="1000-9999">1000 cc +</option>
-        </select>
-      </div>
-      <button class="btn btn-ghost btn-sm" id="clearFiltersBtn" type="button">Clear</button>
-    </div>
-
-    <!-- ░░ GRID ░░ -->
-    <section class="bikes-grid" id="bikesGrid" aria-live="polite">
-      <!-- skeletons / cards / empty -->
+    <!-- Grid -->
+    <section id="grid" class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-5"></section>
+    <section id="gridSkeleton" class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-5">
+      <div class="bp-card overflow-hidden"><div class="skeleton h-52"></div><div class="p-4 space-y-2"><div class="skeleton h-3 w-2/3"></div><div class="skeleton h-3 w-1/2"></div></div></div>
+      <div class="bp-card overflow-hidden"><div class="skeleton h-52"></div><div class="p-4 space-y-2"><div class="skeleton h-3 w-1/2"></div><div class="skeleton h-3 w-2/3"></div></div></div>
+      <div class="bp-card overflow-hidden"><div class="skeleton h-52"></div><div class="p-4 space-y-2"><div class="skeleton h-3 w-3/4"></div><div class="skeleton h-3 w-1/2"></div></div></div>
+    </section>
+    <section id="empty" class="hidden bp-card p-12 text-center">
+      <p class="font-serif text-[20px] text-bone">No machines entered yet.</p>
+      <p class="text-bone-muted text-[13px] mt-2">Add the first machine to the registry.</p>
     </section>
   </main>
 
-  <div class="notice" id="notice" role="status" aria-live="polite"></div>
-
   <script type="module">
-    import { supabase } from './js/api.js'
+    import { supabase } from './js/supabase.js'
+    const { esc, timeAgo, avatarHTML, toast } = window.bp
+    const confirmModal = window.bp.confirm
 
-    let user = null
-    try {
-      const r = await supabase.auth.getUser()
-      user = r?.data?.user || null
-    } catch (err) { console.warn('[bikes] user check failed:', err) }
-    if (!user) window.location.replace('/index.html')
+    const me = window.__bpUser
+    const state = { bikes: [], editingId: null }
 
-    let allBikes = []
-    let editingId = null
-    let stagedPhoto = null
+    const grid     = document.getElementById('grid')
+    const gridSk   = document.getElementById('gridSkeleton')
+    const empty    = document.getElementById('empty')
+    const form     = document.getElementById('bikeForm')
+    const formPan  = document.getElementById('formPanel')
+    const formTitle= document.getElementById('formTitle')
+    const formErr  = document.getElementById('formErr')
+    const submit   = document.getElementById('formSubmit')
+    const addBtn   = document.getElementById('addBtn')
 
-    // ── Boot ─────────────────────────────────────────────
-    init()
-    async function init() {
-      bindFormUI()
-      bindFilters()
-      await loadBikes()
-    }
-
-    // ── Data ─────────────────────────────────────────────
-    async function loadBikes() {
-      const grid = document.getElementById('bikesGrid')
-      grid.innerHTML = skeletons(6)
-
-      const { data, error } = await supabase
-        .from('bikes')
-        .select(`
-          id, user_id, make, model, year, engine_cc, color, description, photo_url, created_at,
-          profiles ( username, full_name, avatar_url )
-        `)
+    /* ── Load + render ──────────────────────────────────── */
+    async function load() {
+      const { data, error } = await supabase.from('bikes')
+        .select('id, user_id, make, model, year, engine_cc, color, description, photo_url, created_at, profiles(username, full_name, avatar_url)')
         .order('created_at', { ascending: false })
-
-      if (error) {
-        grid.innerHTML = `<div class="banner banner-error" style="grid-column:1/-1">${escapeHtml(error.message)}</div>`
-        return
-      }
-      allBikes = data || []
-      renderGrid()
-      populateMakeFilter()
+      if (error) { gridSk.classList.add('hidden'); grid.innerHTML = `<div class="bp-card p-6 text-bone-muted text-[13px]">Couldn’t load the registry.</div>`; return }
+      state.bikes = data || []
+      gridSk.classList.add('hidden')
+      populateFilters()
+      render()
     }
-
-    function renderGrid() {
-      const grid = document.getElementById('bikesGrid')
-      const filtered = applyFilters(allBikes)
-      if (filtered.length === 0) {
-        if (allBikes.length === 0) {
-          grid.innerHTML = emptyState(
-            'No machines entered yet.',
-            'Add the first machine to the registry — yours, perhaps.'
-          )
-        } else {
-          grid.innerHTML = emptyState(
-            'No machines match those filters.',
-            'Soften the criteria to see more of the registry.'
-          )
-        }
-        return
-      }
-      grid.innerHTML = filtered.map(b => renderBikeCard(b)).join('')
-      attachCardHandlers()
+    function render() {
+      const filtered = applyFilters(state.bikes)
+      if (!filtered.length) { empty.classList.remove('hidden'); grid.innerHTML = ''; return }
+      empty.classList.add('hidden')
+      grid.innerHTML = filtered.map(cardHTML).join('')
     }
-
+    function cardHTML(b) {
+      const prof = b.profiles || {}
+      const mine = b.user_id === me.id
+      return `
+        <article class="bp-card overflow-hidden flex flex-col" data-bike="${esc(b.id)}">
+          <div class="relative bg-ink-700 border-b border-bronze">
+            ${b.photo_url
+              ? `<img src="${esc(b.photo_url)}" alt="" class="w-full h-56 object-cover" loading="lazy" />`
+              : `<div class="w-full h-56 flex items-center justify-center text-bone-dim"><svg width="40" height="40" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1" opacity="0.5"><circle cx="6" cy="17" r="3"/><circle cx="18" cy="17" r="3"/><path d="M9 17h6l2-7H7l-1 4M5 10h14"/></svg></div>`}
+            ${mine ? `<span class="absolute top-2 left-2 bp-badge" style="color:#c9a875;border-color:rgba(201,168,117,0.4);background:rgba(12,11,9,0.7)">Mine</span>` : ''}
+          </div>
+          <div class="p-4 flex-1 flex flex-col">
+            <p class="font-serif text-bone text-[17px] leading-tight">${esc(b.make)} ${esc(b.model)}</p>
+            <p class="text-bone-dim text-[12px] tracking-[0.12em] mt-0.5">${b.year || '—'}${b.engine_cc ? ' · ' + b.engine_cc + ' cc' : ''}${b.color ? ' · ' + esc(b.color) : ''}</p>
+            ${b.description ? `<p class="text-bone-muted text-[13px] mt-3 leading-relaxed line-clamp-3">${esc(b.description)}</p>` : ''}
+            <div class="mt-auto pt-4 flex items-center justify-between">
+              <div class="flex items-center gap-2 min-w-0">
+                ${avatarHTML(prof.avatar_url, prof.full_name || prof.username, 24)}
+                <span class="text-bone-dim text-[12px] truncate">${esc(prof.full_name || prof.username || 'Rider')}</span>
+              </div>
+              ${mine ? `<div class="flex items-center gap-1">
+                <button data-act="edit"   class="bp-btn-subtle">Edit</button>
+                <button data-act="delete" class="bp-btn-subtle text-burgundy">Delete</button>
+              </div>` : ''}
+            </div>
+          </div>
+        </article>`
+    }
     function applyFilters(list) {
-      const make   = document.getElementById('filterMake').value.trim().toLowerCase()
-      const yMin   = parseInt(document.getElementById('filterYearMin').value, 10)
-      const yMax   = parseInt(document.getElementById('filterYearMax').value, 10)
-      const eng    = document.getElementById('filterEngine').value
+      const mk = document.getElementById('fMake').value
+      const yr = parseInt(document.getElementById('fYearFrom').value, 10)
+      const cc = parseInt(document.getElementById('fCc').value, 10)
       return list.filter(b => {
-        if (make && (b.make || '').toLowerCase() !== make) return false
-        if (!Number.isNaN(yMin) && yMin && (b.year || 0) < yMin) return false
-        if (!Number.isNaN(yMax) && yMax && (b.year || 9999) > yMax) return false
-        if (eng) {
-          const [lo, hi] = eng.split('-').map(Number)
-          const cc = b.engine_cc || 0
-          if (cc < lo || cc > hi) return false
-        }
+        if (mk && b.make !== mk) return false
+        if (!isNaN(yr) && (!b.year || b.year < yr)) return false
+        if (!isNaN(cc) && (!b.engine_cc || b.engine_cc < cc)) return false
         return true
       })
     }
-
-    function populateMakeFilter() {
-      const sel = document.getElementById('filterMake')
-      const makes = [...new Set(allBikes.map(b => b.make).filter(Boolean))].sort()
+    function populateFilters() {
+      const makes = [...new Set(state.bikes.map(b => b.make).filter(Boolean))].sort()
+      const sel = document.getElementById('fMake')
       const cur = sel.value
-      sel.innerHTML = `<option value="">All makes</option>` +
-        makes.map(m => `<option value="${escapeAttr(m)}" ${m === cur ? 'selected' : ''}>${escapeHtml(m)}</option>`).join('')
+      sel.innerHTML = `<option value="">All makes</option>` + makes.map(m => `<option ${m === cur ? 'selected' : ''}>${esc(m)}</option>`).join('')
+      const years = [...new Set(state.bikes.map(b => b.year).filter(Boolean))].sort((a,b) => a-b)
+      const ysel = document.getElementById('fYearFrom')
+      ysel.innerHTML = `<option value="">Any</option>` + years.map(y => `<option value="${y}">${y} & up</option>`).join('')
+      const ccs = [...new Set(state.bikes.map(b => b.engine_cc).filter(Boolean))].sort((a,b) => a-b)
+      const csel = document.getElementById('fCc')
+      csel.innerHTML = `<option value="">Any</option>` + ccs.map(c => `<option value="${c}">${c} cc & up</option>`).join('')
     }
+    document.getElementById('fMake').addEventListener('change', render)
+    document.getElementById('fYearFrom').addEventListener('change', render)
+    document.getElementById('fCc').addEventListener('change', render)
+    document.getElementById('fReset').addEventListener('click', () => {
+      ['fMake','fYearFrom','fCc'].forEach(id => document.getElementById(id).value = '')
+      render()
+    })
 
-    // ── Render card ─────────────────────────────────────
-    function renderBikeCard(b) {
-      const profile = Array.isArray(b.profiles) ? b.profiles[0] : b.profiles
-      const isMine  = b.user_id === user.id
-      const photo   = b.photo_url
-        ? `<img src="${escapeAttr(b.photo_url)}" alt="${escapeAttr(b.make + ' ' + b.model)}" loading="lazy" onerror="this.parentElement.classList.add('no-photo');this.remove()" />`
-        : ''
-      const owner = profile
-        ? `${profile.avatar_url
-            ? `<img class="avatar avatar-xs" src="${escapeAttr(profile.avatar_url)}" alt="" />`
-            : `<span class="avatar-fallback avatar-xs">${escapeHtml((profile.full_name||'R').split(/\s+/).slice(0,2).map(w=>w[0]).join('').toUpperCase())}</span>`}
-           <div>
-             <div class="name">${escapeHtml(profile.full_name || 'Rider')}</div>
-             <div class="handle">@${escapeHtml(profile.username || 'rider')}</div>
-           </div>`
-        : `<div><div class="name">Unknown rider</div></div>`
-
-      return `
-        <article class="bike-card" data-bike-id="${b.id}" data-user-id="${b.user_id}">
-          <div class="bike-photo">
-            ${photo}
-            ${isMine ? `<span class="badge badge-mine">Mine</span>` : ''}
-          </div>
-          <div class="bike-info">
-            <div class="name">${escapeHtml(b.make || '—')} ${escapeHtml(b.model || '')}</div>
-            <div class="sub">${[b.year, b.engine_cc ? b.engine_cc + ' cc' : null, b.color].filter(Boolean).join(' · ') || '—'}</div>
-            <div class="specs">
-              ${b.year       ? `<span class="badge">${escapeHtml(b.year)}</span>` : ''}
-              ${b.engine_cc  ? `<span class="badge">${escapeHtml(b.engine_cc)} cc</span>` : ''}
-              ${b.color      ? `<span class="badge">${escapeHtml(b.color)}</span>` : ''}
-            </div>
-            ${b.description ? `<p class="desc">${escapeHtml(b.description)}</p>` : `<p class="desc text-faint">No description recorded.</p>`}
-            <div class="owner">${owner}</div>
-            ${isMine ? `
-              <div class="bike-actions">
-                <button class="btn btn-ghost btn-sm" data-act="edit">Edit</button>
-                <button class="btn btn-burgundy btn-sm" data-act="delete">Remove</button>
-              </div>
-            ` : ''}
-          </div>
-        </article>
-      `
-    }
-
-    function attachCardHandlers() {
-      document.querySelectorAll('#bikesGrid .bike-card').forEach(card => {
-        const id = card.dataset.bikeId
-        card.querySelectorAll('[data-act]').forEach(btn => {
-          btn.addEventListener('click', (e) => {
-            e.stopPropagation()
-            const act = btn.dataset.act
-            if (act === 'edit')   return openFormForEdit(id)
-            if (act === 'delete') return deleteBike(id, card)
-          })
-        })
-      })
-    }
-
-    async function deleteBike(id, card) {
-      const ok = await window.bpAsk('Remove this machine from the registry? It cannot be undone.', {
-        title: 'Remove machine?',
-        confirmText: 'Remove',
-        danger: true
-      })
-      if (!ok) return
-      const { error } = await supabase.from('bikes').delete().eq('id', id).eq('user_id', user.id)
-      if (error) return notify('Could not remove that machine.', true)
-      card.style.transition = 'opacity 200ms, transform 200ms'
-      card.style.opacity = '0'
-      card.style.transform = 'translateY(-4px)'
-      setTimeout(() => {
-        allBikes = allBikes.filter(b => b.id !== id)
-        renderGrid()
-        populateMakeFilter()
-      }, 220)
-      notify('Machine removed from the registry.')
-    }
-
-    // ── Form ─────────────────────────────────────────────
-    function bindFormUI() {
-      const panel    = document.getElementById('formPanel')
-      const toggle   = document.getElementById('toggleAddBtn')
-      const close    = document.getElementById('closeFormBtn')
-      const cancel   = document.getElementById('cancelFormBtn')
-      const photo    = document.getElementById('photo')
-      const photoNm  = document.getElementById('photoName')
-      const prev     = document.getElementById('photoPreviewWrap')
-      const prevImg  = document.getElementById('photoPreview')
-      const form     = document.getElementById('bikeForm')
-
-      function open()  { panel.classList.remove('hidden'); panel.scrollIntoView({ behavior:'smooth', block:'start' }) }
-      function closeFn(){ panel.classList.add('hidden'); resetForm() }
-
-      toggle.addEventListener('click', () => {
-        if (panel.classList.contains('hidden')) {
-          editingId = null
-          document.getElementById('formTitle').textContent = 'New Entry'
-          resetForm()
-          open()
-        } else {
-          closeFn()
-        }
-      })
-      close.addEventListener('click', closeFn)
-      cancel.addEventListener('click', closeFn)
-
-      photo.addEventListener('change', () => {
-        const f = photo.files?.[0]
-        if (!f) return
-        stagedPhoto = f
-        photoNm.textContent = f.name
-        const url = URL.createObjectURL(f)
-        prevImg.src = url
-        prev.classList.remove('hidden')
-        prevImg.onload = () => URL.revokeObjectURL(url)
-      })
-
-      form.addEventListener('submit', onSubmitForm)
-    }
-
-    function resetForm() {
-      const f = document.getElementById('bikeForm')
-      f.reset()
-      document.getElementById('editId').value = ''
-      stagedPhoto = null
-      document.getElementById('photoName').textContent = 'No file chosen'
-      document.getElementById('photoPreviewWrap').classList.add('hidden')
-      document.getElementById('photoPreview').src = ''
-      document.querySelectorAll('[data-error-for]').forEach(e => e.textContent = '')
-    }
-
-    function openFormForEdit(id) {
-      const b = allBikes.find(x => x.id === id)
-      if (!b) return
-      editingId = id
-      document.getElementById('formTitle').textContent = 'Edit Entry'
-      document.getElementById('editId').value = id
-      document.getElementById('make').value        = b.make || ''
-      document.getElementById('model').value       = b.model || ''
-      document.getElementById('year').value        = b.year || ''
-      document.getElementById('engine_cc').value   = b.engine_cc || ''
-      document.getElementById('color').value       = b.color || ''
-      document.getElementById('description').value = b.description || ''
-      stagedPhoto = null
-      document.getElementById('photoName').textContent = 'Replace photograph (optional)'
-      if (b.photo_url) {
-        document.getElementById('photoPreview').src = b.photo_url
-        document.getElementById('photoPreviewWrap').classList.remove('hidden')
-      } else {
-        document.getElementById('photoPreviewWrap').classList.add('hidden')
+    /* ── Form open/close/add/edit ───────────────────────── */
+    addBtn.addEventListener('click', () => openForm(null))
+    document.getElementById('formClose').addEventListener('click', closeForm)
+    document.getElementById('formCancel').addEventListener('click', closeForm)
+    function openForm(b) {
+      formErr.classList.add('hidden')
+      form.querySelectorAll('[data-err]').forEach(e => e.classList.add('hidden'))
+      state.editingId = b ? b.id : null
+      formTitle.textContent = b ? 'Edit Machine' : 'A New Entry'
+      submit.querySelector('.btn-label').textContent = b ? 'Save changes' : 'Save machine'
+      form.reset()
+      if (b) {
+        form.make.value = b.make || ''
+        form.model.value = b.model || ''
+        form.year.value = b.year || ''
+        form.engine_cc.value = b.engine_cc || ''
+        form.color.value = b.color || ''
+        form.description.value = b.description || ''
       }
-      const panel = document.getElementById('formPanel')
-      panel.classList.remove('hidden')
-      panel.scrollIntoView({ behavior:'smooth', block:'start' })
+      formPan.classList.remove('hidden')
+      formPan.scrollIntoView({ behavior: 'smooth', block: 'start' })
     }
+    function closeForm() { formPan.classList.add('hidden'); state.editingId = null }
 
-    async function onSubmitForm(e) {
+    form.addEventListener('submit', async (e) => {
       e.preventDefault()
-      document.querySelectorAll('[data-error-for]').forEach(el => el.textContent = '')
+      formErr.classList.add('hidden')
+      form.querySelectorAll('[data-err]').forEach(el => el.classList.add('hidden'))
+      const fd = new FormData(form)
+      const make  = (fd.get('make')  || '').toString().trim()
+      const model = (fd.get('model') || '').toString().trim()
+      const year  = parseInt(fd.get('year'), 10) || null
+      const cc    = parseInt(fd.get('engine_cc'), 10) || null
+      const color = (fd.get('color') || '').toString().trim()
+      const desc  = (fd.get('description') || '').toString().trim()
+      const photo = fd.get('photo')
+      let bad = false
+      if (!make)  { const el=form.querySelector('[data-err=make]');  el.textContent='Make is required.'; el.classList.remove('hidden'); bad=true }
+      if (!model) { const el=form.querySelector('[data-err=model]'); el.textContent='Model is required.'; el.classList.remove('hidden'); bad=true }
+      if (year && (year < 1900 || year > 2099)) { const el=form.querySelector('[data-err=year]'); el.textContent='Enter a sensible year.'; el.classList.remove('hidden'); bad=true }
+      if (photo && photo.size && photo.size > 4*1024*1024) { const el=form.querySelector('[data-err=photo]'); el.textContent='Photo must be under 4 MB.'; el.classList.remove('hidden'); bad=true }
+      if (bad) return
 
-      const make  = document.getElementById('make').value.trim()
-      const model = document.getElementById('model').value.trim()
-      const year  = parseInt(document.getElementById('year').value, 10) || null
-      const cc    = parseInt(document.getElementById('engine_cc').value, 10) || null
-      const color = document.getElementById('color').value.trim() || null
-      const desc  = document.getElementById('description').value.trim() || null
-
-      let ok = true
-      if (!make)  { setErr('make', 'Make is required.'); ok = false }
-      if (!model) { setErr('model', 'Model is required.'); ok = false }
-      if (year !== null && (year < 1900 || year > 2099)) {
-        setErr('year', 'Enter a sensible year.'); ok = false
-      }
-      if (!ok) return
-
-      const btn = document.getElementById('saveBtn')
-      btn.disabled = true
-      btn.setAttribute('aria-busy', 'true')
-      btn.innerHTML = '<span class="spinner"></span> Saving…'
-
+      submit.disabled = true
+      submit.innerHTML = '<span class="spinner"></span><span class="btn-label">' + (state.editingId ? 'Saving' : 'Saving') + '</span>'
       try {
-        let photoUrl = null
-        if (editingId) {
-          const existing = allBikes.find(b => b.id === editingId)
-          photoUrl = existing?.photo_url || null
-        }
-        if (stagedPhoto) {
-          const ext = stagedPhoto.name.split('.').pop() || 'jpg'
-          const path = `${user.id}/${Date.now()}-${stagedPhoto.name.replace(/[^a-z0-9.\-_]/gi, '_')}`
-          const { error: upErr } = await supabase.storage
-            .from('bike-images')
-            .upload(path, stagedPhoto, { upsert: false, contentType: stagedPhoto.type })
+        let photo_url = null
+        if (photo && photo.size) {
+          const ext = (photo.type.split('/')[1] || 'jpg').replace('jpeg','jpg')
+          const path = `${me.id}/${Date.now()}-${(photo.name || 'photo').replace(/[^a-z0-9.]/gi,'_')}.${ext}`
+          const { error: upErr } = await supabase.storage.from('bike-images').upload(path, photo, { upsert: false, contentType: photo.type })
           if (upErr) throw upErr
           const { data: pub } = supabase.storage.from('bike-images').getPublicUrl(path)
-          photoUrl = pub.publicUrl
+          photo_url = pub.publicUrl
         }
-
-        const row = {
-          user_id: user.id,
-          make, model, year, engine_cc: cc, color,
-          description: desc,
-          photo_url: photoUrl
-        }
-
-        if (editingId) {
-          const { error } = await supabase.from('bikes').update(row).eq('id', editingId)
+        if (state.editingId) {
+          const payload = { make, model, year, engine_cc: cc, color, description: desc }
+          if (photo_url) payload.photo_url = photo_url
+          const { error } = await supabase.from('bikes').update(payload).eq('id', state.editingId).eq('user_id', me.id)
           if (error) throw error
         } else {
-          const { error } = await supabase.from('bikes').insert(row)
+          const { error } = await supabase.from('bikes').insert({
+            user_id: me.id, make, model, year, engine_cc: cc, color, description: desc, photo_url,
+          })
           if (error) throw error
         }
-        await loadBikes()
-        document.getElementById('formPanel').classList.add('hidden')
-        resetForm()
-        editingId = null
-        notify(editingId === null && btn.dataset.wasEdit ? 'Machine updated.' : 'Machine added to the registry.')
-      } catch (e2) {
-        notify(e2.message || 'Could not save that machine.', true)
+        toast(state.editingId ? 'Machine updated.' : 'Machine added to the registry.', 'success')
+        closeForm()
+        await load()
+      } catch (err) {
+        formErr.textContent = (err && err.message) || 'Couldn’t save. Try again.'
+        formErr.classList.remove('hidden')
       } finally {
-        btn.disabled = false
-        btn.removeAttribute('aria-busy')
-        btn.innerHTML = '<span class="label">Save to Registry</span>'
+        submit.disabled = false
+        submit.innerHTML = '<span class="btn-label">' + (state.editingId ? 'Save changes' : 'Save machine') + '</span>'
       }
+    })
+
+    /* ── Grid interactions ──────────────────────────────── */
+    grid.addEventListener('click', async (e) => {
+      const btn = e.target.closest('button[data-act]')
+      if (!btn) return
+      const card = btn.closest('[data-bike]')
+      if (!card) return
+      const id = card.getAttribute('data-bike')
+      const b = state.bikes.find(x => x.id === id)
+      if (!b) return
+      if (btn.getAttribute('data-act') === 'edit')   return openForm(b)
+      if (btn.getAttribute('data-act') === 'delete') return onDelete(b)
+    })
+    async function onDelete(b) {
+      const ok = await confirmModal(`Remove the ${b.make} ${b.model} from the registry?`, 'Remove machine')
+      if (!ok) return
+      const { error } = await supabase.from('bikes').delete().eq('id', b.id).eq('user_id', me.id)
+      if (error) { toast('Couldn’t remove machine.', 'error'); return }
+      toast('Machine removed.', 'success')
+      await load()
     }
 
-    function setErr(name, msg) {
-      const el = document.querySelector(`[data-error-for="${name}"]`)
-      if (el) el.textContent = msg
-    }
-
-    // ── Filters ──────────────────────────────────────────
-    function bindFilters() {
-      ;['filterMake','filterYearMin','filterYearMax','filterEngine'].forEach(id => {
-        document.getElementById(id).addEventListener('input', () => renderGrid())
-        document.getElementById(id).addEventListener('change', () => renderGrid())
-      })
-      document.getElementById('clearFiltersBtn').addEventListener('click', () => {
-        document.getElementById('filterMake').value = ''
-        document.getElementById('filterYearMin').value = ''
-        document.getElementById('filterYearMax').value = ''
-        document.getElementById('filterEngine').value = ''
-        renderGrid()
-      })
-    }
-
-    // ── Skeletons / states / helpers ─────────────────────
-    function skeletons(n) {
-      let out = ''
-      for (let i = 0; i < n; i++) {
-        out += `
-          <div class="bike-card">
-            <div class="bike-photo"><div class="skeleton" style="width:100%;height:100%"></div></div>
-            <div class="bike-info">
-              <div class="skeleton" style="height:18px;width:60%;margin-bottom:8px"></div>
-              <div class="skeleton" style="height:11px;width:40%;margin-bottom:12px"></div>
-              <div class="skeleton" style="height:11px;width:90%;margin-bottom:6px"></div>
-              <div class="skeleton" style="height:11px;width:80%"></div>
-            </div>
-          </div>
-        `
-      }
-      return out
-    }
-    function emptyState(title, sub) {
-      return `<div class="empty" style="grid-column:1/-1">
-        <p class="empty-title">${escapeHtml(title)}</p>
-        <p class="empty-sub">${escapeHtml(sub)}</p>
-      </div>`
-    }
-    function escapeHtml(s){ return String(s ?? '').replace(/[&<>"']/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c])) }
-    function escapeAttr(s){ return escapeHtml(s) }
-    function notify(msg, isError = false) {
-      const el = document.getElementById('notice')
-      el.textContent = msg
-      el.classList.toggle('error', isError)
-      el.classList.add('show')
-      clearTimeout(notify._t)
-      notify._t = setTimeout(() => el.classList.remove('show'), 2400)
-    }
+    load()
   </script>
-
 </body>
 </html>

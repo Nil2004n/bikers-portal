@@ -1,249 +1,150 @@
 <!DOCTYPE html>
-<html lang="en" data-theme="dark">
+<html lang="en" class="dark">
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <meta name="description" content="Bikers Portal — a private space for machines, miles, and the people who carry both with grace." />
   <title>Sign In · Bikers Portal</title>
-
-  <link rel="preconnect" href="https://cdn.tailwindcss.com" />
+  <link rel="icon" href="/assets/logo.svg" type="image/svg+xml" />
+  <script src="./js/app.js"></script>
   <script src="https://cdn.tailwindcss.com"></script>
-  <script>
-    tailwind.config = {
-      theme: {
-        extend: {
-          colors: {
-            ink:       { 950: '#0d0c0a', 900: '#11100e', 800: '#181512', 700: '#211c18', 600: '#2a241e' },
-            bone:      { 100: '#f3ede3', 200: '#e8e0d2', 300: '#c7b9a2', 400: '#8a7d68' },
-            brass:     { 300: '#d4b187', 400: '#c89e69', 500: '#b08d57', 600: '#8a6a3d' },
-            burgundy:  { 500: '#6e2f2f', 600: '#5a2626' },
-            leather:   { 500: '#7a4b2a' },
-            bronze:    { 700: '#3a3129', 800: '#2a221a' }
-          },
-          fontFamily: {
-            display: ['"Cormorant Garamond"', 'Georgia', 'serif'],
-            sans:    ['Satoshi', 'Inter', 'sans-serif']
-          }
-        }
-      }
-    }
-  </script>
   <link rel="stylesheet" href="./assets/style.css" />
 </head>
-<body>
+<body class="min-h-screen bg-ink-900 text-bone font-sans antialiased">
 
-  <main class="split">
-    <!-- ░░ Left: Heritage visual ░░ -->
-    <section class="split-visual" aria-hidden="true">
-      <div class="split-visual-content">
-        <div class="top">
-          <img src="./assets/logo.svg" alt="Bikers Portal" />
-        </div>
+  <div class="min-h-screen flex flex-col md:flex-row">
+    <!-- ░░ LEFT · Atmosphere (desktop) / compact hero (mobile) ░░ -->
+    <aside class="bp-atmos relative md:flex md:flex-col md:justify-between md:w-1/2 md:min-h-screen px-6 md:px-14 py-10 md:py-16">
+      <a href="/index.html" class="relative z-10 inline-flex items-center">
+        <img src="/assets/logo.svg" alt="Bikers Portal" class="h-8 w-auto" />
+      </a>
 
-        <div class="middle">
-          <p class="label-engraved mb-6">A Road Society</p>
-          <h1 class="headline">For riders who respect the road.</h1>
-          <p class="sub">
-            A private space for machines, miles, and the people who carry both
-            with grace. No noise. No haste. Only the road and those who keep it.
-          </p>
-        </div>
-
-        <div class="bottom">
-          <span>Est. MMXXVI</span>
-          <span>·</span>
-          <span>Road Society</span>
-        </div>
+      <div class="relative z-10 hidden md:block max-w-md">
+        <p class="bp-section-label mb-5">Riding Brotherhood</p>
+        <h1 class="font-serif text-[34px] leading-[1.15] text-bone">
+          For riders who respect the road.
+        </h1>
+        <p class="text-bone-muted text-[14.5px] leading-relaxed mt-5 max-w-sm">
+          A private space for machines, miles, and the people who carry both with grace.
+        </p>
+        <div class="bp-divider-double mt-10 max-w-xs"></div>
+        <p class="text-bone-dim text-[11px] tracking-[0.28em] uppercase mt-6">Est. road society</p>
       </div>
-    </section>
 
-    <!-- ░░ Right: Auth form ░░ -->
-    <section class="split-form">
-      <div class="split-form-inner">
-        <div class="auth-panel">
-          <div class="text-center mb-6 lg:hidden">
-            <img src="./assets/logo.svg" alt="Bikers Portal" class="mx-auto" style="height:40px" />
+      <div class="relative z-10 hidden md:block">
+        <p class="text-bone-dim text-[11px] tracking-[0.24em] uppercase">A quiet confidence in leather and chrome</p>
+      </div>
+
+      <!-- mobile compact hero -->
+      <div class="relative z-10 md:hidden mt-8 mb-2">
+        <p class="bp-section-label mb-3">Riding Brotherhood</p>
+        <h1 class="font-serif text-[26px] leading-[1.2] text-bone">For riders who respect the road.</h1>
+      </div>
+    </aside>
+
+    <!-- ░░ RIGHT · Form ░░ -->
+    <main class="flex-1 md:w-1/2 flex items-center justify-center px-5 py-10 md:py-0 bg-ink-900">
+      <div class="w-full max-w-sm">
+        <div class="bp-card p-7 md:p-9">
+          <div class="flex items-center gap-3 mb-7">
+            <div class="h-px flex-1 bg-bronze"></div>
+            <span class="font-serif text-bone-muted text-[11px] tracking-[0.32em] uppercase">Members Only</span>
+            <div class="h-px flex-1 bg-bronze"></div>
           </div>
 
-          <p class="label-engraved text-center">Welcome Back</p>
-          <h1 class="font-display text-center mt-2 mb-1" style="font-size:1.875rem">Enter the Portal</h1>
-          <p class="text-muted text-center text-sm mb-6" style="font-family:'Cormorant Garamond',serif;font-style:italic">
-            Access your routes, machines, and road journal.
-          </p>
+          <h2 class="font-serif text-[22px] text-bone">Enter the Portal</h2>
+          <p class="text-bone-muted text-[13px] mt-1.5">Access your routes, machines, and road journal.</p>
 
-          <div id="formError" class="banner banner-error mb-4 hidden" role="alert"></div>
-
-          <form id="loginForm" novalidate class="stack gap-4">
-            <div class="field">
-              <label class="field-label" for="email">Username</label>
-              <input
-                id="email"
-                name="username"
-                type="text"
-                class="input"
-                placeholder="rider"
-                autocomplete="username"
-                pattern="^[A-Za-z0-9_]{3,20}$"
-                required
-              />
-              <div class="msg-error" data-error-for="email"></div>
+          <form id="loginForm" class="mt-7 space-y-4" novalidate>
+            <div>
+              <label for="email" class="bp-label">Email</label>
+              <input id="email" name="email" type="email" autocomplete="email" required class="bp-input" placeholder="you@domain.com" />
+              <p id="emailErr" class="bp-msg bp-msg-error hidden"></p>
             </div>
-
-            <div class="field">
-              <label class="field-label" for="password">Password</label>
-              <input
-                id="password"
-                name="password"
-                type="password"
-                class="input"
-                placeholder="••••••••"
-                autocomplete="current-password"
-                required
-              />
-              <div class="msg-error" data-error-for="password"></div>
+            <div>
+              <div class="bp-label-row">
+                <label for="password" class="bp-label" style="margin-bottom:0">Password</label>
+                <a href="#" class="text-[11px] text-bone-dim hover:text-brass tracking-wide">Forgot?</a>
+              </div>
+              <input id="password" name="password" type="password" autocomplete="current-password" required class="bp-input mt-1.5" placeholder="••••••••" />
+              <p id="passwordErr" class="bp-msg bp-msg-error hidden"></p>
             </div>
+            <p id="formErr" class="bp-msg bp-msg-error hidden"></p>
 
-            <button id="submitBtn" type="submit" class="btn btn-primary btn-full mt-2">
-              <span class="label">Enter the Portal</span>
+            <button id="submitBtn" type="submit" class="bp-btn bp-btn-primary w-full justify-center mt-2">
+              <span class="btn-label">Enter the Portal</span>
             </button>
           </form>
 
-          <div class="divider-stitched my-6"></div>
+          <div class="bp-divider my-7"></div>
 
-          <p class="text-center text-sm text-muted">
+          <p class="text-center text-bone-muted text-[13px]">
             New to the road?
-            <a href="/register.html" class="btn-link">Create an account</a>
+            <a href="/register.html" class="text-brass hover:text-brass-light ml-1">Create an account</a>
           </p>
         </div>
 
-        <p class="text-center text-xs text-faint mt-6" style="color:var(--ink-ghost);letter-spacing:0.18em;text-transform:uppercase">
-          Members only · Quiet by design
-        </p>
-
-        <p id="connStatus" class="text-center text-xs mt-3" style="color:var(--ink-ghost);letter-spacing:0.12em">
-          <span class="spinner" style="width:10px;height:10px;border-width:1px;margin-right:0.4rem;vertical-align:-1px"></span>
-          <span id="connStatusText">Opening the road…</span>
-        </p>
+        <p class="text-bone-dim text-[11px] tracking-[0.2em] uppercase text-center mt-8">Bikers Portal · A private riding society</p>
       </div>
-    </section>
-  </main>
+    </main>
+  </div>
 
   <script type="module">
-    import { supabase } from './js/api.js'
+    import { supabase } from './js/supabase.js'
 
-    // Render connection status as soon as we know.
-    const connEl = document.getElementById('connStatus')
-    const connTxt = document.getElementById('connStatusText')
-    ;(async () => {
-      try {
-        const res = await fetch('/api/health')
-        if (res.ok) {
-          const data = await res.json()
-          connEl.style.color = 'var(--brass)'
-          const c = data.counts || {}
-          connTxt.textContent = `Connected · SQLite · ${c.profiles || 0} riders, ${c.posts || 0} entries`
-        } else {
-          connEl.style.color = '#d97a7a'
-          connTxt.textContent = `Server responded with ${res.status}`
-        }
-      } catch (e) {
-        connEl.style.color = '#d97a7a'
-        connTxt.textContent = 'Server unreachable — run `npm start`'
-      }
-    })()
+    const form    = document.getElementById('loginForm')
+    const btn     = document.getElementById('submitBtn')
+    const emailEl = document.getElementById('email')
+    const passEl  = document.getElementById('password')
+    const emailErr= document.getElementById('emailErr')
+    const passErr = document.getElementById('passwordErr')
+    const formErr = document.getElementById('formErr')
 
-    // Already authenticated? Skip the form.
-    try {
-      const { data: { session } } = await supabase.auth.getSession()
-      if (session) {
-        window.location.replace('/feed.html')
-      }
-    } catch (err) {
-      console.warn('[index] session check failed:', err)
+    // ── If already signed in, complete any pending profile, then go to feed
+    const { data: { session } } = await supabase.auth.getSession()
+    if (session) {
+      await window.bp.completePendingProfile()
+      window.location.replace('/feed.html')
     }
 
-    const form        = document.getElementById('loginForm')
-    const submitBtn   = document.getElementById('submitBtn')
-    const formError   = document.getElementById('formError')
-    const emailInput  = document.getElementById('email')
-    const passInput   = document.getElementById('password')
-
-    function setFieldError(name, msg) {
-      const el = document.querySelector(`[data-error-for="${name}"]`)
-      if (el) el.textContent = msg || ''
+    function setLoading(on) {
+      btn.disabled = on
+      btn.innerHTML = on
+        ? '<span class="spinner"></span><span class="btn-label">Signing you in</span>'
+        : '<span class="btn-label">Enter the Portal</span>'
     }
-
-    function setFormError(msg) {
-      if (!msg) {
-        formError.classList.add('hidden')
-        formError.textContent = ''
-      } else {
-        formError.textContent = msg
-        formError.classList.remove('hidden')
-      }
+    function clearErrors() {
+      [emailErr, passErr, formErr].forEach(e => e.classList.add('hidden'))
     }
-
-    function setLoading(loading) {
-      submitBtn.disabled = loading
-      submitBtn.setAttribute('aria-busy', loading ? 'true' : 'false')
-      submitBtn.innerHTML = loading
-        ? '<span class="spinner"></span> Opening the road…'
-        : '<span class="label">Enter the Portal</span>'
+    function fieldErr(el, msg) {
+      el.textContent = msg
+      el.classList.remove('hidden')
     }
-
-    function validate() {
-      let ok = true
-      setFieldError('email', '')
-      setFieldError('password', '')
-
-      const u = emailInput.value.trim()
-      if (!u) {
-        setFieldError('email', 'Username is required.')
-        ok = false
-      } else if (!/^[A-Za-z0-9_]{3,20}$/.test(u)) {
-        setFieldError('email', '3–20 characters: letters, numbers, underscore.')
-        ok = false
-      }
-      if (!passInput.value) {
-        setFieldError('password', 'Password is required.')
-        ok = false
-      }
-      return ok
-    }
-
-    emailInput.addEventListener('input', () => setFieldError('email', ''))
-    passInput.addEventListener('input', () => { setFieldError('password', ''); setFormError('') })
 
     form.addEventListener('submit', async (e) => {
       e.preventDefault()
-      setFormError('')
-      if (!validate()) return
+      clearErrors()
+      const email = emailEl.value.trim()
+      const password = passEl.value
+      let bad = false
+      if (!email)              { fieldErr(emailErr, 'Enter your email.'); bad = true }
+      else if (!/^\S+@\S+\.\S+$/.test(email)) { fieldErr(emailErr, 'That email doesn’t look right.'); bad = true }
+      if (!password)           { fieldErr(passErr, 'Enter your password.'); bad = true }
+      if (bad) return
 
       setLoading(true)
-      const { error } = await supabase.auth.signInWithPassword({
-        email: emailInput.value.trim(),
-        password: passInput.value
-      })
-      if (error) {
+      const { data, error } = await supabase.auth.signInWithPassword({ email, password })
+      if (error || !data.session) {
         setLoading(false)
-        setFormError(humaniseError(error))
+        const msg = (error && error.message) || 'We couldn’t sign you in. Check your details and try again.'
+        if (/email/i.test(msg) && /confirm/i.test(msg))            fieldErr(formErr, 'Please confirm your email before signing in. Check your inbox.')
+        else if (/invalid/i.test(msg) || /credentials/i.test(msg)) fieldErr(formErr, 'Email or password is incorrect.')
+        else fieldErr(formErr, msg)
         return
       }
-      // success — redirect
-      window.location.replace('/feed.html')
+      await window.bp.completePendingProfile()
+      window.bp.toast('Welcome back to the road.', 'success')
+      window.location.href = '/feed.html'
     })
-
-    function humaniseError(err) {
-      const m = (err?.message || '').toLowerCase()
-      if (m.includes('invalid login') || m.includes('invalid credentials')) {
-        return 'Those credentials do not open the road. Please try again.'
-      }
-      if (m.includes('email not confirmed')) {
-        return 'Please confirm your email before entering.'
-      }
-      return 'Something kept the gate closed. Please try again shortly.'
-    }
   </script>
-
 </body>
 </html>

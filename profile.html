@@ -1,543 +1,337 @@
 <!DOCTYPE html>
-<html lang="en" data-theme="dark">
+<html lang="en" class="dark">
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <meta name="description" content="Your private dossier on the Bikers Portal." />
-  <title>Profile · Bikers Portal</title>
-
+  <title>Dossier · Bikers Portal</title>
+  <link rel="icon" href="/assets/logo.svg" type="image/svg+xml" />
+  <script src="./js/app.js"></script>
   <script src="https://cdn.tailwindcss.com"></script>
-  <script>
-    tailwind.config = {
-      theme: {
-        extend: {
-          colors: {
-            ink:   { 950: '#0d0c0a', 900: '#11100e', 800: '#181512', 700: '#211c18' },
-            bone:  { 100: '#f3ede3', 200: '#e8e0d2', 300: '#c7b9a2', 400: '#8a7d68' },
-            brass: { 400: '#c89e69', 500: '#b08d57', 600: '#8a6a3d' }
-          },
-          fontFamily: {
-            display: ['"Cormorant Garamond"', 'Georgia', 'serif'],
-            sans:    ['Satoshi', 'Inter', 'sans-serif']
-          }
-        }
-      }
-    }
-  </script>
   <link rel="stylesheet" href="./assets/style.css" />
 </head>
-<body>
+<body class="min-h-screen bg-ink-900 text-bone font-sans antialiased">
 
   <script type="module" src="./js/auth-guard.js"></script>
 
-  <main>
-    <!-- ░░ HEADER ░░ -->
-    <section class="profile-head">
-      <div class="profile-head-inner">
-        <div style="position:relative">
-          <span class="avatar-fallback avatar-xl" id="avatarFallback" aria-hidden="true">·</span>
-          <img class="avatar avatar-xl hidden" id="avatarImg" alt="" />
-        </div>
-        <div class="info">
-          <p class="label-engraved" id="profileRole">Rider Dossier</p>
-          <h1 class="name" id="profileName">Loading…</h1>
-          <p class="handle" id="profileHandle">@rider</p>
-          <p class="bio" id="profileBio">—</p>
-          <div class="flex flex-wrap gap-2 mt-2">
-            <span class="badge badge-brass hidden" id="bikeBadge"></span>
-          </div>
+  <header id="bp-navbar" data-active=""></header>
 
-          <div class="profile-stats">
-            <div class="stat"><span class="num" id="statPosts">0</span><span class="lbl">Entries</span></div>
-            <div class="stat"><span class="num" id="statBikes">0</span><span class="lbl">Machines</span></div>
-            <div class="stat"><span class="num" id="statTrips">0</span><span class="lbl">Routes</span></div>
+  <main class="max-w-5xl mx-auto px-4 md:px-6 py-8 md:py-12">
+    <!-- Dossier header -->
+    <section class="bp-card p-6 md:p-8 bp-stitched">
+      <div class="flex flex-col md:flex-row md:items-start gap-6">
+        <div id="bigAvatar" class="skeleton rounded-full shrink-0 mx-auto md:mx-0" style="width:112px;height:112px"></div>
+        <div class="flex-1 min-w-0 text-center md:text-left">
+          <p class="bp-section-label mb-2" id="dossierLabel" style="justify-content:center">Rider Dossier</p>
+          <h1 id="dName" class="font-serif text-[26px] md:text-[30px] text-bone">…</h1>
+          <p id="dHandle" class="text-bone-dim text-[13px] mt-1">…</p>
+          <p id="dBio" class="text-bone-muted text-[14px] mt-4 max-w-xl leading-relaxed">…</p>
+          <div class="mt-4 flex items-center gap-2 justify-center md:justify-start flex-wrap">
+            <span id="dBike" class="bp-badge" style="color:#c9a875;border-color:rgba(201,168,117,0.4);background:rgba(176,141,87,0.08)">—</span>
           </div>
         </div>
-        <div class="stack gap-2" style="min-width:160px">
-          <button class="btn btn-primary btn-sm" id="editToggleBtn">Edit Profile</button>
-          <button class="btn btn-ghost btn-sm" id="shareBtn" type="button">Share Profile</button>
+        <div class="flex md:flex-col gap-2 justify-center md:justify-start">
+          <button id="editBtn"  class="bp-btn bp-btn-primary text-[13px]">Edit Profile</button>
+          <button id="shareBtn" class="bp-btn bp-btn-ghost text-[13px]">Share Profile</button>
         </div>
+      </div>
+
+      <div class="bp-divider-double mt-7"></div>
+
+      <div class="grid grid-cols-3 gap-4 mt-6 text-center">
+        <div><p id="statPosts" class="font-serif text-[24px] text-bone">0</p><p class="text-bone-dim text-[10.5px] tracking-[0.22em] uppercase">Posts</p></div>
+        <div><p id="statBikes" class="font-serif text-[24px] text-bone">0</p><p class="text-bone-dim text-[10.5px] tracking-[0.22em] uppercase">Bikes</p></div>
+        <div><p id="statTrips" class="font-serif text-[24px] text-bone">0</p><p class="text-bone-dim text-[10.5px] tracking-[0.22em] uppercase">Trips</p></div>
       </div>
     </section>
 
-    <!-- ░░ EDIT PANEL ░░ -->
-    <div class="profile-body" id="editPanel" style="display:none">
-      <div class="edit-panel">
-        <div class="flex items-center justify-between mb-4">
-          <p class="label-engraved">Edit Dossier</p>
-          <button class="btn btn-ghost btn-sm" id="cancelEditBtn" type="button">Close</button>
+    <!-- Edit panel -->
+    <section id="editPanel" class="hidden mt-6">
+      <form id="editForm" class="bp-card p-5 md:p-7" novalidate>
+        <div class="flex items-center justify-between mb-5">
+          <p class="bp-section-label" style="justify-content:flex-start">Edit Dossier</p>
+          <button type="button" id="editCancel" class="bp-btn-subtle">Close</button>
         </div>
-        <form id="profileForm" novalidate>
-          <div class="grid grid-cols-1 md:grid-cols-2 gap-4 mb-4">
-            <div class="field">
-              <label class="field-label" for="ef_full_name">Full Name</label>
-              <input id="ef_full_name" class="input" required />
-              <div class="msg-error" data-error-for="ef_full_name"></div>
-            </div>
-            <div class="field">
-              <label class="field-label" for="ef_username">Username</label>
-              <input id="ef_username" class="input" required />
-              <div class="msg-error" data-error-for="ef_username"></div>
-            </div>
-            <div class="field md:col-span-2">
-              <label class="field-label" for="ef_bio">Bio</label>
-              <textarea id="ef_bio" class="textarea" placeholder="A line or two about your riding life."></textarea>
-            </div>
-            <div class="field md:col-span-2">
-              <label class="field-label" for="ef_bike_model">Preferred Machine</label>
-              <input id="ef_bike_model" class="input" placeholder="Royal Enfield Classic 350" />
-            </div>
-            <div class="field md:col-span-2">
-              <label class="field-label" for="ef_avatar">Avatar</label>
-              <label class="file-input">
-                <input id="ef_avatar" type="file" accept="image/*" />
-                <span class="file-cta">Replace</span>
-                <span class="file-name" id="ef_avatarName">Keep current photograph</span>
-              </label>
-            </div>
+        <div class="grid grid-cols-1 sm:grid-cols-[auto_1fr] gap-5 items-start">
+          <div>
+            <label class="bp-label">Avatar</label>
+            <div id="editAvatarPreview" class="skeleton rounded-full" style="width:80px;height:80px"></div>
+            <label class="bp-btn bp-btn-ghost cursor-pointer mt-2 text-[12px]">
+              <span>Choose image</span>
+              <input id="editAvatarFile" type="file" accept="image/*" class="hidden" />
+            </label>
+            <p class="bp-msg bp-msg-error hidden" data-err="avatar"></p>
           </div>
-          <div class="flex items-center justify-end gap-2">
-            <button type="submit" class="btn btn-primary btn-sm" id="saveProfileBtn">
-              <span class="label">Save Dossier</span>
-            </button>
+          <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+            <div><label class="bp-label">Full Name</label><input name="full_name" class="bp-input" /><p class="bp-msg bp-msg-error hidden" data-err="full_name"></p></div>
+            <div><label class="bp-label">Username</label><input name="username" class="bp-input" /><p class="bp-msg bp-msg-error hidden" data-err="username"></p></div>
+            <div class="sm:col-span-2"><label class="bp-label">Bio</label><textarea name="bio" rows="3" class="bp-textarea" placeholder="A line or two about your road."></textarea></div>
+            <div class="sm:col-span-2"><label class="bp-label">Preferred Machine</label><input name="bike_model" class="bp-input" placeholder="e.g. Royal Enfield Interceptor 650" /></div>
           </div>
-        </form>
+        </div>
+        <p id="editErr" class="bp-msg bp-msg-error hidden mt-3"></p>
+        <div class="flex justify-end gap-2 mt-5">
+          <button type="button" id="editCancel2" class="bp-btn bp-btn-ghost">Cancel</button>
+          <button type="submit" id="editSubmit" class="bp-btn bp-btn-primary"><span class="btn-label">Save dossier</span></button>
+        </div>
+      </form>
+    </section>
+
+    <!-- Tabs -->
+    <section class="mt-10">
+      <div class="flex items-center gap-1 border-b border-bronze">
+        <button class="bp-tab is-on" data-tab="posts">My Posts</button>
+        <button class="bp-tab"        data-tab="bikes">My Bikes</button>
+        <button class="bp-tab"        data-tab="trips">My Trips</button>
       </div>
-    </div>
-
-    <!-- ░░ TABS ░░ -->
-    <div class="tabs" role="tablist" aria-label="Profile sections">
-      <button class="tab active" role="tab" data-tab="posts" aria-selected="true">Entries</button>
-      <button class="tab" role="tab" data-tab="bikes" aria-selected="false">Machines</button>
-      <button class="tab" role="tab" data-tab="trips" aria-selected="false">Routes</button>
-    </div>
-
-    <div class="profile-body">
-      <section class="tab-panel active" id="tab-posts" role="tabpanel">
-        <div id="tab-posts-body">
-          <div class="skeleton" style="height:160px;margin-bottom:0.75rem"></div>
-          <div class="skeleton" style="height:160px"></div>
-        </div>
-      </section>
-
-      <section class="tab-panel" id="tab-bikes" role="tabpanel">
-        <div id="tab-bikes-body"></div>
-      </section>
-
-      <section class="tab-panel" id="tab-trips" role="tabpanel">
-        <div id="tab-trips-body"></div>
-      </section>
-    </div>
+      <div id="tabPanel" class="mt-6 min-h-[160px]"></div>
+    </section>
   </main>
 
-  <div class="notice" id="notice" role="status" aria-live="polite"></div>
-
   <script type="module">
-    import { supabase } from './js/api.js'
+    import { supabase } from './js/supabase.js'
+    const { esc, timeAgo, avatarHTML, toast } = window.bp
+    const confirmModal = window.bp.confirm
 
-    let user = null
-    try {
-      const r = await supabase.auth.getUser()
-      user = r?.data?.user || null
-    } catch (err) { console.warn('[profile] user check failed:', err) }
-    if (!user) window.location.replace('/index.html')
-
+    const me = window.__bpUser
     let profile = null
-    let stagedAvatar = null
+    let activeTab = 'posts'
+    const cache = { posts: null, bikes: null, trips: null }
 
-    init()
-    async function init() {
-      await loadProfile()
-      bindUI()
-      await loadTab('posts')
-    }
-
-    // ── Profile ─────────────────────────────────────────
+    /* ── Paint dossier ─────────────────────────────────── */
     async function loadProfile() {
-      const { data, error } = await supabase
-        .from('profiles')
-        .select('*')
-        .eq('id', user.id)
-        .single()
-      if (error) { notify('Could not load your dossier.', true); return }
-      profile = data
-      paintProfile()
+      profile = await window.bp.loadCurrentProfile()
+      paintDossier()
+      paintStats()
     }
-
-    function paintProfile() {
-      if (!profile) return
-      document.getElementById('profileName').textContent   = profile.full_name || 'Rider'
-      document.getElementById('profileHandle').textContent = profile.username ? `@${profile.username}` : '@rider'
-      document.getElementById('profileBio').textContent    = profile.bio || 'No introduction recorded yet.'
-      const bikeBadge = document.getElementById('bikeBadge')
-      if (profile.bike_model) {
-        bikeBadge.textContent = profile.bike_model
-        bikeBadge.classList.remove('hidden')
-      } else {
-        bikeBadge.classList.add('hidden')
-      }
-      const initials = (profile.full_name || 'Rider').split(/\s+/).slice(0,2).map(w => w[0]).join('').toUpperCase()
-      const fb  = document.getElementById('avatarFallback')
-      const img = document.getElementById('avatarImg')
-      fb.textContent = initials || '·'
-      if (profile.avatar_url) {
-        img.src = profile.avatar_url
-        img.alt = profile.full_name
-        img.classList.remove('hidden')
-        fb.classList.add('hidden')
-        img.addEventListener('error', () => {
-          img.classList.add('hidden')
-          fb.classList.remove('hidden')
-        }, { once: true })
-      }
-      // Pre-fill edit form
-      document.getElementById('ef_full_name').value = profile.full_name || ''
-      document.getElementById('ef_username').value   = profile.username || ''
-      document.getElementById('ef_bio').value        = profile.bio || ''
-      document.getElementById('ef_bike_model').value = profile.bike_model || ''
+    function paintDossier() {
+      const av = document.getElementById('bigAvatar')
+      av.outerHTML = avatarHTML(profile.avatar_url, profile.full_name || profile.username, 112)
+      document.getElementById('dName').textContent   = profile.full_name || 'Rider'
+      document.getElementById('dHandle').textContent = '@' + (profile.username || 'rider')
+      const bio = profile.bio && profile.bio.trim()
+      document.getElementById('dBio').textContent = bio || 'No introduction yet — share a line or two about your road.'
+      const dBike = document.getElementById('dBike')
+      dBike.textContent = profile.bike_model ? 'Machine — ' + profile.bike_model : 'No machine listed'
+      // edit preview
+      const ep = document.getElementById('editAvatarPreview')
+      ep.outerHTML = avatarHTML(profile.avatar_url, profile.full_name || profile.username, 80)
+      // fill form
+      const f = document.getElementById('editForm')
+      f.full_name.value = profile.full_name || ''
+      f.username.value  = profile.username || ''
+      f.bio.value       = profile.bio || ''
+      f.bike_model.value= profile.bike_model || ''
     }
-
-    // ── Stats ───────────────────────────────────────────
-    async function loadStats() {
-      const [p, b, t] = await Promise.all([
-        supabase.from('posts').select('id', { count: 'exact', head: true }).eq('user_id', user.id),
-        supabase.from('bikes').select('id', { count: 'exact', head: true }).eq('user_id', user.id),
-        supabase.from('trips').select('id', { count: 'exact', head: true }).eq('user_id', user.id)
+    async function paintStats() {
+      const [pc, bc, tc] = await Promise.all([
+        supabase.from('posts').select('id', { count: 'exact', head: true }).eq('user_id', me.id),
+        supabase.from('bikes').select('id', { count: 'exact', head: true }).eq('user_id', me.id),
+        supabase.from('trips').select('id', { count: 'exact', head: true }).eq('user_id', me.id),
       ])
-      document.getElementById('statPosts').textContent = p.count || 0
-      document.getElementById('statBikes').textContent = b.count || 0
-      document.getElementById('statTrips').textContent = t.count || 0
+      document.getElementById('statPosts').textContent = pc.count || 0
+      document.getElementById('statBikes').textContent = bc.count || 0
+      document.getElementById('statTrips').textContent = tc.count || 0
     }
 
-    // ── UI bindings ─────────────────────────────────────
-    function bindUI() {
-      document.getElementById('editToggleBtn').addEventListener('click', () => {
-        const panel = document.getElementById('editPanel')
-        const open = panel.style.display === 'none' || !panel.style.display
-        panel.style.display = open ? 'block' : 'none'
-        if (open) panel.scrollIntoView({ behavior: 'smooth', block: 'start' })
-      })
-      document.getElementById('cancelEditBtn').addEventListener('click', () => {
-        document.getElementById('editPanel').style.display = 'none'
-      })
-      document.getElementById('shareBtn').addEventListener('click', async () => {
-        const url = window.location.origin + '/profile.html?id=' + user.id
-        try {
-          await navigator.clipboard.writeText(url)
-          notify('Profile link copied to clipboard.')
-        } catch {
-          notify('Could not copy. Link: ' + url, true)
-        }
-      })
-      document.getElementById('ef_avatar').addEventListener('change', (e) => {
-        const f = e.target.files?.[0]
-        if (!f) return
-        stagedAvatar = f
-        document.getElementById('ef_avatarName').textContent = f.name
-      })
-      document.getElementById('profileForm').addEventListener('submit', onSaveProfile)
-
-      // Tabs
-      document.querySelectorAll('.tab').forEach(t => {
-        t.addEventListener('click', () => switchTab(t.dataset.tab))
-      })
-    }
-
-    // ── Save profile ────────────────────────────────────
-    async function onSaveProfile(e) {
-      e.preventDefault()
-      document.querySelectorAll('[data-error-for]').forEach(el => el.textContent = '')
-
-      const full_name  = document.getElementById('ef_full_name').value.trim()
-      const username   = document.getElementById('ef_username').value.trim()
-      const bio        = document.getElementById('ef_bio').value.trim()
-      const bike_model = document.getElementById('ef_bike_model').value.trim() || null
-
-      let ok = true
-      if (!full_name) { setErr('ef_full_name', 'Full name is required.'); ok = false }
-      if (!username)  { setErr('ef_username', 'Username is required.'); ok = false }
-      else if (!/^[a-z0-9_]{3,20}$/i.test(username)) {
-        setErr('ef_username', '3–20 characters, letters, numbers, underscore.'); ok = false
+    /* ── Edit panel ────────────────────────────────────── */
+    const editPanel = document.getElementById('editPanel')
+    document.getElementById('editBtn').addEventListener('click', () => editPanel.classList.remove('hidden'))
+    document.getElementById('editCancel').addEventListener('click', () => editPanel.classList.add('hidden'))
+    document.getElementById('editCancel2').addEventListener('click', () => editPanel.classList.add('hidden'))
+    const editAvatarFile = document.getElementById('editAvatarFile')
+    let editAvatarObj = null
+    editAvatarFile.addEventListener('change', () => {
+      const f = editAvatarFile.files && editAvatarFile.files[0]
+      if (!f) return
+      if (f.size > 1.5 * 1024 * 1024) {
+        const el = document.querySelector('[data-err=avatar]')
+        el.textContent = 'Avatar must be under 1.5 MB.'; el.classList.remove('hidden'); return
       }
-      if (!ok) return
+      const url = URL.createObjectURL(f)
+      const ep = document.getElementById('editAvatarPreview')
+      ep.outerHTML = `<img id="editAvatarPreview" src="${url}" alt="" class="rounded-full object-cover border border-bronze" style="width:80px;height:80px" />`
+      editAvatarObj = f
+    })
 
-      const btn = document.getElementById('saveProfileBtn')
-      btn.disabled = true
-      btn.setAttribute('aria-busy', 'true')
-      btn.innerHTML = '<span class="spinner"></span> Saving…'
+    document.getElementById('editForm').addEventListener('submit', async (e) => {
+      e.preventDefault()
+      const f = e.target
+      const errEl = document.getElementById('editErr')
+      errEl.classList.add('hidden')
+      f.querySelectorAll('[data-err]').forEach(el => el.classList.add('hidden'))
+      const full_name = f.full_name.value.trim()
+      const username  = f.username.value.trim()
+      const bio       = f.bio.value.trim()
+      const bike_model= f.bike_model.value.trim()
+      let bad = false
+      if (!full_name) { const el=f.querySelector('[data-err=full_name]'); el.textContent='Enter your name.'; el.classList.remove('hidden'); bad=true }
+      if (!username)  { const el=f.querySelector('[data-err=username]');  el.textContent='Pick a username.'; el.classList.remove('hidden'); bad=true }
+      else if (!/^[a-zA-Z0-9_]{3,20}$/.test(username)) { const el=f.querySelector('[data-err=username]'); el.textContent='3–20 chars: letters, numbers, underscore.'; el.classList.remove('hidden'); bad=true }
+      if (bad) return
 
+      const submit = document.getElementById('editSubmit')
+      submit.disabled = true
+      submit.innerHTML = '<span class="spinner"></span><span class="btn-label">Saving</span>'
       try {
         let avatar_url = profile.avatar_url || null
-        if (stagedAvatar) {
-          const ext = stagedAvatar.name.split('.').pop() || 'jpg'
-          const path = `${user.id}/avatar-${Date.now()}.${ext}`
-          const { error: upErr } = await supabase.storage
-            .from('avatars').upload(path, stagedAvatar, { upsert: true, contentType: stagedAvatar.type })
+        if (editAvatarObj) {
+          const ext = (editAvatarObj.type.split('/')[1] || 'jpg').replace('jpeg','jpg')
+          const path = `${me.id}/avatar-${Date.now()}.${ext}`
+          const { error: upErr } = await supabase.storage.from('avatars').upload(path, editAvatarObj, { upsert: true, contentType: editAvatarObj.type })
           if (upErr) throw upErr
           const { data: pub } = supabase.storage.from('avatars').getPublicUrl(path)
           avatar_url = pub.publicUrl
         }
-
-        const row = { full_name, username, bio, bike_model, avatar_url }
-        const { error } = await supabase.from('profiles').update(row).eq('id', user.id)
+        const { error } = await supabase.from('profiles').update({
+          full_name, username, bio, bike_model, avatar_url,
+        }).eq('id', me.id)
         if (error) throw error
-
-        // Refresh
-        await loadProfile()
-        stagedAvatar = null
-        document.getElementById('ef_avatarName').textContent = 'Keep current photograph'
-        document.getElementById('ef_avatar').value = ''
-        document.getElementById('editPanel').style.display = 'none'
-        notify('Dossier updated.')
-      } catch (e2) {
-        if (String(e2.message || '').toLowerCase().includes('duplicate') ||
-            String(e2.code || '').includes('23505')) {
-          setErr('ef_username', 'That username is already taken.')
+        // update cached profile
+        profile = { ...profile, full_name, username, bio, bike_model, avatar_url }
+        window.bp.currentProfile = profile
+        toast('Dossier updated.', 'success')
+        editPanel.classList.add('hidden')
+        paintDossier()
+        editAvatarObj = null
+      } catch (err) {
+        const msg = (err && err.message) || ''
+        if (/duplicate|unique/i.test(msg) && /username/i.test(msg)) {
+          const el = f.querySelector('[data-err=username]')
+          el.textContent = 'That username is already taken.'; el.classList.remove('hidden')
         } else {
-          notify(e2.message || 'Could not save that change.', true)
+          errEl.textContent = msg || 'Couldn’t save.'; errEl.classList.remove('hidden')
         }
       } finally {
-        btn.disabled = false
-        btn.removeAttribute('aria-busy')
-        btn.innerHTML = '<span class="label">Save Dossier</span>'
+        submit.disabled = false
+        submit.innerHTML = '<span class="btn-label">Save dossier</span>'
       }
-    }
+    })
 
-    function setErr(name, msg) {
-      const el = document.querySelector(`[data-error-for="${name}"]`)
-      if (el) el.textContent = msg
-    }
+    /* ── Share button (placeholder) ────────────────────── */
+    document.getElementById('shareBtn').addEventListener('click', async () => {
+      const url = window.location.href
+      try { await navigator.clipboard.writeText(url); toast('Profile link copied.', 'success') }
+      catch (_) { toast('Couldn’t copy link.', 'error') }
+    })
 
-    // ── Tabs ────────────────────────────────────────────
-    function switchTab(name) {
-      document.querySelectorAll('.tab').forEach(t => {
-        const on = t.dataset.tab === name
-        t.classList.toggle('active', on)
-        t.setAttribute('aria-selected', on ? 'true' : 'false')
+    /* ── Tabs ──────────────────────────────────────────── */
+    document.querySelectorAll('.bp-tab').forEach(b => {
+      b.addEventListener('click', () => {
+        document.querySelectorAll('.bp-tab').forEach(x => x.classList.remove('is-on'))
+        b.classList.add('is-on')
+        activeTab = b.getAttribute('data-tab')
+        renderTab()
       })
-      document.querySelectorAll('.tab-panel').forEach(p => {
-        p.classList.toggle('active', p.id === `tab-${name}`)
-      })
-      loadTab(name)
+    })
+    async function renderTab() {
+      const panel = document.getElementById('tabPanel')
+      panel.innerHTML = `<div class="space-y-3"><div class="skeleton h-20"></div><div class="skeleton h-20"></div></div>`
+      if (activeTab === 'posts')      return renderPosts(panel)
+      if (activeTab === 'bikes')      return renderBikes(panel)
+      if (activeTab === 'trips')      return renderTrips(panel)
     }
-
-    const loadedTabs = new Set()
-    async function loadTab(name) {
-      if (name === 'posts' && loadedTabs.has('posts')) return
-      if (name === 'posts') return renderMyPosts()
-      if (name === 'bikes') return renderMyBikes()
-      if (name === 'trips') return renderMyTrips()
-    }
-
-    // ── Posts tab ───────────────────────────────────────
-    async function renderMyPosts() {
-      const wrap = document.getElementById('tab-posts-body')
-      wrap.innerHTML = `<div class="skeleton" style="height:140px;margin-bottom:0.75rem"></div>`
-      const { data, error } = await supabase
-        .from('posts')
-        .select('id, content, image_url, created_at')
-        .eq('user_id', user.id)
-        .order('created_at', { ascending: false })
-        .limit(20)
-      if (error) { wrap.innerHTML = `<div class="banner banner-error">${escapeHtml(error.message)}</div>`; return }
-      if (!data || data.length === 0) {
-        wrap.innerHTML = `<div class="empty">
-          <p class="empty-title">No entries yet.</p>
-          <p class="empty-sub">Your first journal entry is waiting at the feed.</p>
-        </div>
-        <div class="text-center mt-4"><a class="btn btn-ghost btn-sm" href="/feed.html">Open the Feed</a></div>`
-        document.getElementById('statPosts').textContent = 0
+    async function renderPosts(panel) {
+      if (!cache.posts) {
+        const { data } = await supabase.from('posts')
+          .select('id, content, image_url, created_at')
+          .eq('user_id', me.id).order('created_at', { ascending: false })
+        cache.posts = data || []
+      }
+      if (!cache.posts.length) {
+        panel.innerHTML = `<div class="bp-card p-10 text-center"><p class="font-serif text-[18px] text-bone">No entries yet.</p><p class="text-bone-muted text-[13px] mt-2">The journal is waiting for your first mark.</p></div>`
         return
       }
-      document.getElementById('statPosts').textContent = data.length
-      wrap.innerHTML = data.map(p => `
-        <article class="post-card" data-post-id="${p.id}">
-          ${p.content ? `<div class="post-body">${escapeHtml(p.content)}</div>` : ''}
-          ${p.image_url ? `<img class="post-image" src="${escapeAttr(p.image_url)}" alt="" loading="lazy" onerror="this.style.display='none'" />` : ''}
-          <div class="post-actions">
-            <span class="post-action" style="cursor:default">
-              <span class="mark">◇</span><span>0</span><span>Like</span>
-            </span>
-            <span class="text-xs text-faint" style="margin-left:auto">${timeAgo(p.created_at)}</span>
-            <button class="post-action" data-act="delete" style="color:var(--ink-faint)">
-              <span class="mark">×</span><span>Remove</span>
-            </button>
+      panel.innerHTML = '<div class="space-y-3">' + cache.posts.map(p => `
+        <article class="bp-card p-4" data-post="${esc(p.id)}">
+          <p class="text-bone text-[13.5px] leading-relaxed whitespace-pre-wrap">${esc(p.content)}</p>
+          ${p.image_url ? `<img src="${esc(p.image_url)}" class="mt-3 w-full rounded-md border border-bronze max-h-72 object-cover" alt="" />` : ''}
+          <div class="mt-3 pt-3 border-t border-bronze flex items-center justify-between text-[12px] text-bone-dim">
+            <span>${timeAgo(p.created_at)}</span>
+            <button data-act="delete" class="bp-btn-subtle text-burgundy">Remove</button>
           </div>
-        </article>
-      `).join('')
-      wrap.querySelectorAll('[data-act="delete"]').forEach(btn => {
-        btn.addEventListener('click', async (e) => {
-          e.stopPropagation()
-          const card = btn.closest('.post-card')
-          const id = card.dataset.postId
-          const ok = await window.bpAsk('Remove this entry from the journal?', { title: 'Remove entry?', confirmText: 'Remove', danger: true })
-          if (!ok) return
-          const { error } = await supabase.from('posts').delete().eq('id', id).eq('user_id', user.id)
-          if (error) return notify('Could not remove that entry.', true)
-          card.style.transition = 'opacity 200ms, transform 200ms'
-          card.style.opacity = '0'
-          card.style.transform = 'translateY(-4px)'
-          setTimeout(() => card.remove(), 220)
-          notify('Entry removed.')
-        })
-      })
-      loadedTabs.add('posts')
-      await loadStats()
+        </article>`).join('') + '</div>'
+      panel.querySelectorAll('[data-act=delete]').forEach(b => b.addEventListener('click', async (e) => {
+        const card = e.target.closest('[data-post]')
+        const id = card.getAttribute('data-post')
+        const ok = await confirmModal('Remove this entry from the journal?', 'Remove entry')
+        if (!ok) return
+        await supabase.from('comments').delete().eq('post_id', id)
+        await supabase.from('likes').delete().eq('post_id', id)
+        const { error } = await supabase.from('posts').delete().eq('id', id).eq('user_id', me.id)
+        if (error) { toast('Couldn’t remove entry.', 'error'); return }
+        cache.posts = null
+        toast('Entry removed.', 'success')
+        paintStats()
+        renderTab()
+      }))
     }
-
-    // ── Bikes tab ───────────────────────────────────────
-    async function renderMyBikes() {
-      const wrap = document.getElementById('tab-bikes-body')
-      wrap.innerHTML = `<div class="skeleton" style="height:160px;margin-bottom:0.75rem"></div>`
-      const { data, error } = await supabase
-        .from('bikes')
-        .select('id, make, model, year, engine_cc, color, description, photo_url')
-        .eq('user_id', user.id)
-        .order('created_at', { ascending: false })
-      if (error) { wrap.innerHTML = `<div class="banner banner-error">${escapeHtml(error.message)}</div>`; return }
-      if (!data || data.length === 0) {
-        wrap.innerHTML = `<div class="empty">
-          <p class="empty-title">No machines in the garage yet.</p>
-          <p class="empty-sub">Add the first machine to your dossier.</p>
-        </div>
-        <div class="text-center mt-4"><a class="btn btn-ghost btn-sm" href="/bikes.html">Open the Registry</a></div>`
-        document.getElementById('statBikes').textContent = 0
+    async function renderBikes(panel) {
+      if (!cache.bikes) {
+        const { data } = await supabase.from('bikes')
+          .select('id, make, model, year, engine_cc, color, description, photo_url, created_at')
+          .eq('user_id', me.id).order('created_at', { ascending: false })
+        cache.bikes = data || []
+      }
+      if (!cache.bikes.length) {
+        panel.innerHTML = `<div class="bp-card p-10 text-center"><p class="font-serif text-[18px] text-bone">No machines in the registry.</p><p class="text-bone-muted text-[13px] mt-2">Add your first machine from the garage page.</p><a href="/bikes.html" class="bp-btn bp-btn-primary mt-5 inline-flex">Add a machine</a></div>`
         return
       }
-      document.getElementById('statBikes').textContent = data.length
-      wrap.innerHTML = `<div class="bikes-grid" style="padding:0">
-        ${data.map(b => {
-          const photo = b.photo_url
-            ? `<img src="${escapeAttr(b.photo_url)}" alt="${escapeAttr(b.make + ' ' + b.model)}" loading="lazy" onerror="this.remove()" />`
-            : ''
-          return `
-            <article class="bike-card" data-bike-id="${b.id}">
-              <div class="bike-photo">
-                ${photo}
-                <span class="badge badge-mine">Mine</span>
-              </div>
-              <div class="bike-info">
-                <div class="name">${escapeHtml(b.make || '—')} ${escapeHtml(b.model || '')}</div>
-                <div class="sub">${[b.year, b.engine_cc ? b.engine_cc + ' cc' : null, b.color].filter(Boolean).join(' · ') || '—'}</div>
-                <div class="specs">
-                  ${b.year      ? `<span class="badge">${escapeHtml(b.year)}</span>` : ''}
-                  ${b.engine_cc ? `<span class="badge">${escapeHtml(b.engine_cc)} cc</span>` : ''}
-                </div>
-                ${b.description ? `<p class="desc">${escapeHtml(b.description)}</p>` : `<p class="desc text-faint">No description recorded.</p>`}
-                <div class="bike-actions">
-                  <a class="btn btn-ghost btn-sm" href="/bikes.html">Manage</a>
-                  <button class="btn btn-burgundy btn-sm" data-del="${b.id}">Remove</button>
-                </div>
-              </div>
-            </article>
-          `
-        }).join('')}
-      </div>`
-
-      wrap.querySelectorAll('[data-del]').forEach(btn => {
-        btn.addEventListener('click', async () => {
-          const id = btn.dataset.del
-          const ok = await window.bpAsk('Remove this machine from the registry?', { title: 'Remove machine?', confirmText: 'Remove', danger: true })
-          if (!ok) return
-          const { error } = await supabase.from('bikes').delete().eq('id', id).eq('user_id', user.id)
-          if (error) return notify('Could not remove that machine.', true)
-          btn.closest('.bike-card').remove()
-          notify('Machine removed.')
-          const n = document.querySelectorAll('#tab-bikes-body .bike-card').length
-          document.getElementById('statBikes').textContent = n
-          if (n === 0) renderMyBikes()
-        })
-      })
+      panel.innerHTML = '<div class="grid grid-cols-1 sm:grid-cols-2 gap-4">' + cache.bikes.map(b => `
+        <article class="bp-card overflow-hidden flex" data-bike="${esc(b.id)}">
+          <div class="w-28 shrink-0 bg-ink-700 border-r border-bronze">
+            ${b.photo_url ? `<img src="${esc(b.photo_url)}" class="w-full h-full object-cover" alt="" />` : `<div class="w-full h-full min-h-[112px] flex items-center justify-center text-bone-dim"><svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1" opacity="0.4"><circle cx="6" cy="17" r="3"/><circle cx="18" cy="17" r="3"/><path d="M9 17h6l2-7H7l-1 4M5 10h14"/></svg></div>`}
+          </div>
+          <div class="p-3 flex-1 min-w-0 flex flex-col">
+            <p class="font-serif text-bone text-[14.5px] truncate">${esc(b.make)} ${esc(b.model)}</p>
+            <p class="text-bone-dim text-[11.5px]">${b.year || '—'}${b.engine_cc ? ' · ' + b.engine_cc + ' cc' : ''}</p>
+            ${b.description ? `<p class="text-bone-muted text-[12.5px] mt-1.5 line-clamp-2">${esc(b.description)}</p>` : ''}
+            <div class="mt-auto pt-2 flex items-center justify-end gap-1">
+              <a href="/bikes.html" class="bp-btn-subtle">Manage</a>
+            </div>
+          </div>
+        </article>`).join('') + '</div>'
     }
-
-    // ── Trips tab ───────────────────────────────────────
-    async function renderMyTrips() {
-      const wrap = document.getElementById('tab-trips-body')
-      wrap.innerHTML = `<div class="skeleton" style="height:80px;margin-bottom:0.5rem"></div>`
-      const { data, error } = await supabase
-        .from('trips')
-        .select('id, title, start_loc, end_loc, trip_date, distance_km, difficulty, is_public')
-        .eq('user_id', user.id)
-        .order('trip_date', { ascending: false, nullsFirst: false })
-        .order('created_at', { ascending: false })
-      if (error) { wrap.innerHTML = `<div class="banner banner-error">${escapeHtml(error.message)}</div>`; return }
-      if (!data || data.length === 0) {
-        wrap.innerHTML = `<div class="empty">
-          <p class="empty-title">No routes in the ledger yet.</p>
-          <p class="empty-sub">Every long road begins as an intention.</p>
-        </div>
-        <div class="text-center mt-4"><a class="btn btn-ghost btn-sm" href="/trips.html">Open the Ledger</a></div>`
-        document.getElementById('statTrips').textContent = 0
+    async function renderTrips(panel) {
+      if (!cache.trips) {
+        const { data } = await supabase.from('trips')
+          .select('id, title, start_loc, end_loc, distance_km, trip_date, difficulty, is_public, created_at')
+          .eq('user_id', me.id).order('trip_date', { ascending: false, nullsFirst: false }).order('created_at', { ascending: false })
+        cache.trips = data || []
+      }
+      if (!cache.trips.length) {
+        panel.innerHTML = `<div class="bp-card p-10 text-center"><p class="font-serif text-[18px] text-bone">No routes in the ledger.</p><p class="text-bone-muted text-[13px] mt-2">Every long road begins as an intention.</p><a href="/trips.html" class="bp-btn bp-btn-primary mt-5 inline-flex">Plan a route</a></div>`
         return
       }
-      document.getElementById('statTrips').textContent = data.length
-      wrap.innerHTML = data.map(t => {
+      panel.innerHTML = '<div class="space-y-3">' + cache.trips.map(t => {
         const diff = (t.difficulty || 'Medium').toLowerCase()
-        const diffCls = diff === 'easy' ? 'badge-easy' : diff === 'hard' ? 'badge-hard' : 'badge-medium'
-        const date = t.trip_date
-          ? new Date(t.trip_date).toLocaleDateString(undefined, { day:'2-digit', month:'short', year:'numeric' })
-          : '—'
-        return `
-          <div class="trip-card" data-trip-id="${t.id}">
-            <div class="glyph">${t.distance_km ? Math.round(t.distance_km) : '—'}<br><span style="font-size:0.55rem;letter-spacing:0.1em">KM</span></div>
-            <div class="info">
-              <div class="title">${escapeHtml(t.title || 'Untitled route')}</div>
-              <div class="route">
-                <span>${escapeHtml(t.start_loc || '—')}</span>
-                <span style="color:var(--brass)">→</span>
-                <span>${escapeHtml(t.end_loc || '—')}</span>
-              </div>
-              <div class="meta">
-                <span>${date}</span>
-                <span class="badge ${diffCls}">${escapeHtml(t.difficulty || 'Medium')}</span>
-                <span class="badge">${t.is_public ? 'Public' : 'Private'}</span>
-              </div>
+        const date = t.trip_date ? new Date(t.trip_date).toLocaleDateString(undefined, { day:'numeric', month:'short', year:'numeric' }) : '—'
+        return `<article class="bp-card p-4">
+          <div class="flex items-start justify-between gap-3">
+            <div class="min-w-0">
+              <p class="font-serif text-bone text-[15.5px] truncate">${esc(t.title)}</p>
+              <p class="text-bone-dim text-[12px] mt-0.5">${esc(t.start_loc || '—')} → ${esc(t.end_loc || '—')} · ${date}</p>
             </div>
-            <div class="stack gap-2" style="flex-shrink:0">
-              <button class="btn btn-burgundy btn-sm" data-del="${t.id}">Remove</button>
-            </div>
+            <span class="bp-badge bp-badge-${diff}">${esc(t.difficulty || 'Medium')}</span>
           </div>
-        `
-      }).join('')
-
-      wrap.querySelectorAll('[data-del]').forEach(btn => {
-        btn.addEventListener('click', async () => {
-          const id = btn.dataset.del
-          const ok = await window.bpAsk('Remove this route from the ledger?', { title: 'Remove route?', confirmText: 'Remove', danger: true })
-          if (!ok) return
-          const { error } = await supabase.from('trips').delete().eq('id', id).eq('user_id', user.id)
-          if (error) return notify('Could not remove that route.', true)
-          btn.closest('.trip-card').remove()
-          notify('Route removed.')
-          const n = document.querySelectorAll('#tab-trips-body .trip-card').length
-          document.getElementById('statTrips').textContent = n
-          if (n === 0) renderMyTrips()
-        })
-      })
+          <div class="bp-divider my-3"></div>
+          <div class="flex items-center justify-between text-[12.5px] text-bone-muted">
+            <span>${t.distance_km ? t.distance_km + ' km' : '— km'}${t.is_public ? ' · public' : ' · private'}</span>
+            <a href="/trips.html" class="bp-btn-subtle">Manage</a>
+          </div>
+        </article>`
+      }).join('') + '</div>'
     }
 
-    // ── Helpers ─────────────────────────────────────────
-    function timeAgo(iso) {
-      const t = new Date(iso).getTime()
-      const diff = Math.max(0, (Date.now() - t) / 1000)
-      if (diff < 60)        return 'just now'
-      if (diff < 3600)      return `${Math.floor(diff/60)}m ago`
-      if (diff < 86400)     return `${Math.floor(diff/3600)}h ago`
-      if (diff < 86400*7)   return `${Math.floor(diff/86400)}d ago`
-      const d = new Date(iso)
-      return d.toLocaleDateString(undefined, { day:'2-digit', month:'short' })
-    }
-    function escapeHtml(s){ return String(s ?? '').replace(/[&<>"']/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c])) }
-    function escapeAttr(s){ return escapeHtml(s) }
-    function notify(msg, isError = false) {
-      const el = document.getElementById('notice')
-      el.textContent = msg
-      el.classList.toggle('error', isError)
-      el.classList.add('show')
-      clearTimeout(notify._t)
-      notify._t = setTimeout(() => el.classList.remove('show'), 2400)
-    }
+    // small tab style injected via tailwind classes won't be auto; add a quick class
+    const styleEl = document.createElement('style')
+    styleEl.textContent = `
+      .bp-tab { padding: 10px 14px; color: #8a7e6a; font-size: 12.5px; letter-spacing: 0.16em; text-transform: uppercase; border-bottom: 1px solid transparent; margin-bottom: -1px; }
+      .bp-tab:hover { color: #c7b9a2; }
+      .bp-tab.is-on { color: #f3ede3; border-bottom-color: #b08d57; }`
+    document.head.appendChild(styleEl)
+
+    loadProfile()
+    renderTab()
   </script>
-
 </body>
 </html>
