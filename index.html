@@ -3,163 +3,196 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Enter · Bikers Portal</title>
+  <title>Sign in · Bikers Portal</title>
   <link rel="icon" href="/assets/logo.svg" type="image/svg+xml" />
-  <script src="./js/app.js"></script>
-  <script src="https://cdn.tailwindcss.com"></script>
   <link rel="stylesheet" href="./assets/style.css" />
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script src="./js/app.js"></script>
 </head>
 <body>
-  <main class="auth-split">
+  <div class="auth-split">
 
-    <!-- ░░░ STAGE — the editorial left panel ░░░ -->
-    <section class="auth-stage atmosphere">
-      <a href="/index.html" class="nav-brand" style="position:relative;z-index:2">
-        <span class="brand-icon"><img src="/assets/logo.svg" alt="" /></span>
-        <span class="brand-word">Bikers Portal</span>
-      </a>
-
-      <div class="stage-quote" style="position:relative;z-index:2">
-        <p class="quote-body">Roads Earned, <em>Miles Kept.</em></p>
-        <p class="quote-by">House motto · est. 2024</p>
-      </div>
-
-      <div style="position:relative;z-index:2;display:flex;align-items:flex-end;justify-content:space-between;gap:24px;flex-wrap:wrap">
-        <div>
-          <p class="eyebrow eyebrow-brass" style="margin-bottom:10px">A private riding society</p>
-          <p class="italic-serif" style="font-size:17px;color:var(--c-text-2);max-width:36ch;line-height:1.5">
-            A quiet record of machines, miles, and the brotherhood that holds them.
-          </p>
-        </div>
-        <p class="eyebrow eyebrow-dim" style="writing-mode:vertical-rl;transform:rotate(180deg)">N · 12° 58′ · 77° 35′</p>
-      </div>
-
-      <div class="crosshair" aria-hidden="true">
-        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 540 540" fill="none" stroke="currentColor" stroke-width="0.6" stroke-linecap="round">
-          <circle cx="270" cy="270" r="260"/>
-          <circle cx="270" cy="270" r="200" stroke-opacity="0.6"/>
-          <circle cx="270" cy="270" r="140" stroke-opacity="0.5"/>
-          <circle cx="270" cy="270" r="80"  stroke-opacity="0.4"/>
-          <line x1="270" y1="0" x2="270" y2="540" stroke-opacity="0.5"/>
-          <line x1="0"   y1="270" x2="540" y2="270" stroke-opacity="0.5"/>
-          <line x1="78"  y1="78"  x2="462" y2="462" stroke-opacity="0.3"/>
-          <line x1="462" y1="78"  x2="78"  y2="462" stroke-opacity="0.3"/>
+    <!-- ░░ STAGE / RACE POSTER ░░ -->
+    <section class="auth-stage">
+      <div class="compass-bg">
+        <svg viewBox="0 0 200 200" fill="none" stroke="currentColor" stroke-width="0.5" xmlns="http://www.w3.org/2000/svg">
+          <circle cx="100" cy="100" r="90"/>
+          <circle cx="100" cy="100" r="74"/>
+          <circle cx="100" cy="100" r="50"/>
+          <circle cx="100" cy="100" r="20"/>
+          <g stroke-width="1">
+            <line x1="100" y1="6" x2="100" y2="22"/><line x1="100" y1="178" x2="100" y2="194"/>
+            <line x1="6" y1="100" x2="22" y2="100"/><line x1="178" y1="100" x2="194" y2="100"/>
+            <line x1="36" y1="36" x2="48" y2="48"/><line x1="152" y1="152" x2="164" y2="164"/>
+            <line x1="36" y1="164" x2="48" y2="152"/><line x1="152" y1="48" x2="164" y2="36"/>
+          </g>
+          <g font-family="JetBrains Mono, monospace" font-size="9" font-weight="700" fill="currentColor" stroke="none">
+            <text x="100" y="14" text-anchor="middle">N</text>
+            <text x="100" y="194" text-anchor="middle">S</text>
+            <text x="14" y="103" text-anchor="middle">W</text>
+            <text x="186" y="103" text-anchor="middle">E</text>
+          </g>
+          <path d="M 100 30 L 110 100 L 100 90 L 90 100 Z" fill="currentColor"/>
+          <path d="M 100 90 L 110 100 L 100 170 L 90 100 Z" fill="currentColor" opacity="0.4"/>
+          <circle cx="100" cy="100" r="3" fill="currentColor"/>
         </svg>
       </div>
+
+      <div class="stage-content">
+        <div style="display:flex;align-items:center;gap:12px;margin-bottom:32px">
+          <a href="/" style="display:flex;align-items:center;gap:10px;color:var(--color-paper)">
+            <img src="/assets/logo.svg" alt="" style="width:32px;height:32px;color:var(--color-brass)"/>
+            <span style="font-family:var(--font-display);font-size:20px;letter-spacing:.14em;text-transform:uppercase">Bikers Portal</span>
+          </a>
+        </div>
+
+        <p class="stage-tag">Vol. III · The brotherhood log</p>
+        <h1 class="stage-title">Open the<br>throttle.</h1>
+        <p class="stage-sub">Where the road meets the sea — sign in, find your crew, and chart the next leg of the run.</p>
+      </div>
+
+      <div class="stage-meta">
+        <div class="stage-meta-row">
+          <span>EST.</span>
+          <strong>MMXXIV</strong>
+          <span>·</span>
+          <span>BEARING 045°</span>
+        </div>
+        <div class="stage-meta-row">
+          <span>LAT 41.39 · LONG 2.16</span>
+        </div>
+        <div class="stage-meta-row" style="margin-top:8px">
+          <span>GRID POS.</span>
+          <strong>04 / 22</strong>
+        </div>
+      </div>
     </section>
 
-    <!-- ░░░ ENTRANCE — the sign-in form ░░░ -->
+    <!-- ░░ FORM ░░ -->
     <section class="auth-form-side">
-      <div class="founding-strip" style="position:absolute;top:0;left:0;right:0">
-        Vol. III <span class="ornament">·</span> Members only <span class="ornament">·</span> est. MMXXIV
-      </div>
+      <form id="loginForm" class="auth-form" novalidate>
+        <div>
+          <p class="form-eyebrow">Before the race</p>
+          <h1>Identify<br>yourself.</h1>
+          <p class="form-sub">Hand over your call-sign to get back on the grid.</p>
+        </div>
 
-      <div class="auth-form page-enter">
+        <div id="formErr" class="form-err hidden" role="alert"></div>
 
-        <header style="margin-bottom:36px">
-          <p class="eyebrow eyebrow-brass" style="margin-bottom:18px">The portal</p>
-          <h1 style="font-family:var(--font-display);font-style:italic;font-weight:500;line-height:1.05;letter-spacing:-0.01em">
-            Welcome back.
-          </h1>
-          <p class="lede" style="font-size:15px;line-height:1.6;color:var(--c-text-2);margin-top:16px;max-width:36ch">
-            Your machines, routes, and the road journal are waiting on the other side.
-          </p>
-        </header>
+        <div class="field">
+          <label class="field-label" for="email">
+            <span>Call-sign · Email</span>
+            <span class="field-hint">01 / 02</span>
+          </label>
+          <input class="input" type="email" id="email" name="email" required autocomplete="email" placeholder="rider@throttle.club" />
+          <p id="emailErr" class="field-error"></p>
+        </div>
 
-        <form id="loginForm" novalidate>
+        <div class="field">
+          <label class="field-label" for="password">
+            <span>Secret · Password</span>
+            <span class="field-hint">02 / 02</span>
+          </label>
+          <input class="input" type="password" id="password" name="password" required autocomplete="current-password" placeholder="••••••••" />
+          <p id="passwordErr" class="field-error"></p>
+        </div>
 
-          <div class="field mb-5">
-            <label for="email" class="field-label">Email</label>
-            <input id="email" name="email" type="email" autocomplete="email" required class="input" placeholder="you@domain.com" />
-            <p id="emailErr" class="field-error hidden"></p>
-          </div>
+        <button type="submit" id="submitBtn" class="btn btn-primary btn-lg">
+          <span class="btn-label-tex">Fire up</span>
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="square"><path d="M5 12h14M13 6l6 6-6 6"/></svg>
+        </button>
 
-          <div class="field mb-5">
-            <div class="field-label-row">
-              <label for="password" class="field-label" style="margin-bottom:0">Password</label>
-              <a href="#" class="btn-link" style="font-size:10.5px">Forgot?</a>
-            </div>
-            <input id="password" name="password" type="password" autocomplete="current-password" required class="input" placeholder="••••••••" style="margin-top:8px" />
-            <p id="passwordErr" class="field-error hidden"></p>
-          </div>
+        <div class="divider-ornament">or</div>
 
-          <p id="formErr" class="msg msg-error hidden" style="margin-bottom:16px"></p>
-
-          <button id="submitBtn" type="submit" class="btn btn-primary full" style="margin-top:8px">
-            <span class="btn-label">Enter the portal</span>
-          </button>
-
-          <p class="row gap-2 mt-7" style="justify-content:center;font-size:13px;color:var(--c-text-2)">
-            <span>New to the road?</span>
-            <a href="/register.html" class="btn-link" style="font-size:12px">Take the oath</a>
-          </p>
-        </form>
-
-        <div class="rule mt-8"></div>
-
-        <p class="eyebrow eyebrow-dim text-center mt-6" style="font-size:10px;letter-spacing:0.32em">
-          A private riding society · est. 2024
+        <p class="auth-foot">
+          New to the brotherhood? <a href="/register.html">Enlist now →</a>
         </p>
-      </div>
+      </form>
     </section>
-  </main>
+  </div>
 
-  <script type="module">
-    import { supabase } from './js/supabase.js'
+  <!--
+    Synchronous outer script: attaches the submit handler immediately so
+    the browser NEVER falls back to its default GET-reload behaviour.
+    We then async-import the supabase module only when the user submits.
+  -->
+  <script>
+    (function () {
+      const $ = (id) => document.getElementById(id)
 
-    const form    = document.getElementById('loginForm')
-    const btn     = document.getElementById('submitBtn')
-    const emailEl = document.getElementById('email')
-    const passEl  = document.getElementById('password')
-    const emailErr= document.getElementById('emailErr')
-    const passErr = document.getElementById('passwordErr')
-    const formErr = document.getElementById('formErr')
+      const form    = $('loginForm')
+      const submit  = $('submitBtn')
+      const formErr = $('formErr')
+      const email   = $('email')
+      const pass    = $('password')
+      const eErr    = $('emailErr')
+      const pErr    = $('passwordErr')
 
-    const { data: { session } } = await supabase.auth.getSession()
-    if (session) {
-      await window.bp.completePendingProfile()
-      window.location.replace('/feed.html')
-    }
+      const setFieldError = (el, msg) => { if (el) el.textContent = msg || '' }
+      const setFormError  = (msg) => {
+        if (!formErr) return
+        if (msg) { formErr.textContent = msg; formErr.classList.remove('hidden') }
+        else     { formErr.textContent = '';  formErr.classList.add('hidden') }
+      }
+      const setLoading = (on) => {
+        if (!submit) return
+        submit.disabled = on
+        const lbl = submit.querySelector('.btn-label-tex')
+        if (lbl) lbl.textContent = on ? 'Lighting up…' : 'Fire up'
+      }
 
-    function setLoading(on) {
-      btn.disabled = on
-      btn.innerHTML = on
-        ? '<span class="spinner"></span><span class="btn-label">Signing you in</span>'
-        : '<span class="btn-label">Enter the portal</span>'
-    }
-    function clearErrors() {
-      [emailErr, passErr, formErr].forEach(e => e.classList.add('hidden'))
-    }
-    function fieldErr(el, msg) {
-      el.textContent = msg
-      el.classList.remove('hidden')
-    }
-
-    form.addEventListener('submit', async (e) => {
-      e.preventDefault()
-      clearErrors()
-      const email = emailEl.value.trim()
-      const password = passEl.value
-      let bad = false
-      if (!email)              { fieldErr(emailErr, 'Enter your email.'); bad = true }
-      else if (!/^\S+@\S+\.\S+$/.test(email)) { fieldErr(emailErr, 'That email doesn’t look right.'); bad = true }
-      if (!password)           { fieldErr(passErr, 'Enter your password.'); bad = true }
-      if (bad) return
-
-      setLoading(true)
-      const { data, error } = await supabase.auth.signInWithPassword({ email, password })
-      if (error || !data.session) {
-        setLoading(false)
-        const msg = (error && error.message) || 'We couldn’t sign you in. Check your details and try again.'
-        if (/email/i.test(msg) && /confirm/i.test(msg))            fieldErr(formErr, 'Please confirm your email before signing in. Check your inbox.')
-        else if (/invalid/i.test(msg) || /credentials/i.test(msg)) fieldErr(formErr, 'Email or password is incorrect.')
-        else fieldErr(formErr, msg)
+      if (!form) {
+        console.error('[Bikers Portal] loginForm not found in DOM')
         return
       }
-      await window.bp.completePendingProfile()
-      window.bp.toast('Welcome back to the road.', 'success')
-      window.location.href = '/feed.html'
-    })
+
+      form.addEventListener('submit', async function (e) {
+        /* CRITICAL: stop the browser from reloading the page immediately */
+        e.preventDefault()
+        e.stopPropagation()
+
+        setFieldError(eErr, ''); setFieldError(pErr, ''); setFormError('')
+
+        const em = (email && email.value || '').trim()
+        const pw = (pass  && pass.value  || '')
+        if (!em)  { setFieldError(eErr, 'Call-sign required.'); if (email) email.focus(); return }
+        if (!pw)  { setFieldError(pErr, 'Secret required.');    if (pass)  pass.focus();  return }
+        if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(em)) {
+          setFieldError(eErr, "That doesn't look like a call-sign.")
+          if (email) email.focus()
+          return
+        }
+
+        setLoading(true)
+
+        try {
+          /* Lazy-load supabase ONLY on submit. */
+          const mod = await import('./js/supabase.js?v=' + Date.now())
+          const supabase = mod.supabase
+
+          /* If a session is already active, jump straight to the feed */
+          try {
+            const { data: s } = await supabase.auth.getSession()
+            if (s && s.session) { window.location.replace('/feed.html'); return }
+          } catch (_) { /* keep going */ }
+
+          const { data, error } = await supabase.auth.signInWithPassword({ email: em, password: pw })
+          if (error) {
+            const msg = /invalid|credentials/i.test(error.message || '')
+              ? 'Wrong call-sign or secret. Try again.'
+              : (error.message || 'Could not light the engine.')
+            setFormError(msg)
+            setLoading(false)
+            return
+          }
+          window.location.replace('/feed.html')
+        } catch (err) {
+          console.error('[Bikers Portal] sign-in error', err)
+          setFormError((err && err.message) || 'Network error — try again.')
+          setLoading(false)
+        }
+      })
+    })()
   </script>
 </body>
 </html>

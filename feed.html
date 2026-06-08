@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>The Journal · Bikers Portal</title>
+  <title>The journal · Bikers Portal</title>
   <link rel="icon" href="/assets/logo.svg" type="image/svg+xml" />
   <script src="./js/app.js"></script>
   <script src="https://cdn.tailwindcss.com"></script>
@@ -14,17 +14,14 @@
   <header id="bp-navbar" data-active="feed"></header>
 
   <div class="founding-strip">
-    Vol. III <span class="ornament">·</span> The journal <span class="ornament">·</span> est. MMXXIV
+    Vol. III <span class="ornament">·</span> The journal <span class="ornament">·</span> est. MMXXIV <span class="ornament">·</span> bearing 045°
   </div>
 
-  <main class="page" style="padding-top:40px;padding-bottom:80px">
+  <main class="page" style="padding-top:32px;padding-bottom:80px">
 
-    <!-- ░░ Page header ░░ -->
-    <header class="page-header" style="padding:24px 0 36px">
-      <p class="eyebrow eyebrow-brass" style="margin-bottom:16px">The journal</p>
-      <h1 style="font-family:var(--font-display);font-style:italic;font-weight:500;line-height:1.05;letter-spacing:-0.01em">
-        Notes from the road.
-      </h1>
+    <header class="page-header" style="padding:24px 0 32px">
+      <p class="eyebrow eyebrow-racing" style="margin-bottom:16px">The journal <span style="color:var(--color-text-faint);margin-left:8px">·</span> <span class="mono" style="color:var(--color-text-3);font-size:10px;letter-spacing:.2em">CH. 04</span></p>
+      <h1>Dispatches <span style="font-style:italic;color:var(--color-racing)">from the road.</span></h1>
       <p class="lede">Where the brotherhood leaves its marks — routes, machines, and the quiet reflections between them.</p>
     </header>
 
@@ -34,16 +31,17 @@
       <aside class="col-left stack stack-5">
 
         <section id="miniProfile" class="card card-body fade-up">
-          <div class="row row-3" style="align-items:flex-start">
+          <div class="eyebrow eyebrow-brass" style="margin-bottom:14px">The captain</div>
+          <div class="row" style="align-items:flex-start;gap:12px">
             <div id="miniAvatar" class="skeleton avatar avatar-md" style="width:48px;height:48px"></div>
             <div class="stack stack-1 min-w-0" style="flex:1">
-              <p id="miniName" class="truncate" style="font-family:var(--font-display);font-size:16px;color:var(--c-text)">…</p>
-              <p id="miniHandle" class="truncate" style="font-size:11.5px;color:var(--c-text-3)">…</p>
+              <p id="miniName" class="truncate" style="font-family:var(--font-display);font-style:italic;font-size:18px;color:var(--color-text);line-height:1.1;letter-spacing:.02em">…</p>
+              <p id="miniHandle" class="truncate mono" style="font-size:10.5px;color:var(--color-text-faint);margin-top:4px;letter-spacing:.16em">…</p>
             </div>
           </div>
-          <div id="miniBike" class="hidden mt-4" style="font-size:12.5px;color:var(--c-text-2)">
-            <span class="eyebrow eyebrow-dim" style="display:block;margin-bottom:4px">Machine</span>
-            <span id="miniBikeName" style="font-family:var(--font-display);font-size:15px"></span>
+          <div id="miniBike" class="hidden" style="margin-top:14px;padding-top:14px;border-top:1px solid var(--color-border);font-size:12.5px;color:var(--color-text-2)">
+            <span class="eyebrow eyebrow-dim" style="display:block;margin-bottom:6px">Current mount</span>
+            <span id="miniBikeName" style="font-family:var(--font-display);font-style:italic;font-size:16px;letter-spacing:.02em"></span>
           </div>
           <div class="mini-stats">
             <div class="stat"><span id="statPosts" class="stat-value">0</span><span class="stat-label">Posts</span></div>
@@ -52,610 +50,540 @@
           </div>
         </section>
 
-        <section class="card card-body card-stitched fade-up delay-1">
-          <p class="eyebrow eyebrow-brass" style="margin-bottom:14px">Motto</p>
-          <p class="editorial-quote">"Keep your machine, miles, and memories in one place."</p>
-          <div class="rule" style="margin:18px 0 12px"></div>
-          <p class="eyebrow eyebrow-dim">Riding Brotherhood</p>
+        <section class="card card-body fade-up delay-1">
+          <p class="eyebrow eyebrow-racing" style="margin-bottom:14px">Crew on the line</p>
+          <div id="ridersList" class="stack stack-2"></div>
+          <p id="ridersEmpty" class="hidden" style="font-family:var(--font-heritage);font-style:italic;font-size:13px;color:var(--color-text-3);padding:12px 0">No riders in your bearing yet.</p>
+        </section>
+
+        <section class="card card-body fade-up delay-2">
+          <p class="eyebrow eyebrow-cobalt" style="margin-bottom:14px">Routes on the chart</p>
+          <div id="routesList" class="stack stack-2"></div>
+          <p id="routesEmpty" class="hidden" style="font-family:var(--font-heritage);font-style:italic;font-size:13px;color:var(--color-text-3);padding:12px 0">No voyages charted yet.</p>
         </section>
 
       </aside>
 
       <!-- ░░░ MAIN FEED ░░░ -->
-      <section class="col-main stack stack-5" style="min-width:0">
+      <section class="col-main">
 
-        <!-- ░ Composer ░ -->
-        <form id="composer" class="composer fade-up">
-          <div class="composer-row">
-            <div id="composerAvatar" class="skeleton avatar avatar-md shrink-0" style="width:40px;height:40px"></div>
-            <div class="composer-body">
-              <textarea id="composerText" rows="3" maxlength="1000" class="composer-textarea" placeholder="What road is calling you next?" style="min-height:84px"></textarea>
-
-              <div id="composerPreviewWrap" class="hidden mt-3" style="position:relative;display:inline-block">
-                <img id="composerPreview" class="rounded" alt="" style="max-height:240px;border-radius:6px;border:1px solid var(--c-border)" />
-                <button type="button" id="composerRemoveImg" class="btn btn-ghost btn-sm" style="position:absolute;top:8px;right:8px">Remove</button>
-              </div>
-
-              <div class="composer-foot">
-                <div class="row row-3">
-                  <label class="btn btn-ghost btn-sm" style="cursor:pointer">
-                    <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="5" width="18" height="14" rx="2"/><circle cx="8.5" cy="10" r="1.5"/><path d="M21 16l-5-5-9 9"/></svg>
-                    <span>Attach</span>
-                    <input id="composerFile" type="file" accept="image/*" class="sr-only" />
-                  </label>
-                  <span id="composerCount" class="counter">0 / 1000</span>
-                </div>
-                <button id="composerSubmit" type="submit" class="btn btn-primary btn-sm">
-                  <span class="btn-label">Publish entry</span>
-                </button>
-              </div>
-
-              <p id="composerErr" class="msg msg-error hidden" style="margin-top:10px"></p>
-            </div>
+        <!-- COMPOSER -->
+        <div id="composer" class="card composer fade-up">
+          <div class="composer-body">
+            <div id="composerAvatar" class="avatar avatar-md" style="background:linear-gradient(135deg,var(--color-cobalt),var(--color-deep-red))"></div>
+            <textarea id="composerText" class="composer-textarea" placeholder="Send a dispatch from the road…" maxlength="500"></textarea>
           </div>
-        </form>
-
-        <!-- ░ Feed list ░ -->
-        <div id="feed" class="stack stack-5"></div>
-
-        <div id="feedSkeleton" class="stack stack-5">
-          <article class="feed-card">
-            <div class="feed-card-header">
-              <div class="skeleton avatar avatar-md" style="width:40px;height:40px"></div>
-              <div class="stack stack-2" style="flex:1">
-                <div class="skeleton" style="height:12px;width:140px"></div>
-                <div class="skeleton" style="height:10px;width:90px"></div>
-              </div>
+          <div id="composerPreviewWrap" class="hidden" style="padding:0 16px 12px;position:relative">
+            <img id="composerPreview" alt="" style="width:100%;max-height:280px;object-fit:cover;border:1px solid var(--color-border-2)"/>
+            <button type="button" id="composerRemoveImg" class="btn btn-sm" style="position:absolute;top:8px;right:24px;background:rgba(11,13,18,.85);border-color:var(--color-racing);color:var(--color-racing)">Remove</button>
+          </div>
+          <div class="composer-foot">
+            <div class="composer-row">
+              <label class="btn btn-sm btn-subtle" for="composerFile" style="cursor:pointer">
+                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="square"><rect x="3" y="5" width="18" height="14"/><circle cx="12" cy="12" r="3.5"/><path d="M7 5V3h10v2"/></svg>
+                <span>Attach</span>
+                <input type="file" id="composerFile" accept="image/*" style="display:none"/>
+              </label>
             </div>
-            <div class="stack stack-2 mt-4">
-              <div class="skeleton" style="height:12px;width:90%"></div>
-              <div class="skeleton" style="height:12px;width:75%"></div>
-            </div>
-            <div class="skeleton mt-4" style="height:180px;border-radius:6px"></div>
-          </article>
-          <article class="feed-card">
-            <div class="feed-card-header">
-              <div class="skeleton avatar avatar-md" style="width:40px;height:40px"></div>
-              <div class="stack stack-2" style="flex:1">
-                <div class="skeleton" style="height:12px;width:120px"></div>
-                <div class="skeleton" style="height:10px;width:80px"></div>
-              </div>
-            </div>
-            <div class="stack stack-2 mt-4">
-              <div class="skeleton" style="height:12px;width:80%"></div>
-            </div>
-          </article>
+            <span id="composerCount" class="counter">0 / 500</span>
+            <span id="composerErr" class="field-error" style="margin-left:auto"></span>
+            <button id="composerSubmit" type="button" class="btn btn-primary btn-sm">
+              <span>Send</span>
+              <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="square"><path d="M5 12h14M13 6l6 6-6 6"/></svg>
+            </button>
+          </div>
         </div>
 
-        <div id="feedEmpty" class="hidden card card-body-loose empty-state">
-          <p class="empty-title">The road is quiet.</p>
-          <p class="empty-body">No entries yet. Be the first to leave a mark on the journal.</p>
+        <!-- SKELETON -->
+        <div id="feedSkeleton" class="stack stack-4">
+          <div class="dispatch-card"><div class="skeleton" style="height:60px"></div><div class="skeleton" style="height:80px;margin-top:12px"></div></div>
+          <div class="dispatch-card"><div class="skeleton" style="height:60px"></div><div class="skeleton" style="height:80px;margin-top:12px"></div></div>
         </div>
+
+        <!-- FEED -->
+        <div id="feed" class="dispatch-feed stack stack-4" style="display:none"></div>
+
+        <p id="feedEmpty" class="hidden results-empty">
+          <div class="icon">
+            <svg width="64" height="64" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="0.8" stroke-linecap="square"><circle cx="12" cy="12" r="9"/><path d="M12 3v18M3 12h18M5.6 5.6l12.8 12.8M18.4 5.6L5.6 18.4"/></svg>
+          </div>
+          <h3>No dispatches yet.</h3>
+          <p>Be the first to send word from the road.</p>
+        </p>
+
       </section>
 
       <!-- ░░░ RIGHT RAIL ░░░ -->
-      <aside class="col-right stack stack-5">
+      <aside class="col-right">
 
-        <section class="card card-body fade-up">
-          <p class="eyebrow eyebrow-brass" style="margin-bottom:16px">Riders of note</p>
-          <ul id="ridersList" class="stack stack-4"></ul>
+        <section class="card card-body fade-up" style="background:linear-gradient(135deg,rgba(201,168,76,.06),transparent 70%)">
+          <p class="eyebrow eyebrow-brass" style="margin-bottom:14px">Field notes</p>
+          <p style="font-family:var(--font-heritage);font-style:italic;font-size:17px;line-height:1.5;color:var(--color-text)">"Keep your machine, your miles, and your memories in one place."</p>
+          <div class="rule-brass" style="margin:16px 0 12px"></div>
+          <p class="eyebrow eyebrow-dim">The brotherhood</p>
         </section>
 
         <section class="card card-body fade-up delay-1">
-          <p class="eyebrow eyebrow-brass" style="margin-bottom:16px">Routes in conversation</p>
-          <ul id="routesList" class="stack stack-4"></ul>
+          <p class="eyebrow eyebrow-cobalt" style="margin-bottom:14px">Today's bearing</p>
+          <div style="display:flex;align-items:center;gap:16px;margin-bottom:12px">
+            <div style="width:64px;height:64px;color:var(--color-cobalt)">
+              <svg viewBox="0 0 64 64" fill="none" stroke="currentColor" stroke-width="1" xmlns="http://www.w3.org/2000/svg">
+                <circle cx="32" cy="32" r="28"/>
+                <circle cx="32" cy="32" r="20"/>
+                <line x1="32" y1="2" x2="32" y2="10"/><line x1="32" y1="54" x2="32" y2="62"/>
+                <line x1="2" y1="32" x2="10" y2="32"/><line x1="54" y1="32" x2="62" y2="32"/>
+                <path d="M 32 12 L 38 32 L 32 28 L 26 32 Z" fill="currentColor"/>
+                <path d="M 32 28 L 38 32 L 32 52 L 26 32 Z" fill="currentColor" opacity="0.4"/>
+                <circle cx="32" cy="32" r="2" fill="#c9a84c" stroke="none"/>
+              </svg>
+            </div>
+            <div>
+              <p class="mono" style="font-size:10px;letter-spacing:.2em;color:var(--color-text-3);text-transform:uppercase">Heading</p>
+              <p style="font-family:var(--font-block);font-size:24px;color:var(--color-text);line-height:1;margin-top:4px">045° <span style="color:var(--color-brass);font-size:14px;font-family:var(--font-display);letter-spacing:.2em">· NE</span></p>
+            </div>
+          </div>
+          <div class="rule"></div>
+          <div class="stack stack-2" style="font-family:var(--font-mono);font-size:10px;letter-spacing:.16em;color:var(--color-text-3);text-transform:uppercase">
+            <div style="display:flex;justify-content:space-between"><span>LAT</span><span style="color:var(--color-text-2)">41.39 N</span></div>
+            <div style="display:flex;justify-content:space-between"><span>LONG</span><span style="color:var(--color-text-2)">02.16 E</span></div>
+            <div style="display:flex;justify-content:space-between"><span>WIND</span><span style="color:var(--color-text-2)">12 KT</span></div>
+            <div style="display:flex;justify-content:space-between"><span>VIS</span><span style="color:var(--color-text-2)">10 NM</span></div>
+          </div>
         </section>
 
-        <section class="card card-body card-stitched fade-up delay-2">
-          <p class="eyebrow eyebrow-brass" style="margin-bottom:14px">Garage signals</p>
-          <p class="italic-serif" style="font-size:16px;line-height:1.45">"Maintain the machine. Respect the road. The rest is noise."</p>
-          <div class="rule" style="margin:18px 0 12px"></div>
-          <p class="eyebrow eyebrow-dim">House note</p>
+        <section class="card card-body fade-up delay-2">
+          <p class="eyebrow eyebrow-racing" style="margin-bottom:14px">Brotherhood code</p>
+          <ol style="font-family:var(--font-mono);font-size:11px;line-height:1.7;color:var(--color-text-2);padding-left:20px;list-style:decimal-leading-zero">
+            <li>Two fingers off the bar in greeting.</li>
+            <li>Never leave a rider on the side.</li>
+            <li>The machine you rode is sacred.</li>
+            <li>Charts before throttle. Always.</li>
+          </ol>
         </section>
+
       </aside>
     </div>
   </main>
 
-  <!-- Mobile floating compose -->
-  <a href="#composer" class="fab" aria-label="New entry">
-    <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 5v14M5 12h14"/></svg>
-  </a>
-
-  <style>
-    /* 3-col grid that collapses gracefully on mobile */
-    .feed-grid {
-      display: grid;
-      grid-template-columns: 1fr;
-      gap: 24px;
-    }
-    @media (min-width: 900px) {
-      .feed-grid {
-        grid-template-columns: 240px minmax(0, 1fr);
-        gap: 28px;
-      }
-      .col-right { display: none; }
-    }
-    @media (min-width: 1200px) {
-      .feed-grid {
-        grid-template-columns: 240px minmax(0, 1fr) 280px;
-        gap: 40px;
-      }
-      .col-right { display: block; }
-    }
-    @media (max-width: 899px) {
-      .col-left { order: 2; }
-      .col-main { order: 1; }
-      .col-right { order: 3; }
-    }
-
-    /* ── Right-rail follow button (lightweight, no full .btn) ─ */
-    .rail-follow {
-      display: inline-flex;
-      align-items: center;
-      justify-content: center;
-      width: 44px;
-      height: 44px;
-      min-width: 44px;
-      min-height: 44px;
-      flex-shrink: 0;
-      color: var(--c-text-3);
-      background: transparent;
-      border: 0;
-      border-radius: 9999px;
-      cursor: pointer;
-      transition: color var(--t-fast), background var(--t-fast);
-    }
-    .rail-follow:hover { background: var(--c-surface); color: var(--c-text); }
-    .rail-follow:focus-visible { outline: 2px solid var(--c-text); outline-offset: 2px; }
-    .rail-follow[disabled] { opacity: 0.45; cursor: not-allowed; }
-    .rail-follow .glyph {
-      font-family: var(--font-body);
-      font-size: 18px;
-      font-weight: 500;
-      line-height: 1;
-      letter-spacing: 0;
-    }
-    .rail-follow.is-follow   { color: var(--c-brass); }
-    .rail-follow.is-follow:hover  { color: var(--c-brass-deep); }
-    .rail-follow.is-pending  { color: var(--c-text-3); }
-    .rail-follow.is-accepted { color: var(--c-text-3); }
-    .rail-follow.pop { animation: railFollowPop 220ms cubic-bezier(0.16, 1, 0.3, 1); }
-    @keyframes railFollowPop {
-      0%   { transform: scale(1); }
-      50%  { transform: scale(0.88); }
-      100% { transform: scale(1); }
-    }
-  </style>
+  <footer class="site-footer">
+    Bikers Portal <span style="color:var(--color-brass);padding:0 8px">·</span> EST. MMXXIV <span style="color:var(--color-brass);padding:0 8px">·</span> Charted by riders, for riders
+  </footer>
 
   <script type="module">
-    import { supabase } from './js/supabase.js'
-    import {
-      getFollowStatus, sendFollowRequest, cancelFollowRequest,
-      acceptFollowRequest, unfollowUser,
-    } from './js/follow.js'
-    const { esc, timeAgo, avatarHTML, toast } = window.bp
-    const confirmModal = window.bp.confirm
+    import { supabase, getUnreadNotificationCount, subscribeToNotifications } from './js/supabase.js'
 
-    const me = window.__bpUser
-    const state = {
-      posts: [],
-      liked: new Set(),
-      likeCounts: new Map(),
-      commentCounts: new Map(),
-      openComments: new Set(),
-      commentsCache: new Map(),
+    const $ = (id) => document.getElementById(id)
+    const esc = (s) => String(s ?? '').replace(/[&<>"']/g, (c) => ({ '&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;' }[c]))
+    const initialsOf = (n) => (n || '?').split(/\s+/).map(s => s[0]).join('').slice(0, 2).toUpperCase()
+    const timeAgo = (iso) => {
+      if (!iso) return ''
+      const d = (Date.now() - new Date(iso).getTime()) / 1000
+      if (d < 60) return 'just now'
+      if (d < 3600) return Math.floor(d / 60) + 'm ago'
+      if (d < 86400) return Math.floor(d / 3600) + 'h ago'
+      if (d < 604800) return Math.floor(d / 86400) + 'd ago'
+      return new Date(iso).toLocaleDateString()
     }
 
-    const feedEl   = document.getElementById('feed')
-    const feedSk   = document.getElementById('feedSkeleton')
-    const feedEm   = document.getElementById('feedEmpty')
+    /* ── Composer counter ───────────────────────────── */
+    const ta  = $('composerText')
+    const cnt = $('composerCount')
+    if (ta && cnt) ta.addEventListener('input', () => { cnt.textContent = `${ta.value.length} / 500` })
 
-    /* ── Mini profile ───────────────────────────────────── */
-    async function paintMiniProfile() {
-      const prof = await window.bp.loadCurrentProfile()
-      const av = document.getElementById('miniAvatar')
-      av.outerHTML = avatarHTML(prof.avatar_url, prof.full_name || prof.username, 48)
-      document.getElementById('miniName').textContent   = prof.full_name || prof.username
-      document.getElementById('miniHandle').textContent = '@' + prof.username
-      const ca = document.getElementById('composerAvatar')
-      ca.outerHTML = avatarHTML(prof.avatar_url, prof.full_name || prof.username, 40)
-      if (prof.bike_model) {
-        document.getElementById('miniBike').classList.remove('hidden')
-        document.getElementById('miniBikeName').textContent = prof.bike_model
-      }
-      const [pc, bc, tc] = await Promise.all([
-        supabase.from('posts').select('id', { count: 'exact', head: true }).eq('user_id', me.id),
-        supabase.from('bikes').select('id', { count: 'exact', head: true }).eq('user_id', me.id),
-        supabase.from('trips').select('id', { count: 'exact', head: true }).eq('user_id', me.id),
-      ])
-      const paint = (id, n) => {
-        const el = document.getElementById(id)
-        if (!el) return
-        el.textContent = n || 0
-        el.classList.remove('count-pop'); void el.offsetWidth; el.classList.add('count-pop')
-      }
-      paint('statPosts', pc.count)
-      paint('statBikes', bc.count)
-      paint('statTrips', tc.count)
-    }
-
-    /* ── Right sidebars ─────────────────────────────────── */
-
-    /* Compact follow button factory — small glyph only, no .btn chrome */
-    function railFollowBtnHTML(targetId, status) {
-      let glyph, extra, ariaLabel
-      switch (status) {
-        case 'accepted':
-          glyph = '✓'; extra = 'is-accepted'; ariaLabel = 'Unfollow'; break
-        case 'pending_sent':
-          glyph = '•'; extra = 'is-pending';  ariaLabel = 'Cancel follow request'; break
-        case 'pending_received':
-          glyph = '+'; extra = 'is-follow';   ariaLabel = 'Accept follow request'; break
-        default: // 'none'
-          glyph = '+'; extra = 'is-follow';   ariaLabel = 'Follow'; break
-      }
-      return `<button class="rail-follow ${extra}" data-target="${esc(targetId)}" data-state="${esc(status)}" aria-label="${esc(ariaLabel)}" title="${esc(ariaLabel)}"><span class="glyph">${glyph}</span></button>`
-    }
-    function railSwap(btn, newStatus) {
-      const target = btn.getAttribute('data-target')
-      btn.outerHTML = railFollowBtnHTML(target, newStatus)
-    }
-
-    async function paintRiders() {
-      const list = document.getElementById('ridersList')
-      if (!list) return
-      const { data } = await supabase.from('profiles')
-        .select('id, username, full_name, avatar_url, bike_model')
-        .neq('id', me.id).limit(20)
-      const picks = (data || []).sort(() => Math.random() - 0.5).slice(0, 5)
-      if (!picks.length) { list.innerHTML = `<li style="font-size:12.5px;color:var(--c-text-3);font-style:italic">No fellow riders yet.</li>`; return }
-      // Resolve follow status for every pick in parallel
-      const decorated = await Promise.all(picks.map(async (p) => {
-        let status = 'none'
-        try { status = await getFollowStatus(p.id) } catch (_) { /* keep none */ }
-        return { ...p, __status: status }
-      }))
-      list.innerHTML = decorated.map(p => `
-        <li class="row row-3" style="align-items:center">
-          ${avatarHTML(p.avatar_url, p.full_name || p.username, 36)}
-          <div class="stack stack-1 min-w-0" style="flex:1">
-            <p class="truncate" style="font-size:13.5px;color:var(--c-text)">${esc(p.full_name || p.username)}</p>
-            <p class="truncate" style="font-size:11.5px;color:var(--c-text-3)">${p.bike_model ? esc(p.bike_model) : '@' + esc(p.username)}</p>
-          </div>
-          ${railFollowBtnHTML(p.id, p.__status)}
-        </li>`).join('')
-    }
-
-    /* Rail follow click — optimistic UI + in-flight guard */
-    const railInFlight = new Set()
-    document.getElementById('ridersList').addEventListener('click', async (e) => {
-      const btn = e.target.closest('.rail-follow')
-      if (!btn || btn.disabled) return
-      const targetId = btn.getAttribute('data-target')
-      const cur      = btn.getAttribute('data-state') || 'none'
-      if (railInFlight.has(targetId)) return
-      railInFlight.add(targetId)
-      btn.disabled = true
-      btn.classList.add('pop')
-      setTimeout(() => btn.classList.remove('pop'), 240)
-      try {
-        let next
-        if (cur === 'none') {
-          const r = await sendFollowRequest(targetId)
-          if (!r.success) throw new Error(r.error)
-          next = 'pending_sent'
-        } else if (cur === 'pending_sent') {
-          const r = await cancelFollowRequest(targetId)
-          if (!r.success) throw new Error(r.error)
-          next = 'none'
-        } else if (cur === 'pending_received') {
-          const r = await acceptFollowRequest(targetId)
-          if (!r.success) throw new Error(r.error)
-          next = 'accepted'
-        } else if (cur === 'accepted') {
-          const r = await unfollowUser(targetId)
-          if (!r.success) throw new Error(r.error)
-          next = 'none'
-        }
-        railSwap(btn, next)
-        if (window.bp.toast) {
-          const msgs = {
-            pending_sent:    'Request sent.',
-            none:            'Unfollowed.',
-            accepted:        'Now following each other.',
-          }
-          if (msgs[next]) window.bp.toast(msgs[next])
-        }
-      } catch (err) {
-        if (window.bp.toast) window.bp.toast(err.message || 'Couldn’t update follow.', 'error')
-        btn.disabled = false
-      } finally {
-        railInFlight.delete(targetId)
-      }
-    })
-    async function paintRoutes() {
-      const list = document.getElementById('routesList')
-      const { data } = await supabase.from('trips')
-        .select('id, title, start_loc, end_loc, difficulty, distance_km, created_at, profiles(username, full_name)')
-        .eq('is_public', true).order('created_at', { ascending: false }).limit(5)
-      if (!data || !data.length) { list.innerHTML = `<li style="font-size:12.5px;color:var(--c-text-3);font-style:italic">No public routes yet.</li>`; return }
-      list.innerHTML = data.map(t => {
-        const prof = t.profiles || {}
-        const route = [t.start_loc, t.end_loc].filter(Boolean).join(' → ')
-        return `<li class="row row-3" style="align-items:flex-start">
-          <span class="pin" style="margin-top:8px"></span>
-          <div class="stack stack-1 min-w-0" style="flex:1">
-            <p class="truncate" style="font-size:13.5px;color:var(--c-text)">${esc(t.title)}</p>
-            <p class="truncate" style="font-size:11.5px;color:var(--c-text-3);letter-spacing:0.02em">${esc(route || '—')} · ${t.distance_km || '—'} km</p>
-          </div>
-        </li>`
-      }).join('')
-    }
-
-    /* ── Feed ───────────────────────────────────────────── */
-    async function loadFeed() {
-      const { data: posts, error } = await supabase
-        .from('posts')
-        .select('id, user_id, content, image_url, created_at, profiles(username, full_name, avatar_url)')
-        .order('created_at', { ascending: false })
-        .limit(50)
-      if (error) { feedSk.classList.add('hidden'); feedEl.innerHTML = `<div class="card card-body">Couldn’t load the journal. Refresh and try again.</div>`; return }
-      state.posts = posts || []
-      const ids = state.posts.map(p => p.id)
-      if (ids.length) {
-        const [{ data: likes }, { data: comments }] = await Promise.all([
-          supabase.from('likes').select('post_id, user_id').in('post_id', ids),
-          supabase.from('comments').select('post_id').in('post_id', ids),
-        ])
-        state.liked = new Set((likes || []).filter(l => l.user_id === me.id).map(l => l.post_id))
-        state.likeCounts = new Map()
-        ;(likes || []).forEach(l => state.likeCounts.set(l.post_id, (state.likeCounts.get(l.post_id) || 0) + 1))
-        state.commentCounts = new Map()
-        ;(comments || []).forEach(c => state.commentCounts.set(c.post_id, (state.commentCounts.get(c.post_id) || 0) + 1))
-      }
-      feedSk.classList.add('hidden')
-      renderFeed()
-    }
-    function renderFeed() {
-      if (!state.posts.length) { feedEm.classList.remove('hidden'); return }
-      feedEm.classList.add('hidden')
-      feedEl.innerHTML = state.posts.map(postCardHTML).join('')
-    }
-    function postCardHTML(p) {
-      const prof = p.profiles || {}
-      const liked = state.liked.has(p.id)
-      const lc = state.likeCounts.get(p.id) || 0
-      const cc = state.commentCounts.get(p.id) || 0
-      const mine = p.user_id === me.id
-      return `
-        <article class="feed-card fade-up" data-post="${esc(p.id)}">
-          <header class="feed-card-header">
-            ${avatarHTML(prof.avatar_url, prof.full_name || prof.username, 40)}
-            <div class="feed-card-author">
-              <p class="feed-card-name">${esc(prof.full_name || prof.username)}</p>
-              <p class="feed-card-handle">@${esc(prof.username || '')} · ${timeAgo(p.created_at)}</p>
-            </div>
-            ${mine ? `<button data-act="delete-post" class="btn-subtle" title="Remove entry">Remove</button>` : ''}
-          </header>
-          <div class="feed-card-body">${esc(p.content)}</div>
-          ${p.image_url ? `<img src="${esc(p.image_url)}" alt="" class="feed-card-image" loading="lazy" />` : ''}
-          <footer class="feed-card-actions">
-            <button data-act="like" class="btn-subtle like-btn ${liked ? 'is-liked' : ''}">
-              <svg width="14" height="14" viewBox="0 0 24 24" fill="${liked ? 'currentColor' : 'none'}" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"/></svg>
-              <span data-lc>${lc}</span>
-            </button>
-            <button data-act="comment" class="btn-subtle">
-              <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg>
-              <span data-cc>${cc}</span>
-            </button>
-            <button data-act="save" class="btn-subtle" style="margin-left:auto">
-              <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M19 21l-7-5-7 5V5a2 2 0 0 1 2-2h10a2 2 0 0 1 2 2z"/></svg>
-              <span>Save</span>
-            </button>
-          </footer>
-          <div data-comments class="hidden" style="margin-top:16px;padding-top:16px;border-top:1px solid var(--c-border)"></div>
-        </article>`
-    }
-    function prependPost(p) {
-      if (state.posts.some(x => x.id === p.id)) return
-      state.posts.unshift(p)
-      const wrap = document.createElement('div')
-      wrap.innerHTML = postCardHTML(p)
-      feedEl.prepend(wrap.firstElementChild)
-    }
-
-    /* ── Composer ───────────────────────────────────────── */
-    const cText = document.getElementById('composerText')
-    const cFile = document.getElementById('composerFile')
-    const cPrev = document.getElementById('composerPreview')
-    const cWrap = document.getElementById('composerPreviewWrap')
-    const cCnt  = document.getElementById('composerCount')
-    const cBtn  = document.getElementById('composerSubmit')
-    const cErr  = document.getElementById('composerErr')
-    let cFileObj = null
-
-    cText.addEventListener('input', () => { cCnt.textContent = cText.value.length + ' / 1000' })
-    cFile.addEventListener('change', () => {
-      const f = cFile.files && cFile.files[0]
+    /* ── Composer image preview ─────────────────────── */
+    const fileInput  = $('composerFile')
+    const previewWrap= $('composerPreviewWrap')
+    const previewImg = $('composerPreview')
+    const removeBtn  = $('composerRemoveImg')
+    if (fileInput) fileInput.addEventListener('change', (e) => {
+      const f = e.target.files?.[0]
       if (!f) return
-      if (f.size > 4 * 1024 * 1024) { cErr.textContent = 'Image must be under 4 MB.'; cErr.classList.remove('hidden'); cFile.value = ''; return }
-      cErr.classList.add('hidden')
-      cFileObj = f
-      cPrev.src = URL.createObjectURL(f)
-      cWrap.classList.remove('hidden')
+      if (f.size > 5 * 1024 * 1024) {
+        $('composerErr').textContent = 'Image too large (max 5MB).'
+        fileInput.value = ''
+        return
+      }
+      previewImg.src = URL.createObjectURL(f)
+      previewWrap.classList.remove('hidden')
     })
-    document.getElementById('composerRemoveImg').addEventListener('click', () => {
-      cFileObj = null; cFile.value = ''; cWrap.classList.add('hidden'); cPrev.src = ''
+    if (removeBtn) removeBtn.addEventListener('click', () => {
+      fileInput.value = ''; previewImg.src = ''; previewWrap.classList.add('hidden')
     })
-    document.getElementById('composer').addEventListener('submit', async (e) => {
-      e.preventDefault()
-      cErr.classList.add('hidden')
-      const content = cText.value.trim()
-      if (!content && !cFileObj) { cErr.textContent = 'Write something, or attach a photograph.'; cErr.classList.remove('hidden'); return }
-      cBtn.disabled = true
-      cBtn.innerHTML = '<span class="spinner"></span><span class="btn-label">Publishing</span>'
-      try {
-        let image_url = null
-        if (cFileObj) {
-          const ext = (cFileObj.type.split('/')[1] || 'jpg').replace('jpeg','jpg')
-          const path = `${me.id}/${Date.now()}.${ext}`
-          const { error: upErr } = await supabase.storage.from('post-images').upload(path, cFileObj, { upsert: false, contentType: cFileObj.type })
-          if (upErr) throw upErr
-          const { data: pub } = supabase.storage.from('post-images').getPublicUrl(path)
-          image_url = pub.publicUrl
+
+    /* ── Current user / session ─────────────────────── */
+    const { data: { session } } = await supabase.auth.getSession()
+    const me = session?.user
+    if (me && window.bp?.loadCurrentProfile) await window.bp.loadCurrentProfile()
+    const meProfile = window.bp?.currentProfile
+
+    /* fill composer avatar */
+    if (meProfile && $('composerAvatar')) {
+      $('composerAvatar').innerHTML = meProfile.avatar_url
+        ? `<img src="${esc(meProfile.avatar_url)}" alt="" class="avatar-img" style="width:100%;height:100%;object-fit:cover"/>`
+        : `<span class="bp-avatar-fallback" style="width:100%;height:100%;display:flex;align-items:center;justify-content:center;font-size:13px">${esc(initialsOf(meProfile.full_name || meProfile.username))}</span>`
+    }
+
+    /* fill mini profile (left rail) */
+    if (meProfile) {
+      if ($('miniName'))   $('miniName').textContent   = meProfile.full_name || meProfile.username
+      if ($('miniHandle')) $('miniHandle').textContent = '@' + (meProfile.username || 'rider')
+      if (meProfile.avatar_url) {
+        $('miniAvatar').classList.remove('skeleton')
+        $('miniAvatar').innerHTML = `<img src="${esc(meProfile.avatar_url)}" alt="" class="avatar-img" style="width:100%;height:100%;object-fit:cover"/>`
+      } else {
+        $('miniAvatar').classList.remove('skeleton')
+        $('miniAvatar').textContent = initialsOf(meProfile.full_name || meProfile.username)
+      }
+      if (meProfile.bike_model) {
+        $('miniBike')?.classList.remove('hidden')
+        if ($('miniBikeName')) $('miniBikeName').textContent = meProfile.bike_model
+      }
+    }
+
+    /* ── Composer submit ────────────────────────────── */
+    const sendBtn = $('composerSubmit')
+    if (sendBtn) {
+      sendBtn.addEventListener('click', async () => {
+        if (!me) { window.location.replace('/index.html'); return }
+        const text = (ta?.value || '').trim()
+        if (!text) { $('composerErr').textContent = 'Write something first.'; return }
+        if (text.length > 500) { $('composerErr').textContent = 'Max 500 chars.'; return }
+
+        $('composerErr').textContent = ''
+        sendBtn.disabled = true
+        const originalLabel = sendBtn.innerHTML
+        sendBtn.innerHTML = '<span>Sending…</span>'
+
+        try {
+          let image_url = null
+          const file = fileInput?.files?.[0]
+          if (file) {
+            const ext = (file.type.split('/')[1] || 'jpg').replace('jpeg', 'jpg')
+            const path = `${me.id}/${Date.now()}.${ext}`
+            const { error: upErr } = await supabase.storage
+              .from('post-images').upload(path, file, { upsert: false, contentType: file.type })
+            if (upErr) throw upErr
+            const { data: pub } = supabase.storage.from('post-images').getPublicUrl(path)
+            image_url = pub.publicUrl
+          }
+
+          const { error: insErr } = await supabase.from('posts').insert({
+            user_id: me.id,
+            content: text,
+            image_url
+          })
+          if (insErr) throw insErr
+
+          /* reset composer */
+          ta.value = ''; cnt.textContent = '0 / 500'
+          if (fileInput) fileInput.value = ''
+          previewImg.src = ''; previewWrap.classList.add('hidden')
+          sendBtn.innerHTML = originalLabel
+          sendBtn.disabled = false
+
+          /* reload feed */
+          await loadFeed()
+        } catch (err) {
+          $('composerErr').textContent = err?.message || 'Could not send.'
+          sendBtn.innerHTML = originalLabel
+          sendBtn.disabled = false
         }
-        const { error } = await supabase.from('posts').insert({ user_id: me.id, content, image_url })
+      })
+    }
+
+    /* ── Feed loader ────────────────────────────────── */
+    const feedEl  = $('feed')
+    const skelEl  = $('feedSkeleton')
+    const emptyEl = $('feedEmpty')
+
+    async function loadFeed() {
+      skelEl?.classList.remove('hidden')
+      feedEl.style.display = 'none'
+      emptyEl?.classList.add('hidden')
+
+      try {
+        /* pull posts from self + accepted followees */
+        let followingIds = [me?.id].filter(Boolean)
+        if (me) {
+          const { data: fs } = await supabase
+            .from('follows')
+            .select('following_id')
+            .eq('follower_id', me.id)
+            .eq('status', 'accepted')
+          if (fs) followingIds = [me.id, ...fs.map(r => r.following_id).filter(Boolean)]
+        }
+
+        const { data: posts, error } = await supabase
+          .from('posts')
+          .select('id, user_id, content, image_url, created_at, profiles:user_id ( id, username, full_name, avatar_url )')
+          .in('user_id', followingIds)
+          .order('created_at', { ascending: false })
+          .limit(50)
         if (error) throw error
-        cText.value = ''; cCnt.textContent = '0 / 1000'
-        cFileObj = null; cFile.value = ''; cWrap.classList.add('hidden')
-        toast('Entry published.', 'success')
-        setTimeout(() => { if (!state.posts.length || state.posts[0].user_id !== me.id) loadFeed() }, 1500)
-      } catch (err) {
-        cErr.textContent = (err && err.message) || 'Couldn’t publish. Try again.'
-        cErr.classList.remove('hidden')
-      } finally {
-        cBtn.disabled = false
-        cBtn.innerHTML = '<span class="btn-label">Publish entry</span>'
-      }
-    })
 
-    /* ── Feed interactions ──────────────────────────────── */
-    feedEl.addEventListener('click', async (e) => {
-      const btn = e.target.closest('button[data-act]')
-      if (!btn) return
-      const card = btn.closest('[data-post]')
-      if (!card) return
-      const postId = card.getAttribute('data-post')
-      const act = btn.getAttribute('data-act')
-
-      if (act === 'like')      return onLike(btn, postId)
-      if (act === 'comment')   return onToggleComments(card, postId)
-      if (act === 'save')      return toast('Saved to your journal.', 'success')
-      if (act === 'delete-post') return onDeletePost(postId)
-    })
-
-    async function onLike(btn, postId) {
-      const isLiked = state.liked.has(postId)
-      state.liked = isLiked ? new Set([...state.liked].filter(x => x !== postId)) : new Set([...state.liked, postId])
-      const cur = state.likeCounts.get(postId) || 0
-      state.likeCounts.set(postId, isLiked ? Math.max(0, cur - 1) : cur + 1)
-      paintLike(btn, postId)
-      const svg = btn.querySelector('svg')
-      if (svg) { svg.classList.remove('like-pop'); void svg.offsetWidth; svg.classList.add('like-pop') }
-      try {
-        if (isLiked) {
-          const { error } = await supabase.from('likes').delete().eq('post_id', postId).eq('user_id', me.id)
-          if (error) throw error
-        } else {
-          const { error } = await supabase.from('likes').insert({ post_id: postId, user_id: me.id })
-          if (error) throw error
+        /* per-post like/comment counts */
+        const ids = (posts || []).map(p => p.id)
+        let likeMap = {}, commentMap = {}
+        if (ids.length) {
+          const [{ data: likes }, { data: comments }] = await Promise.all([
+            supabase.from('likes').select('post_id').in('post_id', ids),
+            supabase.from('comments').select('post_id').in('post_id', ids)
+          ])
+          likeMap    = (likes    || []).reduce((a, r) => { a[r.post_id] = (a[r.post_id] || 0) + 1; return a }, {})
+          commentMap = (comments || []).reduce((a, r) => { a[r.post_id] = (a[r.post_id] || 0) + 1; return a }, {})
         }
+
+        renderFeed(posts || [], likeMap, commentMap)
+        updateCounts()
       } catch (err) {
-        state.liked = isLiked ? new Set([...state.liked, postId]) : new Set([...state.liked].filter(x => x !== postId))
-        state.likeCounts.set(postId, cur)
-        paintLike(btn, postId)
-        toast('Couldn’t update like.', 'error')
+        console.error('feed load error', err)
+        feedEl.innerHTML = `<p style="text-align:center;padding:40px;color:var(--color-text-3)">${esc(err?.message || 'Could not load the journal.')}</p>`
+        feedEl.style.display = ''
+      } finally {
+        skelEl?.classList.add('hidden')
       }
-    }
-    function paintLike(btn, postId) {
-      const liked = state.liked.has(postId)
-      const lc = state.likeCounts.get(postId) || 0
-      btn.classList.toggle('is-liked', liked)
-      btn.classList.toggle('text-brass', liked)
-      btn.querySelector('[data-lc]').textContent = lc
-      btn.querySelector('svg').setAttribute('fill', liked ? 'currentColor' : 'none')
     }
 
-    async function onToggleComments(card, postId) {
-      const panel = card.querySelector('[data-comments]')
-      const open = state.openComments.has(postId)
-      if (open) { panel.classList.add('hidden'); state.openComments.delete(postId); return }
-      state.openComments.add(postId)
-      panel.classList.remove('hidden')
-      panel.innerHTML = `
-        <div class="stack stack-3" data-list><div class="msg msg-muted">Loading conversation…</div></div>
-        <form data-add class="mt-4 row row-3" style="align-items:flex-start">
-          ${avatarHTML((window.bp.currentProfile || {}).avatar_url, (window.bp.currentProfile || {}).full_name || (window.bp.currentProfile || {}).username, 32)}
-          <input type="text" maxlength="500" class="input" style="flex:1;padding:8px 12px;font-size:13.5px" placeholder="Add a thoughtful comment…" />
-          <button class="btn btn-primary btn-sm" type="submit">Send</button>
-        </form>`
-      const list = panel.querySelector('[data-list]')
-      const { data } = await supabase.from('comments')
-        .select('id, body, created_at, profiles(username, full_name, avatar_url)')
-        .eq('post_id', postId).order('created_at', { ascending: true })
-      if (!data || !data.length) { list.innerHTML = `<div class="msg msg-muted">No comments yet. Be the first to respond.</div>` }
-      else {
-        list.innerHTML = data.map(c => {
-          const p = c.profiles || {}
-          return `<div class="row row-3" style="align-items:flex-start">
-            ${avatarHTML(p.avatar_url, p.full_name || p.username, 28)}
-            <div class="stack stack-1 min-w-0" style="flex:1">
-              <p style="font-size:12px;color:var(--c-text-3)">@${esc(p.username || 'rider')} · ${timeAgo(c.created_at)}</p>
-              <p style="font-size:13.5px;line-height:1.5;color:var(--c-text)">${esc(c.body)}</p>
-            </div>
-          </div>`
-        }).join('')
-      }
-      panel.querySelector('[data-add]').addEventListener('submit', async (ev) => {
-        ev.preventDefault()
-        const input = ev.target.querySelector('input')
-        const body = input.value.trim()
-        if (!body) return
-        input.disabled = true
-        const { error } = await supabase.from('comments').insert({ post_id: postId, user_id: me.id, body })
-        input.disabled = false; input.value = ''
-        if (error) { toast('Couldn’t add comment.', 'error'); return }
-        const { data: data2 } = await supabase.from('comments')
-          .select('id, body, created_at, profiles(username, full_name, avatar_url)')
-          .eq('post_id', postId).order('created_at', { ascending: true })
-        list.innerHTML = data2.map(c => {
-          const p = c.profiles || {}
-          return `<div class="row row-3" style="align-items:flex-start">
-            ${avatarHTML(p.avatar_url, p.full_name || p.username, 28)}
-            <div class="stack stack-1 min-w-0" style="flex:1">
-              <p style="font-size:12px;color:var(--c-text-3)">@${esc(p.username || 'rider')} · ${timeAgo(c.created_at)}</p>
-              <p style="font-size:13.5px;line-height:1.5;color:var(--c-text)">${esc(c.body)}</p>
-            </div>
-          </div>`
-        }).join('')
-        state.commentCounts.set(postId, (state.commentCounts.get(postId) || 0) + 1)
-        const ccEl = card.querySelector('[data-cc]')
-        if (ccEl) ccEl.textContent = state.commentCounts.get(postId)
+    function renderFeed(posts, likeMap, commentMap) {
+      if (!posts.length) { emptyEl?.classList.remove('hidden'); feedEl.innerHTML = ''; feedEl.style.display = 'none'; return }
+      feedEl.style.display = ''
+      emptyEl?.classList.add('hidden')
+      feedEl.innerHTML = posts.map((p, i) => {
+        const a = p.profiles || {}
+        const name = a.full_name || a.username || 'Rider'
+        const handle = a.username ? '@' + a.username : ''
+        const avatar = a.avatar_url
+          ? `<img src="${esc(a.avatar_url)}" alt="" class="avatar-img" style="width:100%;height:100%;object-fit:cover"/>`
+          : `<span class="bp-avatar-fallback" style="width:100%;height:100%;display:flex;align-items:center;justify-content:center">${esc(initialsOf(name))}</span>`
+        return `
+          <article class="dispatch-card" data-post="${esc(p.id)}">
+            <header class="dispatch-head">
+              <div class="avatar avatar-md">${avatar}</div>
+              <div class="dispatch-author">
+                <div class="name">${esc(name)}</div>
+                <div class="handle">${esc(handle)}</div>
+              </div>
+              <div class="dispatch-time">${esc(timeAgo(p.created_at))}</div>
+            </header>
+            <div class="dispatch-body">${esc(p.content)}</div>
+            ${p.image_url ? `<div class="dispatch-media"><img src="${esc(p.image_url)}" alt=""/></div>` : ''}
+            <footer class="dispatch-foot">
+              <button class="dispatch-action" data-act="like" data-lc="${likeMap[p.id] || 0}">
+                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"/></svg>
+                <span class="count">${likeMap[p.id] || 0}</span>
+              </button>
+              <button class="dispatch-action" data-act="comment" data-cc="${commentMap[p.id] || 0}">
+                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg>
+                <span class="count">${commentMap[p.id] || 0}</span>
+              </button>
+            </footer>
+          </article>`
+      }).join('')
+
+      /* wire up like/comment buttons */
+      feedEl.querySelectorAll('.dispatch-action').forEach(btn => {
+        btn.addEventListener('click', () => onAction(btn))
       })
     }
 
-    async function onDeletePost(postId) {
-      const ok = await confirmModal('Remove this entry from the journal? This cannot be undone.', 'Remove entry')
-      if (!ok) return
-      await supabase.from('comments').delete().eq('post_id', postId)
-      await supabase.from('likes').delete().eq('post_id', postId)
-      const { error: perr } = await supabase.from('posts').delete().eq('id', postId).eq('user_id', me.id)
-      if (perr) { toast('Couldn’t remove entry.', 'error'); return }
-      state.posts = state.posts.filter(p => p.id !== postId)
-      const card = feedEl.querySelector(`[data-post="${postId}"]`)
-      if (card) card.remove()
-      if (!state.posts.length) feedEm.classList.remove('hidden')
-      toast('Entry removed.', 'success')
+    async function onAction(btn) {
+      const card = btn.closest('.dispatch-card')
+      const postId = card?.dataset.post
+      if (!postId) return
+      if (btn.dataset.act === 'like') {
+        btn.classList.toggle('is-on')
+        /* optimistic UI */
+        const cntEl = btn.querySelector('.count')
+        const cur = parseInt(cntEl.textContent || '0', 10)
+        cntEl.textContent = String(cur + (btn.classList.contains('is-on') ? 1 : -1))
+        try {
+          if (btn.classList.contains('is-on')) {
+            await supabase.from('likes').insert({ post_id: postId, user_id: me.id })
+          } else {
+            await supabase.from('likes').delete().eq('post_id', postId).eq('user_id', me.id)
+          }
+        } catch (_) {}
+      } else if (btn.dataset.act === 'comment') {
+        const text = prompt('Write a quick comment:')
+        if (!text) return
+        try {
+          await supabase.from('comments').insert({ post_id: postId, user_id: me.id, content: text })
+          const cntEl = btn.querySelector('.count')
+          cntEl.textContent = String((parseInt(cntEl.textContent || '0', 10)) + 1)
+        } catch (e) { alert(e?.message || 'Could not post comment') }
+      }
     }
 
-    /* ── Realtime ───────────────────────────────────────── */
-    const channel = supabase.channel('posts-feed')
-      .on('postgres_changes', { event: 'INSERT', schema: 'public', table: 'posts' }, async (payload) => {
-        const p = payload.new
-        if (!p || state.posts.some(x => x.id === p.id)) return
-        const { data: full } = await supabase.from('posts')
-          .select('id, user_id, content, image_url, created_at, profiles(username, full_name, avatar_url)')
-          .eq('id', p.id).maybeSingle()
-        if (full) prependPost(full)
-      })
-      .subscribe()
-    window.addEventListener('beforeunload', () => { supabase.removeChannel(channel) })
+    /* ── Crew + route side lists ────────────────────── */
+    async function loadCrewAndRoutes() {
+      try {
+        const { data: riders } = await supabase
+          .from('profiles')
+          .select('id, username, full_name, avatar_url')
+          .neq('id', me?.id || '00000000-0000-0000-0000-000000000000')
+          .order('created_at', { ascending: false })
+          .limit(5)
+        const ridersList = $('ridersList')
+        const ridersEmpty = $('ridersEmpty')
+        if (ridersList) {
+          if (!riders || !riders.length) {
+            ridersEmpty?.classList.remove('hidden')
+          } else {
+            ridersEmpty?.classList.add('hidden')
+            ridersList.innerHTML = riders.map(r => {
+              const av = r.avatar_url
+                ? `<img src="${esc(r.avatar_url)}" alt="" class="avatar-img" style="width:100%;height:100%;object-fit:cover"/>`
+                : `<span class="bp-avatar-fallback" style="width:100%;height:100%;display:flex;align-items:center;justify-content:center;font-size:11px">${esc(initialsOf(r.full_name || r.username))}</span>`
+              return `<a class="crew-row" href="/profile.html?u=${esc(r.id)}">
+                <div class="avatar avatar-sm">${av}</div>
+                <div class="info">
+                  <div class="n">${esc(r.full_name || r.username)}</div>
+                  <div class="h">@${esc(r.username || 'rider')}</div>
+                </div>
+                <span class="badge">View</span>
+              </a>`
+            }).join('')
+          }
+        }
 
-    /* ── Init ───────────────────────────────────────────── */
-    paintMiniProfile()
-    paintRiders()
-    paintRoutes()
-    loadFeed()
+        const { data: routes } = await supabase
+          .from('trips')
+          .select('id, title, trip_date, distance_km, profiles:user_id ( username, full_name )')
+          .eq('is_public', true)
+          .order('created_at', { ascending: false })
+          .limit(4)
+        const routesList = $('routesList')
+        const routesEmpty = $('routesEmpty')
+        if (routesList) {
+          if (!routes || !routes.length) {
+            routesEmpty?.classList.remove('hidden')
+          } else {
+            routesEmpty?.classList.add('hidden')
+            routesList.innerHTML = routes.map(t => {
+              const a = t.profiles || {}
+              return `<a class="crew-row" href="/trips.html">
+                <div class="info">
+                  <div class="n">${esc(t.title || 'Untitled voyage')}</div>
+                  <div class="h">@${esc(a.username || 'rider')} · ${t.distance_km ? Math.round(t.distance_km) + ' km' : '—'}</div>
+                </div>
+                <span class="badge badge-brass">Voyage</span>
+              </a>`
+            }).join('')
+          }
+        }
+      } catch (_) {}
+    }
+
+    /* ── Stat counts ────────────────────────────────── */
+    async function updateCounts() {
+      if (!me) return
+      try {
+        const [{ count: posts }, { count: bikes }, { count: trips }] = await Promise.all([
+          supabase.from('posts').select('id', { count: 'exact', head: true }).eq('user_id', me.id),
+          supabase.from('bikes').select('id', { count: 'exact', head: true }).eq('user_id', me.id),
+          supabase.from('trips').select('id', { count: 'exact', head: true }).eq('user_id', me.id)
+        ])
+        if ($('statPosts')) $('statPosts').textContent = posts  || 0
+        if ($('statBikes')) $('statBikes').textContent = bikes  || 0
+        if ($('statTrips')) $('statTrips').textContent = trips  || 0
+      } catch (_) {}
+    }
+
+    /* ── Kick off ───────────────────────────────────── */
+    if (me) {
+      await loadFeed()
+      await loadCrewAndRoutes()
+    } else {
+      skelEl?.classList.add('hidden')
+      feedEl.innerHTML = ''
+      feedEl.style.display = ''
+      emptyEl?.classList.remove('hidden')
+    }
+
+    // ── Nav injection: Messages + Notifications ──────────
+    function injectNav() {
+      const navLinks = document.querySelector('.nav-links')
+      if (!navLinks || document.getElementById('nav-messages')) return
+
+      const msgLink = document.createElement('a')
+      msgLink.href = '/messages.html'
+      msgLink.className = 'nav-link'
+      msgLink.id = 'nav-messages'
+      msgLink.innerHTML = '<span>Messages</span><span class="nav-badge" id="msg-unread-badge" style="display:none"></span>'
+      navLinks.appendChild(msgLink)
+
+      const notifLink = document.createElement('a')
+      notifLink.href = '/notifications.html'
+      notifLink.className = 'nav-link'
+      notifLink.id = 'nav-notifications'
+      notifLink.innerHTML = '<span>Notifications</span><span class="nav-badge" id="notif-unread-badge" style="display:none"></span>'
+      navLinks.appendChild(notifLink)
+
+      const mobileNav = document.querySelector('.nav-mobile nav')
+      if (mobileNav) {
+        const mMsg = document.createElement('a')
+        mMsg.href = '/messages.html'
+        mMsg.className = 'nav-link'
+        mMsg.textContent = 'Messages'
+        mobileNav.appendChild(mMsg)
+        const mNotif = document.createElement('a')
+        mNotif.href = '/notifications.html'
+        mNotif.className = 'nav-link'
+        mNotif.textContent = 'Notifications'
+        mobileNav.appendChild(mNotif)
+      }
+    }
+
+    // ── Badge loader ──────────────────────────────────────
+    async function loadNavBadges() {
+      const { data: { user } } = await supabase.auth.getUser()
+      if (!user) return
+
+      const notifCount = await getUnreadNotificationCount()
+      const badge = document.getElementById('notif-unread-badge')
+      if (badge) {
+        badge.textContent = notifCount > 99 ? '99+' : notifCount
+        badge.style.display = notifCount > 0 ? 'flex' : 'none'
+      }
+
+      let notifChannel = subscribeToNotifications(user.id, () => {
+        const b = document.getElementById('notif-unread-badge')
+        if (b) {
+          const current = parseInt(b.textContent) || 0
+          b.textContent = current + 1 > 99 ? '99+' : (current + 1)
+          b.style.display = 'flex'
+          b.style.transition = 'transform 150ms ease'
+          b.style.transform = 'scale(1.3)'
+          setTimeout(() => { b.style.transform = 'scale(1)' }, 150)
+        }
+      })
+
+      window.addEventListener('beforeunload', () => {
+        if (notifChannel) notifChannel.unsubscribe()
+      })
+    }
+
+    injectNav()
+    loadNavBadges()
   </script>
+
+  <style>
+    .nav-badge {
+      margin-left: auto;
+      background: var(--color-racing);
+      color: var(--color-paper);
+      font-size: 10px;
+      font-weight: 700;
+      font-family: var(--font-body);
+      min-width: 18px;
+      height: 18px;
+      padding: 0 5px;
+      border-radius: 999px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      letter-spacing: 0;
+    }
+  </style>
 </body>
 </html>

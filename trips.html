@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Routes · Bikers Portal</title>
+  <title>Voyages · Bikers Portal</title>
   <link rel="icon" href="/assets/logo.svg" type="image/svg+xml" />
   <script src="./js/app.js"></script>
   <script src="https://cdn.tailwindcss.com"></script>
@@ -14,419 +14,535 @@
   <header id="bp-navbar" data-active="trips"></header>
 
   <div class="founding-strip">
-    Vol. III <span class="ornament">·</span> The route desk <span class="ornament">·</span> est. MMXXIV
+    Vol. III <span class="ornament">·</span> Voyages <span class="ornament">·</span> est. MMXXIV <span class="ornament">·</span> bearing 045°
   </div>
 
-  <main class="page" style="padding-top:40px;padding-bottom:80px">
+  <main class="page" style="padding-top:32px;padding-bottom:80px">
 
-    <header class="page-header" style="padding:24px 0 36px">
-      <p class="eyebrow eyebrow-brass" style="margin-bottom:14px">The route desk</p>
-      <h1 style="font-family:var(--font-display);font-style:italic;font-weight:500;line-height:1.05;letter-spacing:-0.01em">
-        Plan the next long road with intention.
-      </h1>
-      <p class="lede">Every long road begins as an intention. Sketch it, then ride it.</p>
+    <header class="page-header">
+      <div class="voyage-head" style="border-bottom:none;margin-bottom:8px">
+        <div>
+          <p class="eyebrow eyebrow-cobalt">Voyages <span style="color:var(--color-text-faint);margin-left:8px">·</span> <span class="mono" style="color:var(--color-text-3);font-size:10px;letter-spacing:.2em">CH. 03</span></p>
+          <h1>Routes &amp; <span style="font-style:italic;color:var(--color-racing)">crossings.</span></h1>
+        </div>
+        <button id="tripFormOpen" type="button" class="btn btn-primary">
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="square"><path d="M12 5v14M5 12h14"/></svg>
+          <span>Chart a voyage</span>
+        </button>
+      </div>
+      <p class="lede">Plan, run, remember. Every great ride is a story with a beginning, a middle, and a finish line.</p>
     </header>
 
-    <div class="trips-grid">
-
-      <!-- ░░░ LEFT — planner + ledger ░░░ -->
-      <section class="col-main stack stack-7" style="min-width:0">
-
-        <!-- Planner form -->
-        <form id="tripForm" class="card card-body card-stitched fade-up" novalidate>
-          <div class="row row-between mb-5" style="align-items:center">
-            <p class="eyebrow eyebrow-brass" id="tripFormTitle">A new route</p>
-            <button type="button" id="tripFormClose" class="btn-subtle hidden">Close</button>
-          </div>
-
-          <div class="grid-tripform">
-            <div class="field" style="grid-column:1 / -1">
-              <label class="field-label">Title</label>
-              <input name="title" required class="input" placeholder="The Dawn Run to Coorg" />
-              <p class="field-error hidden" data-err="title"></p>
-            </div>
-            <div class="field">
-              <label class="field-label">From</label>
-              <input name="start_loc" class="input" placeholder="Bengaluru" />
-            </div>
-            <div class="field">
-              <label class="field-label">To</label>
-              <input name="end_loc" class="input" placeholder="Madikeri" />
-            </div>
-            <div class="field">
-              <label class="field-label">Date</label>
-              <input name="trip_date" type="date" class="input" />
-            </div>
-            <div class="field">
-              <label class="field-label">Distance (km)</label>
-              <input name="distance_km" type="number" min="0" class="input" placeholder="260" />
-            </div>
-            <div class="field">
-              <label class="field-label">Difficulty</label>
-              <select name="difficulty" class="select">
-                <option value="Easy">Easy</option>
-                <option value="Medium" selected>Medium</option>
-                <option value="Hard">Hard</option>
-              </select>
-            </div>
-            <div style="display:flex;align-items:flex-end">
-              <label class="check" style="font-size:12.5px;color:var(--c-text-2)">
-                <input name="is_public" type="checkbox" checked />
-                <span class="check-box"></span>
-                <span>Share with the brotherhood</span>
-              </label>
-            </div>
-          </div>
-
-          <div class="field mt-5">
-            <div class="row row-between" style="align-items:baseline;margin-bottom:12px">
-              <label class="field-label" style="margin:0">Waypoints</label>
-              <button type="button" id="addWp" class="btn-link" style="font-size:10.5px">+ Add waypoint</button>
-            </div>
-            <div id="waypoints" class="stack stack-1"></div>
-          </div>
-
-          <div class="field mt-5">
-            <label class="field-label">Notes</label>
-            <textarea name="notes" rows="3" class="textarea" placeholder="A few words for the road — conditions, fuel, photo stops."></textarea>
-          </div>
-
-          <p id="tripFormErr" class="msg msg-error hidden mt-4"></p>
-
-          <div class="row row-end gap-3 mt-6">
-            <button type="button" id="tripFormCancel" class="btn btn-ghost hidden">Cancel</button>
-            <button type="submit" id="tripFormSubmit" class="btn btn-primary"><span class="btn-label">Save route</span></button>
-          </div>
-        </form>
-
-        <!-- My trips -->
-        <section>
-          <div class="subhead">
-            <h2>My routes</h2>
-            <span id="myCount" class="subhead-aside">0 routes</span>
-          </div>
-          <div id="myList" class="grid-trips"></div>
-          <div id="myEmpty" class="hidden card card-body empty-state">
-            <p class="empty-title">No routes planned yet.</p>
-            <p class="empty-body">Every long road begins as an intention.</p>
-          </div>
-        </section>
-
-        <!-- Community -->
-        <section>
-          <div class="subhead">
-            <h2>Brotherhood routes</h2>
-            <button id="loadMore" class="btn-subtle">Load more</button>
-          </div>
-          <div id="commList" class="grid-trips"></div>
-          <div id="commEmpty" class="hidden card card-body empty-state">
-            <p class="empty-title">No public routes yet.</p>
-            <p class="empty-body">Be the first to share a road.</p>
-          </div>
-        </section>
-      </section>
-
-      <!-- ░░░ RIGHT — cartography + house note ░░░ -->
-      <aside class="col-aside stack stack-5">
-        <section class="map-board" style="min-height:340px;padding:24px;display:flex;flex-direction:column;justify-content:flex-end;position:relative;z-index:1">
-          <p class="eyebrow eyebrow-brass" style="margin-bottom:12px;position:relative;z-index:2">Cartography</p>
-          <p style="font-family:var(--font-display);font-style:italic;font-size:20px;color:var(--c-text);line-height:1.25;position:relative;z-index:2;max-width:24ch">Route cartography arrives in the next build.</p>
-          <p style="color:var(--c-text-2);font-size:12.5px;line-height:1.55;margin-top:10px;position:relative;z-index:2;max-width:30ch">Until then, sketch your intentions on paper and let the road surprise you.</p>
-        </section>
-
-        <section class="card card-body card-stitched">
-          <p class="eyebrow eyebrow-brass" style="margin-bottom:14px">House note</p>
-          <p class="italic-serif" style="font-size:17px;line-height:1.45">"Journeys carved in dust and chrome."</p>
-          <div class="rule" style="margin:18px 0 12px"></div>
-          <p class="eyebrow eyebrow-dim">Riding Brotherhood</p>
-        </section>
-
-        <section class="card card-body">
-          <p class="eyebrow eyebrow-brass" style="margin-bottom:14px">Doctrine</p>
-          <ol class="feature-list" style="margin:0">
-            <li>
-              <span class="num">i.</span>
-              <span class="text"><strong>Plan it once.</strong> Title, distance, difficulty. The rest is in the road.</span>
-            </li>
-            <li>
-              <span class="num">ii.</span>
-              <span class="text"><strong>Mark the stops.</strong> Waypoints, fuel, photo lines. Leave room for the unscripted.</span>
-            </li>
-            <li>
-              <span class="num">iii.</span>
-              <span class="text"><strong>Share what serves.</strong> Keep the ledgers honest and the routes useful.</span>
-            </li>
-          </ol>
-        </section>
-      </aside>
+    <!-- STATUS CHIPS -->
+    <div id="statusChips" class="status-chips pill-tabs" style="border-bottom:1px solid var(--color-border);padding-bottom:16px;margin-bottom:24px">
+      <button class="chip is-active" data-status="all" type="button"><span>All</span><span id="myCount" class="counter">0</span></button>
+      <button class="chip" data-status="planning" type="button">Planning</button>
+      <button class="chip" data-status="active" type="button">Active</button>
+      <button class="chip" data-status="completed" type="button">Completed</button>
     </div>
+
+    <!-- VOYAGE LIST -->
+    <div id="myList" class="grid-trips"></div>
+
+    <p id="myEmpty" class="hidden results-empty">
+      <div class="icon">
+        <svg width="64" height="64" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="0.8" stroke-linecap="square"><path d="M3 18l6-9 4 6 4-4 4 7"/><path d="M3 21h18"/></svg>
+      </div>
+      <h3>No voyages charted.</h3>
+      <p>Plot your first crossing and the road will remember.</p>
+    </p>
+
+    <div style="text-align:center;margin-top:32px">
+      <button id="loadMore" type="button" class="btn btn-ghost hidden">Load more</button>
+    </div>
+
   </main>
 
-  <style>
-    .trips-grid {
-      display: grid;
-      grid-template-columns: 1fr;
-      gap: 32px;
-    }
-    @media (min-width: 1024px) {
-      .trips-grid { grid-template-columns: minmax(0, 1fr) 340px; gap: 40px; }
-    }
-    .grid-trips {
-      display: grid;
-      grid-template-columns: 1fr;
-      gap: 16px;
-    }
-    @media (min-width: 700px) { .grid-trips { grid-template-columns: 1fr 1fr; } }
-    .grid-tripform {
-      display: grid;
-      grid-template-columns: 1fr;
-      gap: 16px;
-    }
-    @media (min-width: 700px) { .grid-tripform { grid-template-columns: 1fr 1fr; } }
-    .feature-list li {
-      display: flex;
-      align-items: flex-start;
-      gap: 12px;
-      padding: 12px 0;
-      border-bottom: 1px solid var(--c-border);
-      font-size: 13.5px;
-      line-height: 1.55;
-      color: var(--c-text-2);
-    }
-    .feature-list li:last-child { border-bottom: 0; }
-    .feature-list .num {
-      font-family: var(--font-display);
-      font-style: italic;
-      color: var(--c-text-3);
-      font-size: 14px;
-      flex-shrink: 0;
-      min-width: 22px;
-    }
-    .feature-list .text strong {
-      color: var(--c-text);
-      font-weight: 600;
-    }
-  </style>
+  <footer class="site-footer">
+    Bikers Portal <span style="color:var(--color-brass);padding:0 8px">·</span> EST. MMXXIV <span style="color:var(--color-brass);padding:0 8px">·</span> Charted by riders, for riders
+  </footer>
+
+  <!-- COMMENTS PANEL (slide-up) -->
+  <div id="commentsPanel" class="form-panel" style="display:none">
+    <div class="panel-card" style="max-width:520px">
+      <div class="panel-head">
+        <div>
+          <p class="eyebrow eyebrow-cobalt" style="margin-bottom:4px">Voyage log</p>
+          <h2 id="commentsTitle" style="font-size:22px">Comments</h2>
+        </div>
+        <button id="commentsClose" type="button" class="btn btn-ghost btn-sm" aria-label="Close">✕</button>
+      </div>
+      <div class="panel-body" style="max-height:50vh;overflow-y:auto">
+        <div id="commList" class="com-list"></div>
+        <p id="commEmpty" class="hidden" style="font-family:var(--font-heritage);font-style:italic;color:var(--color-text-3);text-align:center;padding:20px 0">No dispatches on this voyage yet.</p>
+      </div>
+      <div class="panel-foot">
+        <input class="input" type="text" id="commInput" placeholder="Leave a note for the crew…" style="flex:1;margin-right:8px" />
+        <button id="commSend" type="button" class="btn btn-primary btn-sm">Send</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- TRIP FORM PANEL -->
+  <div id="tripForm" class="form-panel" role="dialog" aria-modal="true">
+    <div class="panel-card">
+      <div class="panel-head">
+        <div>
+          <p class="eyebrow eyebrow-cobalt" style="margin-bottom:6px">Voyage registry</p>
+          <h2 id="tripFormTitle">New voyage</h2>
+        </div>
+        <button id="tripFormClose" type="button" class="btn btn-ghost btn-sm" aria-label="Close">✕</button>
+      </div>
+      <form class="panel-body" novalidate>
+        <div id="tripFormErr" class="form-err hidden" role="alert"></div>
+
+        <div class="field">
+          <label class="field-label" for="tf-title">Voyage title <span class="field-hint">Required</span></label>
+          <input class="input" type="text" id="tf-title" name="title" required placeholder="Coast to Catalonia" />
+        </div>
+
+        <div class="grid-tripform">
+          <div class="field">
+            <label class="field-label" for="tf-date">Departure <span class="field-hint">Required</span></label>
+            <input class="input" type="date" id="tf-date" name="trip_date" required />
+          </div>
+          <div class="field">
+            <label class="field-label" for="tf-end">Return</label>
+            <input class="input" type="date" id="tf-end" name="end_date" />
+          </div>
+        </div>
+
+        <div class="grid-tripform">
+          <div class="field">
+            <label class="field-label" for="tf-distance">Distance (km)</label>
+            <input class="input" type="number" id="tf-distance" name="distance_km" min="0" placeholder="420" />
+          </div>
+          <div class="field">
+            <label class="field-label" for="tf-bike">On the back of</label>
+            <input class="input" type="text" id="tf-bike" name="bike_model" placeholder="Panigale V4" />
+          </div>
+        </div>
+
+        <div class="field">
+          <label class="field-label" for="tf-desc">Briefing</label>
+          <textarea class="textarea" id="tf-desc" name="description" placeholder="The plan, the company, the weather, the route…" maxlength="800"></textarea>
+        </div>
+
+        <div class="field">
+          <label class="field-label">Waypoints <span class="field-hint">Optional · ordered</span></label>
+          <div id="waypoints" class="waypoint-list">
+            <div class="waypoint-row">
+              <input class="input" type="text" placeholder="Origin" />
+              <button type="button" class="btn btn-ghost btn-sm" data-rm>✕</button>
+            </div>
+          </div>
+          <button type="button" id="addWp" class="btn btn-ghost btn-sm" style="align-self:flex-start;margin-top:8px">
+            <span>+ Add waypoint</span>
+          </button>
+        </div>
+      </form>
+      <div class="panel-foot">
+        <button id="tripFormCancel" type="button" class="btn btn-ghost">Cancel</button>
+        <button id="tripFormSubmit" type="button" class="btn btn-primary">Save voyage</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Reusable route art template -->
+  <template id="tplRouteArt">
+    <svg viewBox="0 0 400 225" preserveAspectRatio="xMidYMid slice" xmlns="http://www.w3.org/2000/svg">
+      <defs>
+        <linearGradient id="rg" x1="0" y1="0" x2="0" y2="1">
+          <stop offset="0" stop-color="#c9a84c" stop-opacity="0.25"/>
+          <stop offset="1" stop-color="#c9a84c" stop-opacity="0"/>
+        </linearGradient>
+      </defs>
+      <!-- horizon -->
+      <rect width="400" height="225" fill="url(#rg)"/>
+      <!-- peaks -->
+      <path d="M 0 130 L 60 80 L 100 110 L 140 70 L 180 100 L 220 60 L 260 95 L 300 75 L 340 105 L 400 85 L 400 225 L 0 225 Z" fill="#0b0d12" opacity="0.5"/>
+      <path d="M 0 160 L 50 130 L 110 150 L 170 120 L 230 145 L 290 125 L 350 155 L 400 140 L 400 225 L 0 225 Z" fill="#0b0d12" opacity="0.7"/>
+      <!-- road -->
+      <path d="M 200 225 L 200 100" stroke="#c9a84c" stroke-width="1.5" stroke-dasharray="6 8" stroke-opacity="0.7"/>
+      <path d="M 195 225 L 205 225 L 215 100 L 185 100 Z" fill="#f4ecd8" fill-opacity="0.06"/>
+      <!-- sun -->
+      <circle cx="320" cy="55" r="18" fill="#c9a84c" fill-opacity="0.3"/>
+      <circle cx="320" cy="55" r="9" fill="#c9a84c" fill-opacity="0.6"/>
+    </svg>
+  </template>
 
   <script type="module">
-    import { supabase } from './js/supabase.js'
-    const { esc, avatarHTML, toast } = window.bp
-    const confirmModal = window.bp.confirm
+    import { supabase, getUnreadNotificationCount, subscribeToNotifications } from './js/supabase.js'
 
-    const me = window.__bpUser
-    const state = { editingId: null, communityPage: 0, communityDone: false, community: [] }
-    const PAGE = 6
-
-    const form        = document.getElementById('tripForm')
-    const formTitle   = document.getElementById('tripFormTitle')
-    const formErr     = document.getElementById('tripFormErr')
-    const formClose   = document.getElementById('tripFormClose')
-    const formCancel  = document.getElementById('tripFormCancel')
-    const submit      = document.getElementById('tripFormSubmit')
-    const wpHost      = document.getElementById('waypoints')
-    const myList      = document.getElementById('myList')
-    const myEmpty     = document.getElementById('myEmpty')
-    const myCount     = document.getElementById('myCount')
-    const commList    = document.getElementById('commList')
-    const commEmpty   = document.getElementById('commEmpty')
-    const loadMoreBtn = document.getElementById('loadMore')
-
-    function addWaypoint(value) {
-      const i = wpHost.querySelectorAll('input').length
-      const row = document.createElement('div')
-      row.className = 'waypoint'
-      row.innerHTML = `
-        <span class="waypoint-index">${String(i + 1).padStart(2, '0')}</span>
-        <input class="input" style="flex:1;padding:8px 12px;font-size:13.5px" placeholder="e.g. Sakleshpur" value="${esc(value || '')}" />
-        <button type="button" class="btn-subtle" data-rm>Remove</button>`
-      row.querySelector('[data-rm]').addEventListener('click', () => { row.remove(); reindexWp() })
-      wpHost.appendChild(row)
-    }
-    function reindexWp() {
-      wpHost.querySelectorAll('.waypoint-index').forEach((s, i) => s.textContent = String(i + 1).padStart(2, '0'))
-    }
-    document.getElementById('addWp').addEventListener('click', () => addWaypoint())
-    addWaypoint('')
-
-    formClose.addEventListener('click', resetForm)
-    formCancel.addEventListener('click', resetForm)
-    function resetForm() {
-      state.editingId = null
-      formTitle.textContent = 'A new route'
-      submit.querySelector('.btn-label').textContent = 'Save route'
-      form.reset()
-      wpHost.innerHTML = ''
-      addWaypoint('')
-      formErr.classList.add('hidden')
-      form.querySelectorAll('[data-err]').forEach(e => e.classList.add('hidden'))
-    }
-    function fillForm(t) {
-      form.title.value = t.title || ''
-      form.start_loc.value = t.start_loc || ''
-      form.end_loc.value = t.end_loc || ''
-      form.trip_date.value = t.trip_date || ''
-      form.distance_km.value = t.distance_km || ''
-      form.difficulty.value = t.difficulty || 'Medium'
-      form.notes.value = t.notes || ''
-      form.is_public.checked = !!t.is_public
-      wpHost.innerHTML = ''
-      const wps = Array.isArray(t.waypoints) ? t.waypoints : []
-      if (!wps.length) addWaypoint('')
-      else wps.forEach(w => addWaypoint(w))
+    const $ = (id) => document.getElementById(id)
+    const esc = (s) => String(s ?? '').replace(/[&<>"']/g, (c) => ({ '&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;' }[c]))
+    const initialsOf = (n) => (n || '?').split(/\s+/).map(s => s[0]).join('').slice(0, 2).toUpperCase()
+    const timeAgo = (iso) => {
+      if (!iso) return ''
+      const d = (Date.now() - new Date(iso).getTime()) / 1000
+      if (d < 60) return 'just now'
+      if (d < 3600) return Math.floor(d / 60) + 'm ago'
+      if (d < 86400) return Math.floor(d / 3600) + 'h ago'
+      if (d < 604800) return Math.floor(d / 86400) + 'd ago'
+      return new Date(iso).toLocaleDateString()
     }
 
-    function difficultyBadge(d) {
-      const v = (d || 'Medium').toLowerCase()
-      return `<span class="badge badge-brass">${esc(d || 'Medium')}</span>`
+    /* status chip filter — date-based classification */
+    function classifyTrip(t) {
+      const now = new Date()
+      const start = t.trip_date ? new Date(t.trip_date) : null
+      const end   = t.end_date   ? new Date(t.end_date)   : null
+      if (!start) return 'planning'
+      if (start > now) return 'planning'
+      if (end && end < now) return 'completed'
+      if (start <= now && (!end || end >= now)) return 'active'
+      return 'planning'
     }
+    window.bpClassifyTrip = classifyTrip
 
-    async function loadMine() {
-      const { data, error } = await supabase.from('trips')
-        .select('id, user_id, title, start_loc, end_loc, distance_km, trip_date, difficulty, is_public, waypoints, created_at')
-        .eq('user_id', me.id).order('trip_date', { ascending: false, nullsFirst: false }).order('created_at', { ascending: false })
-      if (error) { myEmpty.classList.remove('hidden'); myEmpty.innerHTML = `<p class="msg msg-error">Couldn’t load your routes.</p>`; return }
-      const trips = data || []
-      myCount.textContent = trips.length + (trips.length === 1 ? ' route' : ' routes')
-      if (!trips.length) { myEmpty.classList.remove('hidden'); myList.innerHTML = ''; return }
-      myEmpty.classList.add('hidden')
-      myList.innerHTML = trips.map(myCardHTML).join('')
-    }
-    function myCardHTML(t) {
-      const date = t.trip_date ? new Date(t.trip_date).toLocaleDateString(undefined, { day:'numeric', month:'short', year:'numeric' }) : '—'
-      return `<article class="route-card fade-up" data-trip="${esc(t.id)}">
-        <div class="row row-between" style="align-items:flex-start;gap:12px">
-          <div class="stack stack-1 min-w-0" style="flex:1">
-            <p class="route-card-title">${esc(t.title)}</p>
-            <p class="route-card-route">${esc(t.start_loc || '—')} <span class="arrow">→</span> ${esc(t.end_loc || '—')} · ${date}</p>
-          </div>
-          ${difficultyBadge(t.difficulty)}
-        </div>
-        <div class="rule" style="margin:14px 0"></div>
-        <div class="row row-between" style="font-size:12.5px;color:var(--c-text-2)">
-          <span>${t.distance_km ? t.distance_km + ' km' : '— km'}<span class="sep" style="margin:0 6px;color:var(--c-text-4)">·</span>${t.is_public ? 'public' : 'private'}</span>
-          <div class="row row-1">
-            <button data-act="edit"   class="btn-subtle">Edit</button>
-            <button data-act="delete" class="btn-subtle" style="color:var(--c-error)">Delete</button>
-          </div>
-        </div>
-      </article>`
-    }
-    myList.addEventListener('click', async (e) => {
-      const btn = e.target.closest('button[data-act]')
-      if (!btn) return
-      const card = btn.closest('[data-trip]')
-      if (!card) return
-      const id = card.getAttribute('data-trip')
-      const { data: t } = await supabase.from('trips').select('*').eq('id', id).eq('user_id', me.id).maybeSingle()
-      if (!t) return
-      if (btn.getAttribute('data-act') === 'edit') {
-        state.editingId = t.id
-        formTitle.textContent = 'Edit route'
-        submit.querySelector('.btn-label').textContent = 'Save changes'
-        fillForm(t)
-        form.scrollIntoView({ behavior: 'smooth', block: 'start' })
-      } else if (btn.getAttribute('data-act') === 'delete') {
-        const ok = await confirmModal('Remove this route from your ledger?', 'Remove route')
-        if (!ok) return
-        const { error } = await supabase.from('trips').delete().eq('id', t.id).eq('user_id', me.id)
-        if (error) { toast('Couldn’t remove route.', 'error'); return }
-        toast('Route removed.', 'success')
-        await loadMine(); await loadCommunity(true)
-      }
-    })
+    /* session */
+    const { data: { session } } = await supabase.auth.getSession()
+    const me = session?.user
+    if (!me) { window.location.replace('/index.html'); }
 
-    async function loadCommunity(reset) {
-      if (reset) { state.communityPage = 0; state.communityDone = false; state.community = []; commList.innerHTML = '' }
-      if (state.communityDone) return
-      const from = state.communityPage * PAGE
-      const to = from + PAGE - 1
-      const { data, error } = await supabase.from('trips')
-        .select('id, title, start_loc, end_loc, distance_km, trip_date, difficulty, created_at, profiles(username, full_name, avatar_url)')
-        .eq('is_public', true).neq('user_id', me.id).order('created_at', { ascending: false }).range(from, to)
-      if (error) { toast('Couldn’t load community routes.', 'error'); return }
-      const rows = data || []
-      state.community.push(...rows)
-      if (rows.length < PAGE) state.communityDone = true
-      state.communityPage++
-      if (!state.community.length) { commEmpty.classList.remove('hidden'); return }
-      commEmpty.classList.add('hidden')
-      const html = rows.map(commCardHTML).join('')
-      commList.insertAdjacentHTML('beforeend', html)
-      loadMoreBtn.disabled = state.communityDone
-      loadMoreBtn.textContent = state.communityDone ? 'No more routes' : 'Load more'
-    }
-    function commCardHTML(t) {
-      const prof = t.profiles || {}
-      const date = t.trip_date ? new Date(t.trip_date).toLocaleDateString(undefined, { day:'numeric', month:'short' }) : ''
-      return `<article class="route-card fade-up">
-        <div class="row row-between" style="align-items:flex-start;gap:12px">
-          <div class="stack stack-1 min-w-0" style="flex:1">
-            <p class="route-card-title">${esc(t.title)}</p>
-            <p class="route-card-route">${esc(t.start_loc || '—')} <span class="arrow">→</span> ${esc(t.end_loc || '—')}${date ? ' · ' + date : ''}</p>
-          </div>
-          ${difficultyBadge(t.difficulty)}
-        </div>
-        <div class="rule" style="margin:14px 0"></div>
-        <div class="row row-between" style="font-size:12.5px;color:var(--c-text-2)">
-          <span>${t.distance_km ? t.distance_km + ' km' : '— km'}</span>
-          <div class="row row-2 min-w-0" style="align-items:center">
-            ${avatarHTML(prof.avatar_url, prof.full_name || prof.username, 22)}
-            <span class="truncate">${esc(prof.full_name || prof.username || 'Rider')}</span>
-          </div>
-        </div>
-      </article>`
-    }
-    loadMoreBtn.addEventListener('click', () => loadCommunity(false))
+    /* ── Load trips ──────────────────────────────── */
+    const myList = $('myList')
+    const myEmpty= $('myEmpty')
+    const myCount= $('myCount')
+    const loadMore = $('loadMore')
+    const allTrips = []
+    let visible = 12
 
-    form.addEventListener('submit', async (e) => {
-      e.preventDefault()
-      formErr.classList.add('hidden')
-      form.querySelectorAll('[data-err]').forEach(el => el.classList.add('hidden'))
-      const fd = new FormData(form)
-      const title    = (fd.get('title') || '').toString().trim()
-      const start    = (fd.get('start_loc') || '').toString().trim()
-      const end      = (fd.get('end_loc') || '').toString().trim()
-      const date     = (fd.get('trip_date') || '').toString().trim() || null
-      const distance = parseFloat(fd.get('distance_km')) || null
-      const diff     = (fd.get('difficulty') || 'Medium').toString()
-      const isPublic = !!fd.get('is_public')
-      const notes    = (fd.get('notes') || '').toString().trim()
-      const waypoints = [...wpHost.querySelectorAll('input')].map(i => i.value.trim()).filter(Boolean)
-
-      if (!title) { const el=form.querySelector('[data-err=title]'); el.textContent='Give your route a name.'; el.classList.remove('hidden'); return }
-
-      submit.disabled = true
-      submit.innerHTML = '<span class="spinner"></span><span class="btn-label">Saving</span>'
+    async function loadTrips() {
       try {
-        if (state.editingId) {
-          const { error } = await supabase.from('trips').update({
-            title, start_loc: start, end_loc: end, trip_date: date, distance_km: distance,
-            difficulty: diff, is_public: isPublic, notes, waypoints,
-          }).eq('id', state.editingId).eq('user_id', me.id)
-          if (error) throw error
-          toast('Route updated.', 'success')
-        } else {
-          const { error } = await supabase.from('trips').insert({
-            user_id: me.id, title, start_loc: start, end_loc: end, trip_date: date, distance_km: distance,
-            difficulty: diff, is_public: isPublic, notes, waypoints,
-          })
-          if (error) throw error
-          toast('Route saved.', 'success')
-        }
-        resetForm()
-        await loadMine()
-        await loadCommunity(true)
+        const { data, error } = await supabase
+          .from('trips')
+          .select('id, title, trip_date, end_date, distance_km, description, is_public, created_at')
+          .eq('user_id', me.id)
+          .order('trip_date', { ascending: false })
+        if (error) throw error
+        allTrips.length = 0
+        if (data) allTrips.push(...data)
+        renderTrips()
       } catch (err) {
-        formErr.textContent = (err && err.message) || 'Couldn’t save route.'
-        formErr.classList.remove('hidden')
-      } finally {
-        submit.disabled = false
-        submit.innerHTML = '<span class="btn-label">' + (state.editingId ? 'Save changes' : 'Save route') + '</span>'
+        console.error('trips load error', err)
+        myEmpty?.classList.remove('hidden')
+        myEmpty.querySelector('h3').textContent = err?.message || 'Could not load voyages.'
       }
+    }
+
+    function renderTrips() {
+      const slice = allTrips.slice(0, visible)
+      if (myCount) myCount.textContent = String(allTrips.length)
+      if (!slice.length) { myList.innerHTML = ''; myEmpty?.classList.remove('hidden'); loadMore?.classList.add('hidden'); return }
+      myEmpty?.classList.add('hidden')
+      myList.innerHTML = slice.map(t => {
+        const st = classifyTrip(t)
+        const dateStr = t.trip_date ? new Date(t.trip_date).toLocaleDateString() : '—'
+        return `<div class="route-card" data-trip="${esc(t.id)}" data-status="${st}">
+          <div class="route-art">
+            <span class="status-pin" data-status="${st}">${st}</span>
+            <span class="bearing">${esc(dateStr)}</span>
+            <svg viewBox="0 0 400 225" preserveAspectRatio="xMidYMid slice" xmlns="http://www.w3.org/2000/svg">
+              <defs>
+                <linearGradient id="rg" x1="0" y1="0" x2="0" y2="1">
+                  <stop offset="0" stop-color="#c9a84c" stop-opacity="0.25"/>
+                  <stop offset="1" stop-color="#c9a84c" stop-opacity="0"/>
+                </linearGradient>
+              </defs>
+              <rect width="400" height="225" fill="url(#rg)"/>
+              <path d="M 0 130 L 60 80 L 100 110 L 140 70 L 180 100 L 220 60 L 260 95 L 300 75 L 340 105 L 400 85 L 400 225 L 0 225 Z" fill="#0b0d12" opacity="0.5"/>
+              <path d="M 200 225 L 200 100" stroke="#c9a84c" stroke-width="1.5" stroke-dasharray="6 8" stroke-opacity="0.7"/>
+            </svg>
+          </div>
+          <div class="route-body">
+            <h3 class="route-title">${esc(t.title || 'Untitled voyage')}</h3>
+            ${t.description ? `<p style="font-family:var(--font-heritage);font-style:italic;font-size:14px;color:var(--color-text-2);line-height:1.4;margin-top:4px">${esc(t.description.slice(0, 120))}${t.description.length > 120 ? '…' : ''}</p>` : ''}
+            <div class="route-meta">
+              ${t.distance_km ? `<span><strong>${Math.round(t.distance_km)}</strong> km</span>` : ''}
+              <span>${t.trip_date ? new Date(t.trip_date).toLocaleDateString() : 'TBD'}</span>
+              ${t.is_public ? '<span>Public</span>' : '<span>Private</span>'}
+            </div>
+            <div class="card-actions" style="display:flex;gap:6px;margin-top:10px;padding-top:10px;border-top:1px solid var(--color-border)">
+              <button class="btn btn-ghost btn-sm" data-act="comments" data-trip="${esc(t.id)}">Notes</button>
+              <button class="btn btn-ghost btn-sm" data-act="delete"   data-trip="${esc(t.id)}">Delete</button>
+            </div>
+          </div>
+        </div>`
+      }).join('')
+
+      loadMore?.classList.toggle('hidden', allTrips.length <= visible)
+
+      /* wiring */
+      myList.querySelectorAll('[data-act="delete"]').forEach(btn => {
+        btn.addEventListener('click', async () => {
+          if (!confirm('Delete this voyage?')) return
+          try {
+            await supabase.from('trips').delete().eq('id', btn.dataset.trip)
+            await loadTrips()
+          } catch (e) { alert(e?.message || 'Could not delete') }
+        })
+      })
+      myList.querySelectorAll('[data-act="comments"]').forEach(btn => {
+        btn.addEventListener('click', () => openComments(btn.dataset.trip))
+      })
+    }
+
+    loadMore?.addEventListener('click', () => { visible += 12; renderTrips() })
+
+    /* status chips */
+    const chips = $('statusChips')
+    if (chips) chips.addEventListener('click', (e) => {
+      const c = e.target.closest('.chip'); if (!c) return
+      chips.querySelectorAll('.chip').forEach(x => x.classList.toggle('is-active', x === c))
+      const status = c.dataset.status
+      myList.querySelectorAll('.route-card').forEach(card => {
+        card.style.display = (status === 'all' || card.dataset.status === status) ? '' : 'none'
+      })
     })
 
-    loadMine()
-    loadCommunity(true)
+    /* ── Waypoint add/remove ─────────────────────── */
+    const wpList = $('waypoints')
+    const addWpBtn = $('addWp')
+    if (addWpBtn) addWpBtn.addEventListener('click', () => {
+      const row = document.createElement('div')
+      row.className = 'waypoint-row'
+      row.innerHTML = `<input class="input" type="text" placeholder="Next stop" /><button type="button" class="btn btn-ghost btn-sm" data-rm>✕</button>`
+      wpList.appendChild(row)
+    })
+    if (wpList) wpList.addEventListener('click', (e) => {
+      const b = e.target.closest('[data-rm]'); if (!b) return
+      const rows = wpList.querySelectorAll('.waypoint-row')
+      if (rows.length > 1) b.closest('.waypoint-row').remove()
+    })
+
+    /* ── Trip form open/close ────────────────────── */
+    const tfForm  = $('tripForm')
+    const tfOpen  = $('tripFormOpen')
+    const tfClose = $('tripFormClose')
+    const tfCancel= $('tripFormCancel')
+    const tfSubmit= $('tripFormSubmit')
+    const tfTitle = $('tripFormTitle')
+    let editingTripId = null
+
+    function openTf(id = null) {
+      editingTripId = id
+      $('tripFormErr')?.classList.add('hidden')
+      $('tripFormErr').textContent = ''
+      if (id) {
+        tfTitle.textContent = 'Edit voyage'
+        supabase.from('trips').select('*').eq('id', id).single().then(({ data }) => {
+          if (!data) return
+          $('tf-title').value     = data.title || ''
+          $('tf-date').value      = data.trip_date || ''
+          $('tf-end').value       = data.end_date || ''
+          $('tf-distance').value  = data.distance_km || ''
+          $('tf-desc').value      = data.description || ''
+        })
+      } else {
+        tfTitle.textContent = 'New voyage'
+        $('tf-title').value = ''; $('tf-date').value = ''; $('tf-end').value = ''
+        $('tf-distance').value = ''; $('tf-desc').value = ''
+      }
+      tfForm.classList.add('is-open')
+    }
+    function closeTf() { tfForm.classList.remove('is-open'); editingTripId = null }
+    tfOpen?.addEventListener('click', () => openTf())
+    tfClose?.addEventListener('click', closeTf)
+    tfCancel?.addEventListener('click', closeTf)
+
+    /* trip submit */
+    if (tfSubmit) {
+      tfSubmit.addEventListener('click', async () => {
+        if (!me) return
+        const e = $('tripFormErr')
+        e.classList.add('hidden'); e.textContent = ''
+
+        const title      = ($('tf-title')?.value    || '').trim()
+        const trip_date  = $('tf-date')?.value      || null
+        const end_date   = $('tf-end')?.value       || null
+        const distance_km= parseFloat($('tf-distance')?.value || '') || null
+        const description= ($('tf-desc')?.value     || '').trim()
+
+        if (!title)     { e.textContent = 'Title is required.'; e.classList.remove('hidden'); return }
+        if (!trip_date) { e.textContent = 'Departure date is required.'; e.classList.remove('hidden'); return }
+
+        tfSubmit.disabled = true
+        const original = tfSubmit.textContent
+        tfSubmit.textContent = 'Saving…'
+
+        try {
+          const payload = { user_id: me.id, title, trip_date, end_date, distance_km, description, is_public: true }
+          if (editingTripId) {
+            const { error } = await supabase.from('trips').update(payload).eq('id', editingTripId)
+            if (error) throw error
+          } else {
+            const { error } = await supabase.from('trips').insert(payload)
+            if (error) throw error
+          }
+          closeTf()
+          await loadTrips()
+        } catch (err) {
+          e.textContent = err?.message || 'Could not save voyage.'
+          e.classList.remove('hidden')
+        } finally {
+          tfSubmit.disabled = false
+          tfSubmit.textContent = original
+        }
+      })
+    }
+
+    /* ── Comments panel ──────────────────────────── */
+    const cPanel   = $('commentsPanel')
+    const cClose   = $('commentsClose')
+    const cTitle   = $('commentsTitle')
+    const cList    = $('commList')
+    const cEmpty   = $('commEmpty')
+    const cInput   = $('commInput')
+    const cSend    = $('commSend')
+    let currentTripId = null
+
+    cClose?.addEventListener('click', () => cPanel?.classList.remove('is-open'))
+
+    async function openComments(tripId) {
+      currentTripId = tripId
+      const { data: trip } = await supabase.from('trips').select('title').eq('id', tripId).single()
+      if (cTitle) cTitle.textContent = `Notes · ${trip?.title || 'Voyage'}`
+      cPanel.classList.add('is-open')
+      await renderComments()
+    }
+
+    async function renderComments() {
+      if (!currentTripId) return
+      const { data: comments } = await supabase
+        .from('comments')
+        .select('id, content, created_at, profiles:user_id ( username, full_name, avatar_url )')
+        .eq('trip_id', currentTripId)
+        .order('created_at', { ascending: true })
+      if (!comments || !comments.length) {
+        cList.innerHTML = ''; cEmpty?.classList.remove('hidden'); return
+      }
+      cEmpty?.classList.add('hidden')
+      cList.innerHTML = comments.map(c => {
+        const a = c.profiles || {}
+        const av = a.avatar_url
+          ? `<img src="${esc(a.avatar_url)}" alt="" class="avatar-img" style="width:100%;height:100%;object-fit:cover"/>`
+          : `<span class="bp-avatar-fallback" style="width:100%;height:100%;display:flex;align-items:center;justify-content:center;font-size:11px">${esc(initialsOf(a.full_name || a.username))}</span>`
+        return `<div class="com">
+          <div class="avatar avatar-sm">${av}</div>
+          <div class="body">
+            <div class="head">
+              <div class="n">${esc(a.full_name || a.username)}</div>
+              <div class="t">${esc(timeAgo(c.created_at))}</div>
+            </div>
+            <div class="text">${esc(c.content)}</div>
+          </div>
+        </div>`
+      }).join('')
+    }
+
+    cSend?.addEventListener('click', async () => {
+      const text = (cInput?.value || '').trim()
+      if (!text || !currentTripId || !me) return
+      cSend.disabled = true
+      try {
+        const { error } = await supabase.from('comments').insert({
+          trip_id: currentTripId, user_id: me.id, content: text
+        })
+        if (error) throw error
+        cInput.value = ''
+        await renderComments()
+      } catch (e) { alert(e?.message || 'Could not post comment') }
+      finally { cSend.disabled = false }
+    })
+    cInput?.addEventListener('keydown', (e) => { if (e.key === 'Enter') cSend?.click() })
+
+    loadTrips()
+
+    // ── Nav injection: Messages + Notifications ──────────
+    function injectNav() {
+      const navLinks = document.querySelector('.nav-links')
+      if (!navLinks || document.getElementById('nav-messages')) return
+
+      const msgLink = document.createElement('a')
+      msgLink.href = '/messages.html'
+      msgLink.className = 'nav-link'
+      msgLink.id = 'nav-messages'
+      msgLink.innerHTML = '<span>Messages</span><span class="nav-badge" id="msg-unread-badge" style="display:none"></span>'
+      navLinks.appendChild(msgLink)
+
+      const notifLink = document.createElement('a')
+      notifLink.href = '/notifications.html'
+      notifLink.className = 'nav-link'
+      notifLink.id = 'nav-notifications'
+      notifLink.innerHTML = '<span>Notifications</span><span class="nav-badge" id="notif-unread-badge" style="display:none"></span>'
+      navLinks.appendChild(notifLink)
+
+      const mobileNav = document.querySelector('.nav-mobile nav')
+      if (mobileNav) {
+        const mMsg = document.createElement('a')
+        mMsg.href = '/messages.html'
+        mMsg.className = 'nav-link'
+        mMsg.textContent = 'Messages'
+        mobileNav.appendChild(mMsg)
+        const mNotif = document.createElement('a')
+        mNotif.href = '/notifications.html'
+        mNotif.className = 'nav-link'
+        mNotif.textContent = 'Notifications'
+        mobileNav.appendChild(mNotif)
+      }
+    }
+
+    // ── Badge loader ──────────────────────────────────────
+    async function loadNavBadges() {
+      const { data: { user } } = await supabase.auth.getUser()
+      if (!user) return
+
+      const notifCount = await getUnreadNotificationCount()
+      const badge = document.getElementById('notif-unread-badge')
+      if (badge) {
+        badge.textContent = notifCount > 99 ? '99+' : notifCount
+        badge.style.display = notifCount > 0 ? 'flex' : 'none'
+      }
+
+      let notifChannel = subscribeToNotifications(user.id, () => {
+        const b = document.getElementById('notif-unread-badge')
+        if (b) {
+          const current = parseInt(b.textContent) || 0
+          b.textContent = current + 1 > 99 ? '99+' : (current + 1)
+          b.style.display = 'flex'
+          b.style.transition = 'transform 150ms ease'
+          b.style.transform = 'scale(1.3)'
+          setTimeout(() => { b.style.transform = 'scale(1)' }, 150)
+        }
+      })
+
+      window.addEventListener('beforeunload', () => {
+        if (notifChannel) notifChannel.unsubscribe()
+      })
+    }
+
+    injectNav()
+    loadNavBadges()
   </script>
+
+  <style>
+    .nav-badge {
+      margin-left: auto;
+      background: var(--color-racing);
+      color: var(--color-paper);
+      font-size: 10px;
+      font-weight: 700;
+      font-family: var(--font-body);
+      min-width: 18px;
+      height: 18px;
+      padding: 0 5px;
+      border-radius: 999px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      letter-spacing: 0;
+    }
+  </style>
 </body>
 </html>

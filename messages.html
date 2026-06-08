@@ -1,0 +1,479 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Messages · Bikers Portal</title>
+  <link rel="icon" href="/assets/logo.svg" type="image/svg+xml" />
+  <script src="./js/app.js"></script>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <link rel="stylesheet" href="./assets/style.css" />
+  <style>
+    .messages-layout {
+      display: flex;
+      height: calc(100vh - 72px);
+      overflow: hidden;
+    }
+    .conversations-panel {
+      width: 320px;
+      min-width: 320px;
+      border-right: 1px solid var(--color-border);
+      display: flex;
+      flex-direction: column;
+      background: var(--color-ink-2);
+    }
+    .conversations-header {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 16px 16px 12px;
+      border-bottom: 1px solid var(--color-border);
+    }
+    .conversations-header h2 {
+      font-family: var(--font-display);
+      font-size: 14px;
+      letter-spacing: 0.2em;
+      text-transform: uppercase;
+      color: var(--color-text);
+    }
+    .conv-search-wrap {
+      padding: 8px 16px;
+    }
+    .conv-search-wrap .input {
+      height: 36px;
+      font-size: 12px;
+      padding: 0 12px;
+      background: var(--color-ink);
+    }
+    #conversations-list {
+      flex: 1;
+      overflow-y: auto;
+    }
+    .conv-row {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      padding: 12px 16px;
+      cursor: pointer;
+      border-bottom: 1px solid var(--color-border);
+      transition: background var(--t-fast) var(--ease-out);
+      position: relative;
+    }
+    .conv-row:hover { background: var(--color-ink-3); }
+    .conv-row.active { background: var(--color-ink-3); }
+    .conv-row.unread { border-left: 2px solid var(--color-brass); }
+    .unread-dot {
+      width: 6px;
+      height: 6px;
+      background: var(--color-brass);
+      border-radius: 999px;
+      flex: 0 0 auto;
+    }
+    .conv-avatar { flex: 0 0 auto; }
+    .conv-info { flex: 1; min-width: 0; }
+    .conv-name {
+      font-family: var(--font-display);
+      font-size: 13px;
+      letter-spacing: 0.04em;
+      text-transform: uppercase;
+      color: var(--color-text);
+      line-height: 1.2;
+    }
+    .conv-name.bold { font-weight: 700; color: var(--color-text); }
+    .conv-preview {
+      font-size: 12px;
+      color: var(--color-text-3);
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+      margin-top: 2px;
+    }
+    .conv-time {
+      font-family: var(--font-mono);
+      font-size: 10px;
+      color: var(--color-text-faint);
+      white-space: nowrap;
+      letter-spacing: 0.04em;
+    }
+    .chat-panel {
+      flex: 1;
+      display: flex;
+      flex-direction: column;
+      background: var(--color-ink);
+      min-width: 0;
+    }
+    .chat-header {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      padding: 12px 20px;
+      border-bottom: 1px solid var(--color-border);
+      background: var(--color-ink-2);
+    }
+    .chat-header-back {
+      display: none;
+      background: none;
+      border: 1px solid var(--color-border-2);
+      color: var(--color-text-2);
+      width: 32px;
+      height: 32px;
+      align-items: center;
+      justify-content: center;
+      cursor: pointer;
+    }
+    .chat-header-back:hover { color: var(--color-racing); border-color: var(--color-racing); }
+    .chat-header-info { flex: 1; min-width: 0; }
+    .chat-header-name {
+      font-family: var(--font-display);
+      font-size: 15px;
+      letter-spacing: 0.04em;
+      text-transform: uppercase;
+      color: var(--color-text);
+    }
+    .chat-header-link {
+      font-family: var(--font-mono);
+      font-size: 10px;
+      color: var(--color-brass);
+      letter-spacing: 0.1em;
+    }
+    .chat-header-link:hover { color: var(--color-gold); }
+    #chat-messages {
+      flex: 1;
+      overflow-y: auto;
+      padding: 20px;
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+    }
+    .msg-bubble {
+      max-width: 68%;
+      padding: 10px 14px;
+      border-radius: 2px 12px 12px 12px;
+      font-size: 14px;
+      line-height: 1.5;
+    }
+    .msg-bubble.own {
+      background: rgba(201, 168, 76, 0.12);
+      border: 1px solid rgba(201, 168, 76, 0.2);
+      border-radius: 12px 2px 12px 12px;
+      align-self: flex-end;
+      color: var(--color-text);
+    }
+    .msg-bubble.other {
+      background: var(--color-ink-2);
+      border: 1px solid var(--color-border);
+      align-self: flex-start;
+      color: var(--color-text);
+    }
+    .msg-content { white-space: pre-wrap; word-break: break-word; }
+    .msg-time {
+      font-size: 11px;
+      color: var(--color-text-faint);
+      margin-top: 4px;
+      letter-spacing: 0.04em;
+    }
+    .chat-input-bar {
+      display: flex;
+      align-items: flex-end;
+      gap: 10px;
+      padding: 12px 20px;
+      border-top: 1px solid var(--color-border);
+      background: var(--color-ink-2);
+    }
+    .chat-input-bar textarea {
+      flex: 1;
+      resize: none;
+      height: 44px;
+      min-height: 44px;
+      max-height: 120px;
+      padding: 12px 14px;
+      background: var(--color-ink);
+      color: var(--color-text);
+      border: 1px solid var(--color-border-2);
+      font-family: var(--font-body);
+      font-size: 14px;
+      line-height: 1.4;
+      outline: none;
+    }
+    .chat-input-bar textarea:focus { border-color: var(--color-brass); }
+    .chat-input-bar textarea::placeholder { color: var(--color-text-faint); font-style: italic; }
+    .chat-input-bar #send-btn {
+      width: 44px;
+      height: 44px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      background: var(--color-brass);
+      border: none;
+      color: var(--color-ink);
+      cursor: pointer;
+      transition: opacity var(--t-fast) var(--ease-out);
+      flex: 0 0 auto;
+    }
+    .chat-input-bar #send-btn:disabled { opacity: 0.4; cursor: not-allowed; }
+    .chat-input-bar #send-btn:not(:disabled):hover { opacity: 0.85; }
+    #chat-empty {
+      flex: 1;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 40px;
+    }
+    #chat-empty p {
+      font-family: var(--font-heritage);
+      font-style: italic;
+      font-size: 16px;
+      color: var(--color-text-3);
+      text-align: center;
+    }
+    #chat-thread { display: none; flex-direction: column; flex: 1; min-height: 0; }
+    #chat-thread:not(.hidden) { display: flex; }
+    .new-dm-btn {
+      width: 32px;
+      height: 32px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      background: transparent;
+      border: 1px solid var(--color-border-2);
+      color: var(--color-text-2);
+      cursor: pointer;
+    }
+    .new-dm-btn:hover { color: var(--color-brass); border-color: var(--color-brass); }
+    .dm-modal {
+      display: none;
+      position: fixed; inset: 0;
+      background: rgba(11,13,18,.92);
+      z-index: 300;
+      align-items: center; justify-content: center;
+      padding: 24px;
+    }
+    .dm-modal.is-open { display: flex; }
+    .dm-modal-card {
+      width: 100%;
+      max-width: 440px;
+      background: var(--color-ink-2);
+      border: 1px solid var(--color-border-2);
+      max-height: 80vh;
+      overflow-y: auto;
+    }
+    .dm-modal-header {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 16px 20px;
+      border-bottom: 1px solid var(--color-border);
+      background: var(--color-ink-3);
+    }
+    .dm-modal-header h3 {
+      font-family: var(--font-display);
+      font-size: 14px;
+      letter-spacing: 0.2em;
+      text-transform: uppercase;
+      color: var(--color-text);
+    }
+    .dm-modal-close {
+      background: none;
+      border: 1px solid var(--color-border-2);
+      color: var(--color-text-2);
+      width: 28px;
+      height: 28px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      cursor: pointer;
+    }
+    .dm-modal-close:hover { color: var(--color-racing); border-color: var(--color-racing); }
+    .dm-modal-body { padding: 16px 20px; }
+    .dm-modal-body .input { height: 40px; font-size: 13px; }
+    #dm-user-results { margin-top: 8px; }
+    .dm-user-row {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      padding: 10px 8px;
+      cursor: pointer;
+      border-bottom: 1px solid var(--color-border);
+      transition: background var(--t-fast) var(--ease-out);
+    }
+    .dm-user-row:hover { background: var(--color-ink-3); }
+    .dm-user-row .info { flex: 1; min-width: 0; }
+    .dm-user-row .n {
+      font-family: var(--font-display);
+      font-size: 13px;
+      text-transform: uppercase;
+      letter-spacing: 0.04em;
+    }
+    .dm-user-row .h {
+      font-family: var(--font-mono);
+      font-size: 10px;
+      color: var(--color-text-3);
+      letter-spacing: 0.04em;
+    }
+    @media (max-width: 767px) {
+      .conversations-panel { width: 100%; min-width: 0; }
+      .conversations-panel.hidden-mobile { display: none; }
+      .chat-panel.hidden-mobile { display: none; }
+      .chat-panel { width: 100%; }
+      .chat-header-back { display: flex; }
+      .messages-layout { height: calc(100vh - 64px); }
+    }
+  </style>
+</head>
+<body>
+  <script type="module" src="./js/auth-guard.js"></script>
+  <header id="bp-navbar" data-active=""></header>
+
+  <div class="messages-layout">
+    <div class="conversations-panel" id="conversations-panel">
+      <div class="conversations-header">
+        <h2>Messages</h2>
+        <button id="new-dm-btn" class="new-dm-btn" aria-label="New message">
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="square"><path d="M12 5v14M5 12h14"/></svg>
+        </button>
+      </div>
+      <div class="conv-search-wrap">
+        <input type="text" id="conv-search" class="input" placeholder="Filter conversations…" />
+      </div>
+      <div id="conversations-list"></div>
+    </div>
+
+    <div class="chat-panel" id="chat-panel">
+      <div class="chat-header">
+        <button id="chat-back" class="chat-header-back" aria-label="Back to conversations">
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="square"><path d="M19 12H5M12 19l-7-7 7-7"/></svg>
+        </button>
+        <div id="chat-header-avatar" class="avatar avatar-md" style="background:var(--color-ink-3)"></div>
+        <div class="chat-header-info">
+          <div class="chat-header-name" id="chat-header-name">Select a conversation</div>
+          <a href="#" class="chat-header-link" id="chat-header-link" style="display:none">View Profile</a>
+        </div>
+      </div>
+
+      <div id="chat-empty">
+        <p>Select a conversation or start a new one.</p>
+      </div>
+
+      <div id="chat-thread">
+        <div id="chat-messages"></div>
+        <div class="chat-input-bar">
+          <textarea id="message-input" placeholder="Type a message…" rows="1"></textarea>
+          <button id="send-btn" disabled aria-label="Send message">
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="square"><path d="M5 12h14M13 6l6 6-6 6"/></svg>
+          </button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div id="new-dm-modal" class="dm-modal">
+    <div class="dm-modal-card">
+      <div class="dm-modal-header">
+        <h3>New conversation</h3>
+        <button id="new-dm-close" class="dm-modal-close" aria-label="Close">✕</button>
+      </div>
+      <div class="dm-modal-body">
+        <input type="text" id="dm-user-search" class="input" placeholder="Search riders by name…" />
+        <div id="dm-user-results"></div>
+      </div>
+    </div>
+  </div>
+
+  <script type="module">
+    import { supabase, getUnreadNotificationCount, subscribeToNotifications } from './js/supabase.js'
+    import MessagesModule from './js/messages.js'
+
+    document.getElementById('chat-back')?.addEventListener('click', () => {
+      document.getElementById('conversations-panel')?.classList.remove('hidden-mobile')
+      document.getElementById('chat-panel')?.classList.add('hidden-mobile')
+    })
+
+    MessagesModule.init()
+
+    // ── Nav injection ─────────────────────────────────────
+    function injectNav() {
+      const navLinks = document.querySelector('.nav-links')
+      if (!navLinks || document.getElementById('nav-messages')) return
+
+      const msgLink = document.createElement('a')
+      msgLink.href = '/messages.html'
+      msgLink.className = 'nav-link'
+      msgLink.id = 'nav-messages'
+      msgLink.innerHTML = '<span>Messages</span><span class="nav-badge" id="msg-unread-badge" style="display:none"></span>'
+      navLinks.appendChild(msgLink)
+
+      const notifLink = document.createElement('a')
+      notifLink.href = '/notifications.html'
+      notifLink.className = 'nav-link'
+      notifLink.id = 'nav-notifications'
+      notifLink.innerHTML = '<span>Notifications</span><span class="nav-badge" id="notif-unread-badge" style="display:none"></span>'
+      navLinks.appendChild(notifLink)
+
+      const mobileNav = document.querySelector('.nav-mobile nav')
+      if (mobileNav) {
+        const mMsg = document.createElement('a')
+        mMsg.href = '/messages.html'
+        mMsg.className = 'nav-link'
+        mMsg.textContent = 'Messages'
+        mobileNav.appendChild(mMsg)
+        const mNotif = document.createElement('a')
+        mNotif.href = '/notifications.html'
+        mNotif.className = 'nav-link'
+        mNotif.textContent = 'Notifications'
+        mobileNav.appendChild(mNotif)
+      }
+    }
+
+    // ── Badge loader ──────────────────────────────────────
+    async function loadNavBadges() {
+      const { data: { user } } = await supabase.auth.getUser()
+      if (!user) return
+
+      const notifCount = await getUnreadNotificationCount()
+      const badge = document.getElementById('notif-unread-badge')
+      if (badge) {
+        badge.textContent = notifCount > 99 ? '99+' : notifCount
+        badge.style.display = notifCount > 0 ? 'flex' : 'none'
+      }
+
+      let notifChannel = subscribeToNotifications(user.id, () => {
+        const b = document.getElementById('notif-unread-badge')
+        if (b) {
+          const current = parseInt(b.textContent) || 0
+          b.textContent = current + 1 > 99 ? '99+' : (current + 1)
+          b.style.display = 'flex'
+          b.style.transition = 'transform 150ms ease'
+          b.style.transform = 'scale(1.3)'
+          setTimeout(() => { b.style.transform = 'scale(1)' }, 150)
+        }
+      })
+
+      window.addEventListener('beforeunload', () => {
+        if (notifChannel) notifChannel.unsubscribe()
+      })
+    }
+
+    injectNav()
+    loadNavBadges()
+  </script>
+
+  <style>
+    .nav-badge {
+      margin-left: auto;
+      background: var(--color-racing);
+      color: var(--color-paper);
+      font-size: 10px;
+      font-weight: 700;
+      font-family: var(--font-body);
+      min-width: 18px;
+      height: 18px;
+      padding: 0 5px;
+      border-radius: 999px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      letter-spacing: 0;
+    }
+  </style>
+</body>
+</html>

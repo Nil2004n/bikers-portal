@@ -3,758 +3,841 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Dossier · Bikers Portal</title>
+  <title>Captain's log · Bikers Portal</title>
   <link rel="icon" href="/assets/logo.svg" type="image/svg+xml" />
-  <script src="./js/app.js"></script>
-  <script src="https://cdn.tailwindcss.com"></script>
   <link rel="stylesheet" href="./assets/style.css" />
-  <style>
-    /* ── Profile follow components ─────────────────────── */
-    .profile-actions {
-      display: flex; gap: 8px; flex-shrink: 0; align-items: center; flex-wrap: wrap;
-    }
-    .follow-btn { transition: transform var(--t-fast); }
-    .follow-btn.pop { animation: followPop 220ms cubic-bezier(0.16, 1, 0.3, 1); }
-    @keyframes followPop { 0% { transform: scale(1); } 50% { transform: scale(0.95); } 100% { transform: scale(1); } }
-    .follow-btn .btn-label { transition: opacity 100ms ease; }
-    .follow-btn.is-swapping .btn-label { opacity: 0; }
-    .follow-actions { display: inline-flex; gap: 6px; }
-
-    /* ── Pending requests panel ────────────────────────── */
-    .pending-panel {
-      background: var(--c-surface);
-      border: 1px solid var(--c-border);
-      border-radius: var(--r-lg);
-      box-shadow: var(--shadow-sm);
-      overflow: hidden;
-      margin-top: 32px;
-    }
-    .pending-head {
-      width: 100%;
-      display: flex; align-items: center; justify-content: space-between;
-      padding: 18px 24px;
-      background: transparent;
-      border: 0;
-      cursor: pointer;
-      text-align: left;
-    }
-    .pending-head .head-label {
-      display: inline-flex; align-items: center; gap: 12px;
-      font-family: var(--font-body);
-      font-size: 10.5px;
-      letter-spacing: 0.24em;
-      text-transform: uppercase;
-      color: var(--c-text-2);
-      font-weight: 600;
-    }
-    .pending-head .head-label::before {
-      content: ''; width: 24px; height: 1px; background: linear-gradient(90deg, transparent, var(--c-border-strong));
-    }
-    .pending-head .head-label::after {
-      content: ''; flex: 1; height: 1px; background: linear-gradient(90deg, var(--c-border-strong), transparent);
-    }
-    .pending-head .head-caret {
-      width: 28px; height: 28px;
-      display: inline-flex; align-items: center; justify-content: center;
-      color: var(--c-text-2);
-      transition: transform var(--t-fast);
-    }
-    .pending-panel.is-open .pending-head .head-caret { transform: rotate(180deg); }
-    .pending-body {
-      max-height: 0;
-      overflow: hidden;
-      transition: max-height 380ms cubic-bezier(0.16, 1, 0.3, 1);
-    }
-    .pending-panel.is-open .pending-body { max-height: 1200px; }
-    .pending-list { padding: 0 24px 20px; display: flex; flex-direction: column; gap: 12px; }
-    .pending-row {
-      display: flex; align-items: center; gap: 14px;
-      padding: 12px 14px;
-      background: var(--c-bg);
-      border: 1px solid var(--c-border);
-      border-radius: var(--r-md);
-      transition: opacity 280ms ease, transform 280ms ease;
-    }
-    .pending-row.is-leaving { opacity: 0; transform: translateY(-8px); }
-    .pending-row-info { flex: 1; min-width: 0; }
-    .pending-row-name { font-family: var(--font-display); font-size: 15px; color: var(--c-text); line-height: 1.2; font-weight: 500; }
-    .pending-row-handle { font-size: 11.5px; color: var(--c-text-3); margin-top: 2px; letter-spacing: 0.02em; }
-
-    /* ── Tabs row: horizontal scroll on small ─────────── */
-    .tabs-scroll { overflow-x: auto; }
-    .tabs-scroll .tabs { margin-bottom: 0; min-width: max-content; }
-
-    /* ── Followers / Following grids ───────────────────── */
-    .grid-people {
-      display: grid; grid-template-columns: 1fr; gap: 14px;
-    }
-    @media (min-width: 640px) { .grid-people { grid-template-columns: 1fr 1fr; } }
-    .people-card {
-      display: flex; align-items: center; gap: 12px;
-      padding: 14px 18px;
-    }
-    .people-card-info { flex: 1; min-width: 0; }
-    .people-card-name { font-family: var(--font-display); font-size: 15px; color: var(--c-text); line-height: 1.2; }
-    .people-card-handle { font-size: 11.5px; color: var(--c-text-3); margin-top: 2px; }
-
-    /* ── Mobile tuning ─────────────────────────────────── */
-    @media (max-width: 768px) {
-      .dossier-stats { grid-template-columns: repeat(2, 1fr) !important; gap: 16px !important; }
-      .profile-actions { width: 100%; }
-      .profile-actions .btn { flex: 1; }
-    }
-  </style>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script src="./js/app.js"></script>
 </head>
 <body>
-  <script type="module" src="./js/auth-guard.js"></script>
+  <script src="./js/auth-guard.js"></script>
   <header id="bp-navbar" data-active=""></header>
 
-  <div class="founding-strip">
-    Vol. III <span class="ornament">·</span> Dossier <span class="ornament">·</span> est. MMXXIV
-  </div>
+  <!-- ░░ HERO / CAPTAIN'S LOG ░░ -->
+  <section id="profileHero" class="profile-hero">
+    <div class="profile-hero-content">
+      <div id="bigAvatar" class="big-avatar" style="background:linear-gradient(135deg,var(--color-cobalt),var(--color-deep-red))">…</div>
+      <div class="dossier">
+        <span id="dossierLabel" class="dossier-eyebrow">Captain's log</span>
+        <h1 id="dName" class="dossier-name" style="font-style:italic">Loading…</h1>
+        <p id="dHandle" class="dossier-handle mono">@…</p>
+        <p id="dBio" class="dossier-bio">Loading the record…</p>
+        <div id="dBike" class="dossier-handle" style="margin-top:6px"></div>
+      </div>
+      <div class="dossier-actions">
+        <button id="editBtn" type="button" class="btn btn-ghost btn-sm">Edit log</button>
+        <button id="shareBtn" type="button" class="btn btn-ghost btn-sm">Share</button>
+        <div id="followWrap" class="hidden"><button id="followBtn" type="button" class="follow-btn">Follow</button></div>
+      </div>
+    </div>
+  </section>
 
-  <main class="page-narrow" style="padding-top:40px;padding-bottom:80px;max-width:920px">
+  <main class="page" style="padding-top:0;padding-bottom:80px">
 
-    <!-- ░░ Dossier header ░░ -->
-    <section class="dossier fade-up">
-      <div class="dossier-head">
-        <div id="bigAvatar" class="skeleton avatar avatar-xl avatar-ring" style="width:104px;height:104px"></div>
-        <div class="dossier-meta" style="text-align:left">
-          <p class="eyebrow eyebrow-brass" id="dossierLabel" style="display:block;margin-bottom:6px">Rider dossier</p>
-          <h1 class="dossier-name" id="dName" style="font-style:italic">…</h1>
-          <p class="dossier-handle" id="dHandle">…</p>
-          <p class="dossier-bio" id="dBio">…</p>
-          <div class="row row-2 mt-5" style="flex-wrap:wrap">
-            <span id="dBike" class="badge badge-brass">—</span>
+    <!-- ░░ STATS ░░ -->
+    <div class="dossier-stats">
+      <div class="stat"><span id="statPosts" class="v">—</span><span class="l">Posts</span></div>
+      <div class="stat"><span id="statBikes" class="v">—</span><span class="l">Bikes</span></div>
+      <div class="stat"><span id="statTrips" class="v">—</span><span class="l">Trips</span></div>
+      <div class="stat"><span id="statFollowers" class="v">—</span><span class="l">Crew</span></div>
+      <div class="stat"><span id="statFollowing" class="v">—</span><span class="l">Charted</span></div>
+    </div>
+
+    <!-- ░░ PENDING PANEL (own profile only) ░░ -->
+    <div id="pendingPanel" class="pending-panel hidden">
+      <div id="pendingToggle" class="pending-panel-head">
+        <div class="t">
+          <span>Requests at the gangway</span>
+          <span id="pendingCount" class="badge badge-racing">0</span>
+        </div>
+        <span class="mono" style="font-size:10px;letter-spacing:.2em;color:var(--color-text-3);text-transform:uppercase">Click to expand</span>
+      </div>
+      <div id="pendingList" class="pending-panel-list"></div>
+    </div>
+
+    <!-- ░░ EDIT PANEL ░░ -->
+    <div id="editPanel" class="edit-panel">
+      <div class="card card-body-loose">
+        <div class="row" style="justify-content:space-between;align-items:flex-start;margin-bottom:20px">
+          <div>
+            <p class="eyebrow eyebrow-brass">Amend the log</p>
+            <h2 style="font-size:28px;font-style:italic;margin-top:6px">Update the record</h2>
+          </div>
+          <div class="row gap-2">
+            <button id="editCancel" type="button" class="btn btn-ghost btn-sm">Cancel</button>
+            <button id="editCancel2" type="button" class="btn btn-ghost btn-sm" style="display:none">Cancel</button>
           </div>
         </div>
-        <div class="dossier-actions profile-actions">
-          <button id="editBtn"  class="btn btn-primary btn-sm hidden">Edit dossier</button>
-          <button id="shareBtn" class="btn btn-ghost btn-sm">Share profile</button>
-          <div id="followWrap" class="hidden">
-            <button id="followBtn" class="btn btn-primary btn-sm follow-btn" data-state="none">
-              <span class="btn-label">Follow +</span>
-            </button>
+
+        <form id="editForm" class="stack stack-4" novalidate>
+          <div id="editErr" class="form-err hidden" role="alert"></div>
+
+          <div class="row" style="gap:20px;align-items:flex-start">
+            <img id="editAvatarPreview" alt="" class="avatar avatar-xl" style="background:linear-gradient(135deg,var(--color-cobalt),var(--color-deep-red));color:var(--color-paper);object-fit:cover" />
+            <div class="field" style="flex:1;min-width:0">
+              <label class="field-label" for="editAvatarFile">Crest image <span class="field-hint">Optional</span></label>
+              <input class="input" type="file" id="editAvatarFile" name="avatar" accept="image/*" style="height:auto;padding:10px 16px" />
+            </div>
           </div>
-        </div>
-      </div>
 
-      <div class="dossier-stats">
-        <div class="stat"><span id="statPosts" class="stat-value">0</span><span class="stat-label">Posts</span></div>
-        <div class="stat"><span id="statBikes" class="stat-value">0</span><span class="stat-label">Machines</span></div>
-        <div class="stat"><span id="statTrips" class="stat-value">0</span><span class="stat-label">Routes</span></div>
-        <div class="stat"><span id="statFollowers" class="stat-value">0</span><span class="stat-label">Followers</span></div>
-        <div class="stat"><span id="statFollowing" class="stat-value">0</span><span class="stat-label">Following</span></div>
-      </div>
-    </section>
-
-    <!-- ░░ Edit panel ░░ -->
-    <section id="editPanel" class="hidden mt-7">
-      <form id="editForm" class="card card-body card-stitched" novalidate>
-        <div class="row row-between mb-6" style="align-items:center">
-          <p class="eyebrow eyebrow-brass">Edit dossier</p>
-          <button type="button" id="editCancel" class="btn-subtle">Close</button>
-        </div>
-
-        <div class="grid-editform">
-          <div class="field" style="grid-row:1 / 3">
-            <label class="field-label">Avatar</label>
-            <div id="editAvatarPreview" class="skeleton avatar avatar-xl avatar-ring" style="width:88px;height:88px"></div>
-            <label class="btn btn-ghost btn-sm mt-3" style="cursor:pointer;width:100%">
-              <span>Choose image</span>
-              <input id="editAvatarFile" type="file" accept="image/*" class="sr-only" />
-            </label>
-            <p class="field-hint mt-2" style="font-size:11px">Under 1.5 MB.</p>
-            <p class="field-error hidden" data-err="avatar"></p>
+          <div class="grid-tripform">
+            <div class="field">
+              <label class="field-label" for="ed-name">Full name</label>
+              <input class="input" type="text" id="ed-name" name="full_name" />
+            </div>
+            <div class="field">
+              <label class="field-label" for="ed-handle">@handle</label>
+              <input class="input" type="text" id="ed-handle" name="username" />
+            </div>
           </div>
 
           <div class="field">
-            <label class="field-label">Full name</label>
-            <input name="full_name" class="input" />
-            <p class="field-error hidden" data-err="full_name"></p>
+            <label class="field-label" for="ed-bio">Bio</label>
+            <textarea class="textarea" id="ed-bio" name="bio" maxlength="240" placeholder="A line or two for the registry…"></textarea>
           </div>
+
           <div class="field">
-            <label class="field-label">Username</label>
-            <input name="username" class="input" />
-            <p class="field-error hidden" data-err="username"></p>
+            <label class="field-label" for="ed-bike">Current mount</label>
+            <input class="input" type="text" id="ed-bike" name="bike_model" placeholder="Ducati Panigale V4" />
           </div>
-          <div class="field" style="grid-column:2 / -1">
-            <label class="field-label">Bio</label>
-            <textarea name="bio" rows="3" class="textarea" placeholder="A line or two about your road."></textarea>
+
+          <div class="row" style="justify-content:flex-end;gap:8px">
+            <button type="button" id="editSubmit" class="btn btn-primary">Save changes</button>
           </div>
-          <div class="field" style="grid-column:2 / -1">
-            <label class="field-label">Preferred machine</label>
-            <input name="bike_model" class="input" placeholder="e.g. Royal Enfield Interceptor 650" />
-          </div>
-        </div>
-
-        <p id="editErr" class="msg msg-error hidden mt-4"></p>
-
-        <div class="row row-end gap-3 mt-6">
-          <button type="button" id="editCancel2" class="btn btn-ghost">Cancel</button>
-          <button type="submit" id="editSubmit" class="btn btn-primary"><span class="btn-label">Save dossier</span></button>
-        </div>
-      </form>
-    </section>
-
-    <!-- ░░ Pending requests panel (own profile only) ░░ -->
-    <section id="pendingPanel" class="pending-panel hidden">
-      <button class="pending-head" id="pendingToggle" aria-expanded="false">
-        <span class="head-label">Pending requests <span class="badge badge-brass" id="pendingCount" style="margin-left:8px">0</span></span>
-        <span class="head-caret">
-          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="m6 9 6 6 6-6"/></svg>
-        </span>
-      </button>
-      <div class="pending-body">
-        <div id="pendingList" class="pending-list"></div>
+        </form>
       </div>
+    </div>
+
+    <!-- ░░ TABS ░░ -->
+    <nav class="tabs" role="tablist" aria-label="Profile sections">
+      <button class="tab is-active" data-tab="posts" type="button"><span>Journal</span></button>
+      <button class="tab" data-tab="bikes" type="button"><span>Machines</span></button>
+      <button class="tab" data-tab="trips" type="button"><span>Routes</span></button>
+      <button class="tab" data-tab="followers" type="button"><span>Crew</span></button>
+      <button class="tab" data-tab="following" type="button"><span>Charted</span></button>
+    </nav>
+
+    <section id="tabPanel" class="tab-panel is-active" data-tab="posts">
+      <p class="eyebrow eyebrow-racing" style="margin-bottom:16px">Recent dispatches</p>
+      <div id="tabPosts" class="dispatch-feed stack stack-4"></div>
+      <p class="results-empty hidden" id="tabPostsEmpty">
+        <div class="icon"><svg width="64" height="64" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="0.8"><path d="M3 12h18M12 3v18"/></svg></div>
+        <h3>No dispatches yet.</h3>
+      </p>
+      <p class="results-empty hidden" id="tabPostsError">
+        <h3>Could not load the journal.</h3>
+        <p id="tabPostsErrorMsg" style="font-family:var(--font-mono);font-size:12px;color:var(--color-racing)"></p>
+      </p>
     </section>
 
-    <!-- ░░ Tabs ░░ -->
-    <section class="mt-9">
-      <div class="tabs-scroll">
-        <div class="tabs">
-          <button class="tab is-on" data-tab="posts">My posts</button>
-          <button class="tab"        data-tab="bikes">My machines</button>
-          <button class="tab"        data-tab="trips">My routes</button>
-          <button class="tab"        data-tab="followers">Followers</button>
-          <button class="tab"        data-tab="following">Following</button>
-        </div>
-      </div>
-      <div id="tabPanel" class="tab-panel" style="min-height:160px"></div>
+    <section class="tab-panel" data-tab="bikes">
+      <p class="eyebrow eyebrow-brass" style="margin-bottom:16px">The fleet</p>
+      <div id="tabBikes" class="grid-machines"></div>
+      <p class="results-empty hidden" id="tabBikesEmpty"><h3>No machines in the fleet.</h3></p>
+      <p class="results-empty hidden" id="tabBikesError"><h3>Could not load machines.</h3><p id="tabBikesErrorMsg" style="font-family:var(--font-mono);font-size:12px;color:var(--color-racing)"></p></p>
     </section>
+
+    <section class="tab-panel" data-tab="trips">
+      <p class="eyebrow eyebrow-cobalt" style="margin-bottom:16px">Voyages</p>
+      <div id="tabTrips" class="grid-trips"></div>
+      <p class="results-empty hidden" id="tabTripsEmpty"><h3>No voyages charted.</h3></p>
+      <p class="results-empty hidden" id="tabTripsError"><h3>Could not load voyages.</h3><p id="tabTripsErrorMsg" style="font-family:var(--font-mono);font-size:12px;color:var(--color-racing)"></p></p>
+    </section>
+
+    <section class="tab-panel" data-tab="followers">
+      <p class="eyebrow eyebrow-racing" style="margin-bottom:16px">Crew · Followers</p>
+      <div id="tabFollowers" class="grid-riders"></div>
+      <p class="results-empty hidden" id="tabFollowersEmpty"><h3>No crew yet.</h3></p>
+      <p class="results-empty hidden" id="tabFollowersError"><h3>Could not load crew.</h3><p id="tabFollowersErrorMsg" style="font-family:var(--font-mono);font-size:12px;color:var(--color-racing)"></p></p>
+    </section>
+
+    <section class="tab-panel" data-tab="following">
+      <p class="eyebrow eyebrow-cobalt" style="margin-bottom:16px">Charted · Following</p>
+      <div id="tabFollowing" class="grid-riders"></div>
+      <p class="results-empty hidden" id="tabFollowingEmpty"><h3>Not following anyone yet.</h3></p>
+      <p class="results-empty hidden" id="tabFollowingError"><h3>Could not load following.</h3><p id="tabFollowingErrorMsg" style="font-family:var(--font-mono);font-size:12px;color:var(--color-racing)"></p></p>
+    </section>
+
   </main>
 
-  <style>
-    .grid-editform {
-      display: grid;
-      grid-template-columns: 1fr;
-      gap: 18px;
-    }
-    @media (min-width: 640px) {
-      .grid-editform { grid-template-columns: auto 1fr; gap: 18px 24px; }
-    }
-    @media (max-width: 1023px) {
-      .grid-machines { grid-template-columns: 1fr 1fr; gap: 16px; }
-    }
-    @media (max-width: 639px) {
-      .grid-machines { grid-template-columns: 1fr; }
-    }
-  </style>
+  <footer class="site-footer">
+    Bikers Portal <span style="color:var(--color-brass);padding:0 8px">·</span> EST. MMXXIV <span style="color:var(--color-brass);padding:0 8px">·</span> Charted by riders, for riders
+  </footer>
 
-  <script type="module">
-    import { supabase } from './js/supabase.js'
-    import {
-      sendFollowRequest, cancelFollowRequest, acceptFollowRequest, rejectFollowRequest,
-      unfollowUser, getFollowStatus, getFollowerCount, getFollowingCount,
-      getFollowersList, getFollowingList, getPendingRequests,
-    } from './js/follow.js'
+  <!--
+    SYNC outer script: attaches event listeners + renders skeleton
+    IMMEDIATELY so the page is always interactive. Supabase + follow
+    modules are lazy-imported on demand, so module load timing can
+    never race with user clicks.
+  -->
+  <script>
+    (function () {
+      'use strict'
 
-    const { esc, timeAgo, avatarHTML, toast } = window.bp
-    const confirmModal = window.bp.confirm
+      const $ = (id) => document.getElementById(id)
+      const esc = (s) => String(s == null ? '' : s).replace(/[&<>"']/g, (c) => ({ '&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;' }[c]))
+      const initialsOf = (n) => (n || '?').split(/\s+/).map(s => s[0] || '').join('').slice(0, 2).toUpperCase()
+      const timeAgo = (iso) => {
+        if (!iso) return ''
+        const d = (Date.now() - new Date(iso).getTime()) / 1000
+        if (d < 60) return 'just now'
+        if (d < 3600) return Math.floor(d / 60) + 'm ago'
+        if (d < 86400) return Math.floor(d / 3600) + 'h ago'
+        if (d < 604800) return Math.floor(d / 86400) + 'd ago'
+        return new Date(iso).toLocaleDateString()
+      }
+      const statusForTrip = (t) => {
+        const now = new Date()
+        const s = t.trip_date ? new Date(t.trip_date) : null
+        const e = t.end_date   ? new Date(t.end_date)   : null
+        if (!s) return 'planning'
+        if (s > now) return 'planning'
+        if (e && e < now) return 'completed'
+        if (s <= now && (!e || e >= now)) return 'active'
+        return 'planning'
+      }
+      const log = (...a) => { try { console.log('[profile]', ...a) } catch (_) {} }
 
-    const me = window.__bpUser
-    const urlParams = new URLSearchParams(window.location.search)
-    const profileId = urlParams.get('user') || me.id
-    const isOwn = profileId === me.id
+      /* ── Static wiring (runs immediately) ─────────── */
+      const eBtn = $('editBtn'), ePanel = $('editPanel')
+      const eCancel = $('editCancel'), eCancel2 = $('editCancel2')
+      const openEdit  = () => ePanel && ePanel.classList.add('is-open')
+      const closeEdit = () => ePanel && ePanel.classList.remove('is-open')
+      eBtn   && eBtn.addEventListener('click', openEdit)
+      eCancel&& eCancel.addEventListener('click', closeEdit)
+      eCancel2&&eCancel2.addEventListener('click', closeEdit)
 
-    let profile = null
-    let activeTab = 'posts'
-    const cache = { posts: null, bikes: null, trips: null, followers: null, following: null }
-    const inFlight = new Set()
+      /* edit avatar preview */
+      const editFile = $('editAvatarFile'), editPrev = $('editAvatarPreview')
+      if (editFile && editPrev) {
+        editFile.addEventListener('change', (e) => {
+          const f = e.target.files && e.target.files[0]
+          if (!f) return
+          if (f.size > 2 * 1024 * 1024) {
+            $('editErr').textContent = 'Image too large (max 2MB).'
+            $('editErr').classList.remove('hidden')
+            editFile.value = ''
+            return
+          }
+          editPrev.src = URL.createObjectURL(f)
+        })
+      }
 
-    /* ── Load profile + side data ──────────────────────── */
-    async function loadProfile() {
-      if (isOwn) {
-        profile = await window.bp.loadCurrentProfile()
-      } else {
-        const { data, error } = await supabase.from('profiles')
-          .select('id, username, full_name, avatar_url, bike_model, bio, created_at')
-          .eq('id', profileId).maybeSingle()
-        if (error || !data) {
-          toast('Rider not found.', 'error')
+      /* share button */
+      const shareBtn = $('shareBtn')
+      if (shareBtn) shareBtn.addEventListener('click', async () => {
+        const url = window.location.href
+        try { await navigator.clipboard.writeText(url); shareBtn.textContent = 'Copied ✓' }
+        catch (_) { prompt('Copy this URL:', url) }
+        setTimeout(() => { shareBtn.textContent = 'Share' }, 1500)
+      })
+
+      /* pending panel toggle */
+      const pPanel = $('pendingPanel'), pToggle = $('pendingToggle')
+      if (pToggle && pPanel) pToggle.addEventListener('click', () => pPanel.classList.toggle('is-open'))
+
+      /* tabs (static — no async needed) */
+      const loadedTabs = new Set()
+      const allTabs = document.querySelectorAll('.tabs .tab')
+      allTabs.forEach((tab) => {
+        tab.addEventListener('click', () => {
+          const t = tab.dataset.tab
+          allTabs.forEach((x) => x.classList.toggle('is-active', x === tab))
+          document.querySelectorAll('.tab-panel').forEach((p) => p.classList.toggle('is-active', p.dataset.tab === t))
+        })
+      })
+
+      /* ── Async block: loads supabase + follow + data ── */
+      ;(async function main() {
+        log('boot')
+
+        /* No session → bounce to login (auth-guard should have done this,
+           but double-check in case the guard module didn't run). */
+        let session = null
+        try {
+          const mod = await import('./js/supabase.js?v=' + Date.now())
+          const { data } = await mod.supabase.auth.getSession()
+          session = data && data.session
+        } catch (err) {
+          log('supabase load failed', err)
+          showFatal('Could not reach the auth service. Check your network and refresh.')
           return
         }
-        profile = data
-      }
-      paintDossier()
-      paintStats()
-      paintProfileActions()
-      if (isOwn) await loadPendingPanel()
-    }
+        if (!session) { window.location.replace('/index.html'); return }
 
-    function paintDossier() {
-      const av = document.getElementById('bigAvatar')
-      av.outerHTML = avatarHTML(profile.avatar_url, profile.full_name || profile.username, 104)
-      document.getElementById('dName').textContent   = profile.full_name || 'Rider'
-      document.getElementById('dHandle').textContent = '@' + (profile.username || 'rider')
-      const bio = profile.bio && profile.bio.trim()
-      document.getElementById('dBio').textContent = bio || (isOwn
-        ? 'No introduction yet — share a line or two about your road.'
-        : 'This rider hasn’t written a bio yet.')
-      const dBike = document.getElementById('dBike')
-      dBike.textContent = profile.bike_model ? 'Machine — ' + profile.bike_model : 'No machine listed'
-      document.getElementById('dossierLabel').textContent = isOwn ? 'Rider dossier' : 'Rider'
+        const me = session.user
+        log('me', me.id, me.email)
 
-      if (isOwn) {
-        const ep = document.getElementById('editAvatarPreview')
-        ep.outerHTML = avatarHTML(profile.avatar_url, profile.full_name || profile.username, 88)
-        const f = document.getElementById('editForm')
-        f.full_name.value = profile.full_name || ''
-        f.username.value  = profile.username || ''
-        f.bio.value       = profile.bio || ''
-        f.bike_model.value= profile.bike_model || ''
-      }
-    }
+        /* Determine which profile to show */
+        const params = new URLSearchParams(window.location.search)
+        const targetId = params.get('u') || me.id
+        const isMine  = !params.get('u') || params.get('u') === me.id
+        log('target', targetId, 'isMine', isMine)
 
-    function paintProfileActions() {
-      const editBtn   = document.getElementById('editBtn')
-      const followWrap= document.getElementById('followWrap')
-      if (isOwn) {
-        editBtn.classList.remove('hidden')
-        followWrap.classList.add('hidden')
-      } else {
-        editBtn.classList.add('hidden')
-        followWrap.classList.remove('hidden')
-        paintFollowBtn()
-      }
-    }
+        /* Load the follow module in parallel */
+        const followMod = await import('./js/follow.js?v=' + Date.now())
+        const supaMod = await import('./js/supabase.js?v=' + Date.now())
+        const supabase = supaMod.supabase
 
-    async function paintFollowBtn() {
-      const status = await getFollowStatus(profile.id)
-      const btn = document.getElementById('followBtn')
-      renderFollowBtn(btn, status, profile.id, 'profile')
-    }
-
-    function renderFollowBtn(btn, status, targetId, context) {
-      const label = btn.querySelector('.btn-label')
-      if (status === 'accepted') {
-        btn.className = 'btn btn-ghost btn-sm follow-btn'
-        btn.setAttribute('data-state', 'accepted')
-        if (label) label.textContent = 'Following'
-      } else if (status === 'pending_sent') {
-        btn.className = 'btn btn-ghost btn-sm follow-btn'
-        btn.setAttribute('data-state', 'pending_sent')
-        if (label) label.textContent = 'Requested'
-      } else {
-        btn.className = 'btn btn-primary btn-sm follow-btn'
-        btn.setAttribute('data-state', 'none')
-        if (label) label.textContent = 'Follow +'
-      }
-    }
-
-    async function paintStats() {
-      const postsQuery = supabase.from('posts').select('id', { count: 'exact', head: true }).eq('user_id', profile.id)
-      const bikesQuery = supabase.from('bikes').select('id', { count: 'exact', head: true }).eq('user_id', profile.id)
-      const tripsQuery = supabase.from('trips').select('id', { count: 'exact', head: true }).eq('user_id', profile.id)
-      const [pc, bc, tc, followers, following] = await Promise.all([
-        postsQuery, bikesQuery, tripsQuery,
-        getFollowerCount(profile.id), getFollowingCount(profile.id),
-      ])
-      const paint = (id, n) => {
-        const el = document.getElementById(id)
-        if (!el) return
-        el.textContent = n || 0
-        el.classList.remove('count-pop'); void el.offsetWidth; el.classList.add('count-pop')
-      }
-      paint('statPosts', pc.count)
-      paint('statBikes', bc.count)
-      paint('statTrips', tc.count)
-      paint('statFollowers', followers)
-      paint('statFollowing', following)
-    }
-
-    /* ── Pending panel ─────────────────────────────────── */
-    async function loadPendingPanel() {
-      const list = await getPendingRequests()
-      const panel = document.getElementById('pendingPanel')
-      const countEl = document.getElementById('pendingCount')
-      countEl.textContent = list.length
-      if (!list.length) { panel.classList.add('hidden'); return }
-      panel.classList.remove('hidden')
-      panel.classList.add('is-open')
-      document.getElementById('pendingToggle').setAttribute('aria-expanded', 'true')
-      const host = document.getElementById('pendingList')
-      host.innerHTML = list.map(req => pendingRowHTML(req)).join('') || `<p class="empty-body" style="color:var(--c-text-3);font-style:italic">No requests.</p>`
-    }
-    function pendingRowHTML(req) {
-      const p = req.profile
-      if (!p) return ''
-      return `
-        <div class="pending-row" data-req="${esc(req.id)}" data-follower="${esc(req.follower_id)}">
-          ${avatarHTML(p.avatar_url, p.full_name || p.username, 32)}
-          <div class="pending-row-info min-w-0">
-            <p class="pending-row-name truncate">${esc(p.full_name || p.username)}</p>
-            <p class="pending-row-handle truncate">@${esc(p.username || 'rider')}${p.bike_model ? ' · ' + esc(p.bike_model) : ''}</p>
-          </div>
-          <div class="follow-actions">
-            <button class="btn btn-primary btn-sm" data-act="accept-req" data-follower="${esc(req.follower_id)}" data-row="${esc(req.id)}"><span class="btn-label">Accept</span></button>
-            <button class="btn btn-ghost btn-sm" data-act="decline-req" data-follower="${esc(req.follower_id)}" data-row="${esc(req.id)}"><span class="btn-label">Decline</span></button>
-          </div>
-        </div>`
-    }
-    document.getElementById('pendingToggle').addEventListener('click', () => {
-      const p = document.getElementById('pendingPanel')
-      p.classList.toggle('is-open')
-      document.getElementById('pendingToggle').setAttribute('aria-expanded', String(p.classList.contains('is-open')))
-    })
-    document.getElementById('pendingList').addEventListener('click', async (e) => {
-      const btn = e.target.closest('button[data-act]')
-      if (!btn) return
-      const act = btn.getAttribute('data-act')
-      const rowId = btn.getAttribute('data-row')
-      const follower = btn.getAttribute('data-follower')
-      const row = document.querySelector(`[data-req="${rowId}"]`)
-      if (inFlight.has(rowId)) return
-      inFlight.add(rowId)
-      btn.disabled = true
-      try {
-        if (act === 'accept-req') {
-          const r = await acceptFollowRequest(follower)
-          if (!r.success) throw new Error(r.error)
-        } else {
-          const r = await rejectFollowRequest(follower)
-          if (!r.success) throw new Error(r.error)
-        }
-        if (row) { row.classList.add('is-leaving'); setTimeout(() => row.remove(), 320) }
-        const countEl = document.getElementById('pendingCount')
-        const next = Math.max(0, parseInt(countEl.textContent, 10) - 1)
-        countEl.textContent = next
-        // Bump followers count if accepted
-        if (act === 'accept-req') bumpStat('statFollowers', +1)
-        if (next === 0) {
-          setTimeout(() => document.getElementById('pendingPanel').classList.add('hidden'), 380)
-        }
-        cache.followers = null
-      } catch (err) {
-        toast(err.message || 'Couldn’t update request.', 'error')
-        btn.disabled = false
-      } finally {
-        inFlight.delete(rowId)
-      }
-    })
-
-    function bumpStat(id, delta) {
-      const el = document.getElementById(id)
-      if (!el) return
-      el.textContent = (parseInt(el.textContent, 10) || 0) + delta
-      el.classList.remove('count-pop'); void el.offsetWidth; el.classList.add('count-pop')
-    }
-
-    /* ── Edit form (own profile only) ──────────────────── */
-    if (isOwn) {
-      const editPanel = document.getElementById('editPanel')
-      document.getElementById('editBtn').addEventListener('click', () => editPanel.classList.remove('hidden'))
-      document.getElementById('editCancel').addEventListener('click', () => editPanel.classList.add('hidden'))
-      document.getElementById('editCancel2').addEventListener('click', () => editPanel.classList.add('hidden'))
-      const editAvatarFile = document.getElementById('editAvatarFile')
-      let editAvatarObj = null
-      editAvatarFile.addEventListener('change', () => {
-        const f = editAvatarFile.files && editAvatarFile.files[0]
-        if (!f) return
-        if (f.size > 1.5 * 1024 * 1024) {
-          const el = document.querySelector('[data-err=avatar]')
-          el.textContent = 'Avatar must be under 1.5 MB.'; el.classList.remove('hidden'); return
-        }
-        const url = URL.createObjectURL(f)
-        const ep = document.getElementById('editAvatarPreview')
-        ep.outerHTML = `<img id="editAvatarPreview" src="${url}" alt="" class="avatar avatar-xl" style="width:88px;height:88px;object-fit:cover;box-shadow:0 0 0 1px var(--c-brass-line), 0 0 0 4px var(--c-bg)" />`
-        editAvatarObj = f
-      })
-
-      document.getElementById('editForm').addEventListener('submit', async (e) => {
-        e.preventDefault()
-        const f = e.target
-        const errEl = document.getElementById('editErr')
-        errEl.classList.add('hidden')
-        f.querySelectorAll('[data-err]').forEach(el => el.classList.add('hidden'))
-        const full_name = f.full_name.value.trim()
-        const username  = f.username.value.trim()
-        const bio       = f.bio.value.trim()
-        const bike_model= f.bike_model.value.trim()
-        let bad = false
-        if (!full_name) { const el=f.querySelector('[data-err=full_name]'); el.textContent='Enter your name.'; el.classList.remove('hidden'); bad=true }
-        if (!username)  { const el=f.querySelector('[data-err=username]');  el.textContent='Pick a username.'; el.classList.remove('hidden'); bad=true }
-        else if (!/^[a-zA-Z0-9_]{3,20}$/.test(username)) { const el=f.querySelector('[data-err=username]'); el.textContent='3–20 chars: letters, numbers, underscore.'; el.classList.remove('hidden'); bad=true }
-        if (bad) return
-
-        const submit = document.getElementById('editSubmit')
-        submit.disabled = true
-        submit.innerHTML = '<span class="spinner"></span><span class="btn-label">Saving</span>'
+        /* ── Get / create profile row ──────────────────── */
+        let profile = null
         try {
-          let avatar_url = profile.avatar_url || null
-          if (editAvatarObj) {
-            const ext = (editAvatarObj.type.split('/')[1] || 'jpg').replace('jpeg','jpg')
-            const path = `${me.id}/avatar-${Date.now()}.${ext}`
-            const { error: upErr } = await supabase.storage.from('avatars').upload(path, editAvatarObj, { upsert: true, contentType: editAvatarObj.type })
-            if (upErr) throw upErr
-            const { data: pub } = supabase.storage.from('avatars').getPublicUrl(path)
-            avatar_url = pub.publicUrl
-          }
-          const { error } = await supabase.from('profiles').update({
-            full_name, username, bio, bike_model, avatar_url,
-          }).eq('id', me.id)
-          if (error) throw error
-          profile = { ...profile, full_name, username, bio, bike_model, avatar_url }
-          window.bp.currentProfile = profile
-          toast('Dossier updated.', 'success')
-          editPanel.classList.add('hidden')
-          paintDossier()
-          editAvatarObj = null
-        } catch (err) {
-          const msg = (err && err.message) || ''
-          if (/duplicate|unique/i.test(msg) && /username/i.test(msg)) {
-            const el = f.querySelector('[data-err=username]')
-            el.textContent = 'That username is already taken.'; el.classList.remove('hidden')
+          const { data, error } = await supabase
+            .from('profiles')
+            .select('id, username, full_name, avatar_url, bike_model, bio, created_at')
+            .eq('id', targetId)
+            .maybeSingle()
+          if (error) {
+            log('profile query error', error)
           } else {
-            errEl.textContent = msg || 'Couldn’t save.'; errEl.classList.remove('hidden')
+            profile = data
           }
-        } finally {
-          submit.disabled = false
-          submit.innerHTML = '<span class="btn-label">Save dossier</span>'
+        } catch (err) {
+          log('profile query threw', err)
         }
-      })
-    }
 
-    document.getElementById('shareBtn').addEventListener('click', async () => {
-      const url = window.location.href
-      try { await navigator.clipboard.writeText(url); toast('Profile link copied.', 'success') }
-      catch (_) { toast('Couldn’t copy link.', 'error') }
-    })
-
-    /* ── Follow button on profile ──────────────────────── */
-    document.getElementById('followBtn').addEventListener('click', async (e) => {
-      const btn = e.currentTarget
-      const currentState = btn.getAttribute('data-state') || 'none'
-      if (inFlight.has(profile.id)) return
-      inFlight.add(profile.id)
-      btn.disabled = true
-      btn.classList.add('pop')
-      setTimeout(() => btn.classList.remove('pop'), 240)
-      try {
-        if (currentState === 'none') {
-          const r = await sendFollowRequest(profile.id)
-          if (!r.success) throw new Error(r.error)
-          renderFollowBtn(btn, 'pending_sent', profile.id, 'profile')
-        } else if (currentState === 'pending_sent') {
-          const r = await cancelFollowRequest(profile.id)
-          if (!r.success) throw new Error(r.error)
-          renderFollowBtn(btn, 'none', profile.id, 'profile')
-        } else if (currentState === 'accepted') {
-          const ok = await confirmModal('Unfollow this rider?', 'Unfollow')
-          if (!ok) return
-          const r = await unfollowUser(profile.id)
-          if (!r.success) throw new Error(r.error)
-          renderFollowBtn(btn, 'none', profile.id, 'profile')
+        /* If no row AND it's me, auto-create from localStorage or auth data */
+        if (!profile && isMine) {
+          log('no profile row — attempting to auto-create')
+          let pending = null
+          try { pending = JSON.parse(localStorage.getItem('bp_pending_profile') || 'null') } catch (_) {}
+          const username = (pending && pending.username) || (me.email ? me.email.split('@')[0] : 'rider')
+          const full_name = (pending && pending.full_name) || (me.email || 'Rider')
+          const bike_model = (pending && pending.bike_model) || ''
+          const bio = (pending && pending.bio) || ''
+          let avatar_url = null
+          if (pending && pending.avatarDataUrl) {
+            try {
+              const blob = await (await fetch(pending.avatarDataUrl)).blob()
+              const ext  = (blob.type.split('/')[1] || 'jpg').replace('jpeg', 'jpg')
+              const path = `${me.id}/avatar-${Date.now()}.${ext}`
+              const { error: upErr } = await supabase.storage.from('avatars').upload(path, blob, { upsert: true, contentType: blob.type })
+              if (!upErr) {
+                const { data: pub } = supabase.storage.from('avatars').getPublicUrl(path)
+                avatar_url = pub.publicUrl
+              }
+            } catch (_) {}
+          }
+          const payload = { id: me.id, username, full_name, bike_model, bio, avatar_url }
+          const { data: upserted, error: upErr2 } = await supabase
+            .from('profiles').upsert(payload).select().single()
+          if (upErr2) {
+            log('profile create error', upErr2)
+            /* still render a synthetic profile so the page isn't blank */
+            profile = { id: me.id, username, full_name, bike_model, bio, avatar_url }
+            showNonFatal('Profile row missing and could not be created. ' + (upErr2.message || ''))
+          } else {
+            profile = upserted
+            try { localStorage.removeItem('bp_pending_profile') } catch (_) {}
+          }
         }
-      } catch (err) {
-        toast(err.message || 'Couldn’t update follow.', 'error')
-        renderFollowBtn(btn, currentState, profile.id, 'profile')
-      } finally {
-        inFlight.delete(profile.id)
-        btn.disabled = false
-      }
-    })
 
-    /* ── Tabs ──────────────────────────────────────────── */
-    document.querySelectorAll('.tab').forEach(b => {
-      b.addEventListener('click', () => {
-        document.querySelectorAll('.tab').forEach(x => x.classList.remove('is-on'))
-        b.classList.add('is-on')
-        activeTab = b.getAttribute('data-tab')
-        renderTab()
-      })
-    })
-    async function renderTab() {
-      const panel = document.getElementById('tabPanel')
-      panel.classList.remove('tab-panel'); void panel.offsetWidth; panel.classList.add('tab-panel')
-      panel.innerHTML = `<div class="stack stack-3"><div class="skeleton" style="height:80px"></div><div class="skeleton" style="height:80px"></div></div>`
-      if (activeTab === 'posts')      return renderPosts(panel)
-      if (activeTab === 'bikes')      return renderBikes(panel)
-      if (activeTab === 'trips')      return renderTrips(panel)
-      if (activeTab === 'followers')  return renderPeople(panel, 'followers')
-      if (activeTab === 'following')  return renderPeople(panel, 'following')
-    }
-    async function renderPosts(panel) {
-      if (!cache.posts) {
-        const { data } = await supabase.from('posts')
-          .select('id, content, image_url, created_at')
-          .eq('user_id', profile.id).order('created_at', { ascending: false })
-        cache.posts = data || []
-      }
-      if (!cache.posts.length) {
-        panel.innerHTML = `<div class="card card-body-loose empty-state">
-          <p class="empty-title">No entries yet.</p>
-          <p class="empty-body">${isOwn ? 'The journal is waiting for your first mark.' : 'This rider has not published any entries.'}</p>
-          ${isOwn ? '<a href="/feed.html" class="btn btn-primary mt-6" style="margin:24px auto 0">Open the journal</a>' : ''}
-        </div>`
-        return
-      }
-      panel.innerHTML = '<div class="stack stack-3">' + cache.posts.map(p => `
-        <article class="feed-card fade-up" data-post="${esc(p.id)}">
-          <p class="feed-card-body" style="margin:0">${esc(p.content)}</p>
-          ${p.image_url ? `<img src="${esc(p.image_url)}" class="feed-card-image" alt="" />` : ''}
-          <div class="feed-card-actions" style="border:0;padding:0;margin-top:12px;justify-content:space-between">
-            <span style="font-size:11.5px;color:var(--c-text-3)">${timeAgo(p.created_at)}</span>
-            ${isOwn ? '<button data-act="delete" class="btn-subtle" style="color:var(--c-error)">Remove</button>' : ''}
-          </div>
-        </article>`).join('') + '</div>'
-      if (isOwn) {
-        panel.querySelectorAll('[data-act=delete]').forEach(b => b.addEventListener('click', async (e) => {
-          const card = e.target.closest('[data-post]')
-          const id = card.getAttribute('data-post')
-          const ok = await confirmModal('Remove this entry from the journal?', 'Remove entry')
-          if (!ok) return
-          await supabase.from('comments').delete().eq('post_id', id)
-          await supabase.from('likes').delete().eq('post_id', id)
-          const { error } = await supabase.from('posts').delete().eq('id', id).eq('user_id', me.id)
-          if (error) { toast('Couldn’t remove entry.', 'error'); return }
-          cache.posts = null
-          toast('Entry removed.', 'success')
-          paintStats()
-          renderTab()
-        }))
-      }
-    }
-    async function renderBikes(panel) {
-      if (!cache.bikes) {
-        const { data } = await supabase.from('bikes')
-          .select('id, make, model, year, engine_cc, color, description, photo_url, created_at')
-          .eq('user_id', profile.id).order('created_at', { ascending: false })
-        cache.bikes = data || []
-      }
-      if (!cache.bikes.length) {
-        panel.innerHTML = `<div class="card card-body-loose empty-state">
-          <p class="empty-title">No machines in the registry.</p>
-          <p class="empty-body">${isOwn ? 'Add your first machine from the garage page.' : 'This rider has not registered any machines.'}</p>
-          ${isOwn ? '<a href="/bikes.html" class="btn btn-primary mt-6" style="margin:24px auto 0">Add a machine</a>' : ''}
-        </div>`
-        return
-      }
-      panel.innerHTML = '<div class="grid-machines">' + cache.bikes.map(b => `
-        <article class="machine-card fade-up" data-bike="${esc(b.id)}">
-          <div class="machine-card-img">
-            ${b.photo_url ? `<img src="${esc(b.photo_url)}" alt="" />` : `<div class="machine-card-img-placeholder"><svg width="40" height="40" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1" opacity="0.4"><circle cx="6" cy="17" r="3"/><circle cx="18" cy="17" r="3"/><path d="M9 17h6l2-7H7l-1 4M5 10h14"/></svg></div>`}
-          </div>
-          <div class="machine-card-body">
-            <p class="machine-card-title">${esc(b.make)} ${esc(b.model)}</p>
-            <p class="machine-card-meta">${b.year || '—'}${b.engine_cc ? ' · ' + b.engine_cc + ' cc' : ''}</p>
-            ${b.description ? `<p class="machine-card-desc line-clamp-2">${esc(b.description)}</p>` : ''}
-            <div class="machine-card-foot">
-              <span></span>
-              ${isOwn ? '<a href="/bikes.html" class="btn-subtle">Manage</a>' : ''}
+        if (!profile) {
+          /* Other user with no row */
+          document.querySelector('main').innerHTML = '<div class="results-empty"><h3>No such rider.</h3></div>'
+          return
+        }
+        log('profile', profile)
+
+        /* ── Render hero ─────────────────────────────── */
+        renderHero(profile, isMine)
+
+        /* ── Edit form: prefill ──────────────────────── */
+        $('ed-name')  && ($('ed-name').value  = profile.full_name || '')
+        $('ed-handle')&& ($('ed-handle').value= profile.username || '')
+        $('ed-bio')   && ($('ed-bio').value   = profile.bio || '')
+        $('ed-bike')  && ($('ed-bike').value  = profile.bike_model || '')
+        if (editPrev) {
+          if (profile.avatar_url) {
+            editPrev.src = profile.avatar_url
+            editPrev.style.display = ''
+          } else {
+            editPrev.style.display = 'none'
+          }
+        }
+
+        /* ── Edit form submit ────────────────────────── */
+        const eSubmit = $('editSubmit')
+        if (eSubmit) {
+          eSubmit.addEventListener('click', async () => {
+            const eErr = $('editErr')
+            eErr.classList.add('hidden'); eErr.textContent = ''
+            const full_name  = ($('ed-name')?.value   || '').trim()
+            const username   = ($('ed-handle')?.value || '').trim()
+            const bio        = ($('ed-bio')?.value    || '').trim()
+            const bike_model = ($('ed-bike')?.value   || '').trim()
+            if (!full_name) { eErr.textContent = 'Name required.'; eErr.classList.remove('hidden'); return }
+            if (username && !/^[a-zA-Z0-9_]{3,20}$/.test(username)) {
+              eErr.textContent = 'Call-sign must be 3–20 chars (letters/numbers/underscore).'; eErr.classList.remove('hidden'); return
+            }
+            eSubmit.disabled = true
+            const original = eSubmit.textContent
+            eSubmit.textContent = 'Saving…'
+            try {
+              let avatar_url = profile.avatar_url || null
+              const f = editFile && editFile.files && editFile.files[0]
+              if (f) {
+                if (f.size > 2 * 1024 * 1024) throw new Error('Image too large (max 2MB).')
+                const ext = (f.type.split('/')[1] || 'jpg').replace('jpeg', 'jpg')
+                const path = `${me.id}/avatar-${Date.now()}.${ext}`
+                const { error: upErr } = await supabase.storage.from('avatars').upload(path, f, { upsert: true, contentType: f.type })
+                if (upErr) throw upErr
+                const { data: pub } = supabase.storage.from('avatars').getPublicUrl(path)
+                avatar_url = pub.publicUrl
+              }
+              const payload = { id: me.id, full_name, bio, bike_model, avatar_url }
+              if (username) payload.username = username
+              const { error } = await supabase.from('profiles').upsert(payload)
+              if (error) throw error
+              closeEdit()
+              window.location.reload()
+            } catch (err) {
+              log('edit save error', err)
+              eErr.textContent = (err && err.message) || 'Could not save.'
+              eErr.classList.remove('hidden')
+              eSubmit.disabled = false
+              eSubmit.textContent = original
+            }
+          })
+        }
+
+        /* ── Follow button (other-user profile) ──────── */
+        if (!isMine) {
+          $('editBtn')?.classList.add('hidden')
+          $('shareBtn')?.classList.add('hidden')
+          const fwrap = $('followWrap')
+          const fbtn  = $('followBtn')
+          if (fwrap) fwrap.classList.remove('hidden')
+          if (fbtn) {
+            const refresh = async () => {
+              const st = await followMod.getFollowStatus(profile.id)
+              fbtn.dataset.state = st === 'accepted' ? 'following' : (st === 'pending_sent' ? 'pending' : 'none')
+              fbtn.textContent = st === 'accepted' ? 'Following' : (st === 'pending_sent' ? 'Requested' : 'Follow')
+            }
+            fbtn.addEventListener('click', async () => {
+              fbtn.disabled = true
+              try {
+                if (fbtn.dataset.state === 'none')         await followMod.sendFollowRequest(profile.id)
+                else if (fbtn.dataset.state === 'pending') await followMod.cancelFollowRequest(profile.id)
+                else if (fbtn.dataset.state === 'following')await followMod.unfollowUser(profile.id)
+                await refresh()
+              } catch (err) { log('follow error', err); fbtn.textContent = (err && err.message) || 'Error' }
+              finally { fbtn.disabled = false }
+            })
+            refresh().catch((e) => log('follow status error', e))
+          }
+        }
+
+        /* ── Pending requests (own profile) ──────────── */
+        if (isMine) {
+          try {
+            const reqs = await followMod.getPendingRequests()
+            if (reqs && reqs.length) {
+              pPanel && pPanel.classList.remove('hidden')
+              $('pendingCount').textContent = String(reqs.length)
+              $('pendingList').innerHTML = reqs.map((r) => {
+                const p = r.profile || {}
+                const av = p.avatar_url
+                  ? `<img src="${esc(p.avatar_url)}" alt="" class="avatar-img" style="width:100%;height:100%;object-fit:cover"/>`
+                  : `<span class="bp-avatar-fallback" style="width:100%;height:100%;display:flex;align-items:center;justify-content:center">${esc(initialsOf(p.full_name || p.username))}</span>`
+                return `<div class="pending-row" data-row="${esc(r.id)}" data-follower="${esc(p.id)}">
+                  <div class="avatar avatar-md">${av}</div>
+                  <div class="info">
+                    <div class="n">${esc(p.full_name || p.username)}</div>
+                    <div class="h">@${esc(p.username || 'rider')}</div>
+                  </div>
+                  <div class="actions">
+                    <button class="btn btn-primary btn-sm" data-act="accept">Accept</button>
+                    <button class="btn btn-ghost btn-sm"   data-act="reject">Reject</button>
+                  </div>
+                </div>`
+              }).join('')
+              $('pendingList').querySelectorAll('.pending-row').forEach((row) => {
+                const fid = row.dataset.follower
+                const updateCount = () => {
+                  const n = parseInt($('pendingCount').textContent || '0', 10) - 1
+                  $('pendingCount').textContent = String(Math.max(0, n))
+                  if (n <= 0) pPanel && pPanel.classList.add('hidden')
+                }
+                row.querySelector('[data-act="accept"]')?.addEventListener('click', async (e) => {
+                  e.stopPropagation()
+                  try { await followMod.acceptFollowRequest(fid); row.remove(); updateCount() }
+                  catch (err) { log('accept error', err) }
+                })
+                row.querySelector('[data-act="reject"]')?.addEventListener('click', async (e) => {
+                  e.stopPropagation()
+                  try { await followMod.rejectFollowRequest(fid); row.remove(); updateCount() }
+                  catch (err) { log('reject error', err) }
+                })
+              })
+            }
+          } catch (err) { log('pending requests error', err) }
+        }
+
+        /* ── Stat counts ──────────────────────────────── */
+        loadStats(supabase, followMod, profile.id)
+
+        /* ── Tab loaders (one shot per tab) ───────────── */
+        const tabLoaders = {
+          posts:     () => loadPosts(supabase, profile.id),
+          bikes:     () => loadBikes(supabase, profile.id),
+          trips:     () => loadTrips(supabase, profile.id),
+          followers: () => loadFollowers(followMod, profile.id),
+          following: () => loadFollowing(followMod, profile.id),
+        }
+        allTabs.forEach((tab) => {
+          tab.addEventListener('click', () => {
+            const t = tab.dataset.tab
+            if (loadedTabs.has(t)) return
+            loadedTabs.add(t)
+            const fn = tabLoaders[t]
+            if (fn) fn().catch((e) => log('tab loader error', t, e))
+          })
+        })
+        /* load the active tab immediately (Journal) */
+        loadedTabs.add('posts')
+        loadPosts(supabase, profile.id).catch((e) => log('posts loader error', e))
+
+        /* ── Render hero fn ─────────────────────────── */
+        function renderHero(p, mine) {
+          const name = p.full_name || p.username || 'Rider'
+          $('dName')   && ($('dName').textContent   = name)
+          $('dHandle') && ($('dHandle').textContent = '@' + (p.username || 'rider'))
+          $('dBio')    && ($('dBio').textContent    = p.bio || 'No bio on the record yet.')
+          $('dBike')   && ($('dBike').textContent   = p.bike_model ? 'Currently riding: ' + p.bike_model : '')
+          $('dossierLabel') && ($('dossierLabel').textContent = mine ? "Captain's log · your record" : "Captain's log")
+          const big = $('bigAvatar')
+          if (big) {
+            if (p.avatar_url) {
+              big.style.backgroundImage = 'url(' + p.avatar_url + ')'
+              big.style.backgroundSize  = 'cover'
+              big.style.backgroundPosition = 'center'
+              big.textContent = ''
+            } else {
+              big.style.backgroundImage = ''
+              big.textContent = initialsOf(name)
+            }
+          }
+          document.title = name + ' · Bikers Portal'
+        }
+
+        /* ── Non-fatal banner ──────────────────────── */
+        function showNonFatal(msg) {
+          try {
+            const main = document.querySelector('main')
+            if (!main) return
+            const banner = document.createElement('div')
+            banner.className = 'form-err'
+            banner.style.marginBottom = '16px'
+            banner.textContent = msg
+            main.insertBefore(banner, main.firstChild)
+          } catch (_) {}
+        }
+        function showFatal(msg) {
+          try {
+            const main = document.querySelector('main') || document.body
+            main.innerHTML = '<div class="results-empty" style="padding:80px 24px"><h3>' + esc(msg) + '</h3><p>Try refreshing the page.</p></div>'
+          } catch (_) {}
+        }
+
+        /* ── Stat counts fn ─────────────────────────── */
+        async function loadStats(sb, fm, uid) {
+          const setStat = (id, v) => { if ($(id)) $(id).textContent = (v == null ? '—' : String(v)) }
+          setStat('statPosts', '…'); setStat('statBikes', '…'); setStat('statTrips', '…')
+          setStat('statFollowers', '…'); setStat('statFollowing', '…')
+          try {
+            const [posts, bikes, trips] = await Promise.all([
+              sb.from('posts').select('id', { count: 'exact', head: true }).eq('user_id', uid),
+              sb.from('bikes').select('id', { count: 'exact', head: true }).eq('user_id', uid),
+              sb.from('trips').select('id', { count: 'exact', head: true }).eq('user_id', uid),
+            ])
+            setStat('statPosts', posts.count || 0)
+            setStat('statBikes', bikes.count || 0)
+            setStat('statTrips', trips.count || 0)
+          } catch (err) { log('stat counts error', err) }
+          try {
+            const [followers, following] = await Promise.all([fm.getFollowerCount(uid), fm.getFollowingCount(uid)])
+            setStat('statFollowers', followers || 0)
+            setStat('statFollowing', following || 0)
+          } catch (err) { log('follow counts error', err) }
+        }
+
+        /* ── Posts tab ─────────────────────────────── */
+        async function loadPosts(sb, uid) {
+          const wrap = $('tabPosts'), empty = $('tabPostsEmpty'), errEl = $('tabPostsError')
+          if (!wrap) return
+          wrap.innerHTML = '<div class="dispatch-card"><div class="skeleton" style="height:80px"></div></div>'
+          try {
+            /* Try with join first; fall back without join if FK missing */
+            let posts = null, err = null
+            const r1 = await sb.from('posts').select('id, content, image_url, created_at').eq('user_id', uid).order('created_at', { ascending: false }).limit(20)
+            if (r1.error) {
+              err = r1.error
+            } else {
+              posts = r1.data
+              /* fetch author profiles in a separate query (avoids join FK issues) */
+              if (posts && posts.length) {
+                const ids = Array.from(new Set(posts.map(p => p.user_id).filter(Boolean)))
+                if (ids.length) {
+                  const r2 = await sb.from('profiles').select('id, username, full_name, avatar_url').in('id', ids)
+                  if (!r2.error && r2.data) {
+                    const map = {}
+                    r2.data.forEach(p => { map[p.id] = p })
+                    posts.forEach(p => { p.profiles = map[p.user_id] || null })
+                  }
+                }
+              }
+            }
+            if (err) throw err
+            if (!posts || !posts.length) {
+              wrap.innerHTML = ''; empty && empty.classList.remove('hidden'); errEl && errEl.classList.add('hidden')
+              return
+            }
+            empty && empty.classList.add('hidden'); errEl && errEl.classList.add('hidden')
+            wrap.innerHTML = posts.map((p) => {
+              return `<article class="dispatch-card" data-post="${esc(p.id)}">
+                <header class="dispatch-head">
+                  <div class="dispatch-time">${esc(timeAgo(p.created_at))}</div>
+                </header>
+                <div class="dispatch-body">${esc(p.content)}</div>
+                ${p.image_url ? `<div class="dispatch-media"><img src="${esc(p.image_url)}" alt=""/></div>` : ''}
+              </article>`
+            }).join('')
+          } catch (err) {
+            log('loadPosts error', err)
+            wrap.innerHTML = ''
+            errEl && errEl.classList.remove('hidden')
+            $('tabPostsErrorMsg') && ($('tabPostsErrorMsg').textContent = (err && err.message) || '')
+          }
+        }
+
+        /* ── Bikes tab ─────────────────────────────── */
+        async function loadBikes(sb, uid) {
+          const wrap = $('tabBikes'), empty = $('tabBikesEmpty'), errEl = $('tabBikesError')
+          if (!wrap) return
+          wrap.innerHTML = '<div class="machine-card"><div class="skeleton" style="aspect-ratio:4/3;width:100%"></div></div>'
+          try {
+            const { data, error } = await sb.from('bikes')
+              .select('id, make, model, year, engine_cc, color, description, photo_url, created_at')
+              .eq('user_id', uid).order('created_at', { ascending: false })
+            if (error) throw error
+            if (!data || !data.length) { wrap.innerHTML = ''; empty && empty.classList.remove('hidden'); errEl && errEl.classList.add('hidden'); return }
+            empty && empty.classList.add('hidden'); errEl && errEl.classList.add('hidden')
+            wrap.innerHTML = data.map((b, i) => {
+              const media = b.photo_url ? `<img src="${esc(b.photo_url)}" alt=""/>` : ''
+              return `<div class="machine-card" data-bike="${esc(b.id)}" data-cat="">
+                <div class="card-media" style="background:linear-gradient(135deg,var(--color-cobalt),var(--color-deep-red))">
+                  <div class="race-plate">${String(i + 1).padStart(2, '0')}</div>
+                  ${media}
+                </div>
+                <div class="card-body">
+                  <span class="make">${esc(b.make || '—')}</span>
+                  <span class="model">${esc(b.model || '—')}</span>
+                  <div class="spec">
+                    ${b.year ? `<span>${esc(String(b.year))}</span>` : ''}
+                    ${b.engine_cc ? `<span>${esc(String(b.engine_cc))} cc</span>` : ''}
+                    ${b.color ? `<span>${esc(b.color)}</span>` : ''}
+                  </div>
+                </div>
+              </div>`
+            }).join('')
+          } catch (err) {
+            log('loadBikes error', err)
+            wrap.innerHTML = ''
+            errEl && errEl.classList.remove('hidden')
+            $('tabBikesErrorMsg') && ($('tabBikesErrorMsg').textContent = (err && err.message) || '')
+          }
+        }
+
+        /* ── Trips tab ─────────────────────────────── */
+        async function loadTrips(sb, uid) {
+          const wrap = $('tabTrips'), empty = $('tabTripsEmpty'), errEl = $('tabTripsError')
+          if (!wrap) return
+          wrap.innerHTML = '<div class="route-card"><div class="skeleton" style="aspect-ratio:16/9;width:100%"></div></div>'
+          try {
+            const { data, error } = await sb.from('trips')
+              .select('id, title, trip_date, end_date, distance_km, difficulty, is_public')
+              .eq('user_id', uid).order('trip_date', { ascending: false })
+            if (error) throw error
+            if (!data || !data.length) { wrap.innerHTML = ''; empty && empty.classList.remove('hidden'); errEl && errEl.classList.add('hidden'); return }
+            empty && empty.classList.add('hidden'); errEl && errEl.classList.add('hidden')
+            wrap.innerHTML = data.map((t) => {
+              const st = statusForTrip(t)
+              const dateStr = t.trip_date ? new Date(t.trip_date).toLocaleDateString() : '—'
+              return `<div class="route-card" data-trip="${esc(t.id)}" data-status="${st}">
+                <div class="route-art">
+                  <span class="status-pin" data-status="${st}">${st}</span>
+                  <span class="bearing">${esc(dateStr)}</span>
+                  <svg viewBox="0 0 400 225" preserveAspectRatio="xMidYMid slice" xmlns="http://www.w3.org/2000/svg">
+                    <defs>
+                      <linearGradient id="rg" x1="0" y1="0" x2="0" y2="1">
+                        <stop offset="0" stop-color="#c9a84c" stop-opacity="0.25"/>
+                        <stop offset="1" stop-color="#c9a84c" stop-opacity="0"/>
+                      </linearGradient>
+                    </defs>
+                    <rect width="400" height="225" fill="url(#rg)"/>
+                    <path d="M 0 130 L 60 80 L 100 110 L 140 70 L 180 100 L 220 60 L 260 95 L 300 75 L 340 105 L 400 85 L 400 225 L 0 225 Z" fill="#0b0d12" opacity="0.5"/>
+                    <path d="M 200 225 L 200 100" stroke="#c9a84c" stroke-width="1.5" stroke-dasharray="6 8" stroke-opacity="0.7"/>
+                  </svg>
+                </div>
+                <div class="route-body">
+                  <h3 class="route-title">${esc(t.title || 'Untitled voyage')}</h3>
+                  <div class="route-meta">
+                    ${t.distance_km ? `<span><strong>${Math.round(t.distance_km)}</strong> km</span>` : ''}
+                    ${t.difficulty ? `<span>${esc(t.difficulty)}</span>` : ''}
+                  </div>
+                </div>
+              </div>`
+            }).join('')
+          } catch (err) {
+            log('loadTrips error', err)
+            wrap.innerHTML = ''
+            errEl && errEl.classList.remove('hidden')
+            $('tabTripsErrorMsg') && ($('tabTripsErrorMsg').textContent = (err && err.message) || '')
+          }
+        }
+
+        /* ── Followers / Following tabs ────────────── */
+        function riderCard(p) {
+          const av = p.avatar_url
+            ? `<img src="${esc(p.avatar_url)}" alt="" class="avatar-img" style="width:100%;height:100%;object-fit:cover"/>`
+            : `<span class="bp-avatar-fallback" style="width:100%;height:100%;display:flex;align-items:center;justify-content:center">${esc(initialsOf(p.full_name || p.username))}</span>`
+          return `<a class="rider-card" href="/profile.html?u=${encodeURIComponent(p.id)}">
+            <div class="rider-head">
+              <div class="avatar avatar-md">${av}</div>
+              <div class="info">
+                <div class="n">${esc(p.full_name || p.username)}</div>
+                <div class="h">@${esc(p.username || 'rider')}</div>
+              </div>
             </div>
-          </div>
-        </article>`).join('') + '</div>'
-    }
-    async function renderTrips(panel) {
-      if (!cache.trips) {
-        const { data } = await supabase.from('trips')
-          .select('id, title, start_loc, end_loc, distance_km, trip_date, difficulty, is_public, created_at')
-          .eq('user_id', profile.id).order('trip_date', { ascending: false, nullsFirst: false }).order('created_at', { ascending: false })
-        cache.trips = data || []
-      }
-      if (!cache.trips.length) {
-        panel.innerHTML = `<div class="card card-body-loose empty-state">
-          <p class="empty-title">No routes in the ledger.</p>
-          <p class="empty-body">${isOwn ? 'Every long road begins as an intention.' : 'This rider has not planned any routes yet.'}</p>
-          ${isOwn ? '<a href="/trips.html" class="btn btn-primary mt-6" style="margin:24px auto 0">Plan a route</a>' : ''}
-        </div>`
-        return
-      }
-      panel.innerHTML = '<div class="grid-trips">' + cache.trips.map(t => {
-        const date = t.trip_date ? new Date(t.trip_date).toLocaleDateString(undefined, { day:'numeric', month:'short', year:'numeric' }) : '—'
-        return `<article class="route-card fade-up">
-          <div class="row row-between" style="align-items:flex-start;gap:12px">
-            <div class="stack stack-1 min-w-0" style="flex:1">
-              <p class="route-card-title">${esc(t.title)}</p>
-              <p class="route-card-route">${esc(t.start_loc || '—')} <span class="arrow">→</span> ${esc(t.end_loc || '—')} · ${date}</p>
-            </div>
-            <span class="badge badge-brass">${esc(t.difficulty || 'Medium')}</span>
-          </div>
-          <div class="rule" style="margin:14px 0"></div>
-          <div class="row row-between" style="font-size:12.5px;color:var(--c-text-2)">
-            <span>${t.distance_km ? t.distance_km + ' km' : '— km'}<span class="sep" style="margin:0 6px;color:var(--c-text-4)">·</span>${t.is_public ? 'public' : 'private'}</span>
-            ${isOwn ? '<a href="/trips.html" class="btn-subtle">Manage</a>' : ''}
-          </div>
-        </article>`
-      }).join('') + '</div>'
-    }
-
-    async function renderPeople(panel, kind) {
-      if (!cache[kind]) {
-        cache[kind] = kind === 'followers' ? await getFollowersList(profile.id) : await getFollowingList(profile.id)
-      }
-      const list = cache[kind] || []
-      if (!list.length) {
-        const msg = kind === 'followers'
-          ? (isOwn ? 'No followers yet.' : 'No followers yet.')
-          : (isOwn ? 'Not following anyone yet.' : 'Not following anyone yet.')
-        panel.innerHTML = `<div class="card card-body-loose empty-state">
-          <p class="empty-title">${msg}</p>
-        </div>`
-        return
-      }
-      const meId = me.id
-      const decorated = await Promise.all(list.map(async (p) => {
-        const status = (p.id !== meId) ? await getFollowStatus(p.id) : 'none'
-        return { ...p, __status: status }
-      }))
-      panel.innerHTML = '<div class="grid-people">' + decorated.map(p => peopleCardHTML(p, p.__status)).join('') + '</div>'
-      panel.querySelectorAll('.follow-btn').forEach(btn => {
-        btn.addEventListener('click', () => onPeopleFollow(btn))
+            ${p.bio ? `<p class="rider-bio">${esc(p.bio)}</p>` : ''}
+          </a>`
+        }
+        async function loadFollowers(fm, uid) {
+          const wrap = $('tabFollowers'), empty = $('tabFollowersEmpty'), errEl = $('tabFollowersError')
+          if (!wrap) return
+          wrap.innerHTML = '<div class="rider-card"><div class="skeleton" style="height:60px"></div></div>'
+          try {
+            const list = await fm.getFollowersList(uid)
+            if (!list || !list.length) { wrap.innerHTML = ''; empty && empty.classList.remove('hidden'); errEl && errEl.classList.add('hidden'); return }
+            empty && empty.classList.add('hidden'); errEl && errEl.classList.add('hidden')
+            wrap.innerHTML = list.map(riderCard).join('')
+          } catch (err) {
+            log('loadFollowers error', err)
+            wrap.innerHTML = ''
+            errEl && errEl.classList.remove('hidden')
+            $('tabFollowersErrorMsg') && ($('tabFollowersErrorMsg').textContent = (err && err.message) || '')
+          }
+        }
+        async function loadFollowing(fm, uid) {
+          const wrap = $('tabFollowing'), empty = $('tabFollowingEmpty'), errEl = $('tabFollowingError')
+          if (!wrap) return
+          wrap.innerHTML = '<div class="rider-card"><div class="skeleton" style="height:60px"></div></div>'
+          try {
+            const list = await fm.getFollowingList(uid)
+            if (!list || !list.length) { wrap.innerHTML = ''; empty && empty.classList.remove('hidden'); errEl && errEl.classList.add('hidden'); return }
+            empty && empty.classList.add('hidden'); errEl && errEl.classList.add('hidden')
+            wrap.innerHTML = list.map(riderCard).join('')
+          } catch (err) {
+            log('loadFollowing error', err)
+            wrap.innerHTML = ''
+            errEl && errEl.classList.remove('hidden')
+            $('tabFollowingErrorMsg') && ($('tabFollowingErrorMsg').textContent = (err && err.message) || '')
+          }
+        }
+      })().catch((err) => {
+        try { console.error('[profile] fatal', err) } catch (_) {}
       })
-    }
 
-    function peopleCardHTML(p, status) {
-      const sid = `ppl-${p.id}`
-      let action
-      if (p.id === me.id) {
-        action = ''
-      } else if (status === 'accepted') {
-        action = `<button class="btn btn-ghost btn-sm follow-btn" id="${sid}" data-target="${esc(p.id)}" data-state="accepted"><span class="btn-label">Following</span></button>`
-      } else if (status === 'pending_sent') {
-        action = `<button class="btn btn-ghost btn-sm follow-btn" id="${sid}" data-target="${esc(p.id)}" data-state="pending_sent"><span class="btn-label">Requested</span></button>`
-      } else {
-        action = `<button class="btn btn-primary btn-sm follow-btn" id="${sid}" data-target="${esc(p.id)}" data-state="none"><span class="btn-label">Follow +</span></button>`
+      // ── Nav injection: Messages + Notifications ──────────
+      function injectNav() {
+        const navLinks = document.querySelector('.nav-links')
+        if (!navLinks || document.getElementById('nav-messages')) return
+
+        const msgLink = document.createElement('a')
+        msgLink.href = '/messages.html'
+        msgLink.className = 'nav-link'
+        msgLink.id = 'nav-messages'
+        msgLink.innerHTML = '<span>Messages</span><span class="nav-badge" id="msg-unread-badge" style="display:none"></span>'
+        navLinks.appendChild(msgLink)
+
+        const notifLink = document.createElement('a')
+        notifLink.href = '/notifications.html'
+        notifLink.className = 'nav-link'
+        notifLink.id = 'nav-notifications'
+        notifLink.innerHTML = '<span>Notifications</span><span class="nav-badge" id="notif-unread-badge" style="display:none"></span>'
+        navLinks.appendChild(notifLink)
+
+        const mobileNav = document.querySelector('.nav-mobile nav')
+        if (mobileNav) {
+          const mMsg = document.createElement('a')
+          mMsg.href = '/messages.html'
+          mMsg.className = 'nav-link'
+          mMsg.textContent = 'Messages'
+          mobileNav.appendChild(mMsg)
+          const mNotif = document.createElement('a')
+          mNotif.href = '/notifications.html'
+          mNotif.className = 'nav-link'
+          mNotif.textContent = 'Notifications'
+          mobileNav.appendChild(mNotif)
+        }
       }
-      return `
-        <article class="card card-body-tight people-card fade-up">
-          ${avatarHTML(p.avatar_url, p.full_name || p.username, 40)}
-          <div class="people-card-info min-w-0">
-            <p class="people-card-name truncate">${esc(p.full_name || p.username)}</p>
-            <p class="people-card-handle truncate">@${esc(p.username || 'rider')}</p>
-          </div>
-          ${action}
-        </article>`
-    }
 
-    async function onPeopleFollow(btn) {
-      const target = btn.getAttribute('data-target')
-      const currentState = btn.getAttribute('data-state') || 'none'
-      if (inFlight.has(target)) return
-      inFlight.add(target)
-      btn.disabled = true
-      try {
-        let ns = currentState
-        if (currentState === 'none')           { const r = await sendFollowRequest(target); if (!r.success) throw new Error(r.error); ns = 'pending_sent' }
-        else if (currentState === 'pending_sent') { const r = await cancelFollowRequest(target); if (!r.success) throw new Error(r.error); ns = 'none' }
-        else if (currentState === 'accepted')  { const r = await unfollowUser(target); if (!r.success) throw new Error(r.error); ns = 'none' }
-        // refresh
-        const fresh = await getFollowStatus(target)
-        const parent = btn.parentElement
-        parent.innerHTML = peopleCardHTML({ id: target }, fresh).match(/<button[\s\S]*?<\/button>/)[0]
-        parent.querySelector('.follow-btn')?.addEventListener('click', e => onPeopleFollow(e.currentTarget))
-      } catch (e) {
-        toast(e.message || 'Couldn’t update follow.', 'error')
-        btn.disabled = false
-      } finally {
-        inFlight.delete(target)
+      // ── Badge loader ──────────────────────────────────────
+      async function loadNavBadges() {
+        try {
+          const supaMod = await import('./js/supabase.js?v=' + Date.now())
+          const supabase = supaMod.supabase
+          const { data: { user } } = await supabase.auth.getUser()
+          if (!user) return
+
+          const notifCount = await supaMod.getUnreadNotificationCount()
+          const badge = document.getElementById('notif-unread-badge')
+          if (badge) {
+            badge.textContent = notifCount > 99 ? '99+' : notifCount
+            badge.style.display = notifCount > 0 ? 'flex' : 'none'
+          }
+
+          let notifChannel = supaMod.subscribeToNotifications(user.id, () => {
+            const b = document.getElementById('notif-unread-badge')
+            if (b) {
+              const current = parseInt(b.textContent) || 0
+              b.textContent = current + 1 > 99 ? '99+' : (current + 1)
+              b.style.display = 'flex'
+              b.style.transition = 'transform 150ms ease'
+              b.style.transform = 'scale(1.3)'
+              setTimeout(() => { b.style.transform = 'scale(1)' }, 150)
+            }
+          })
+
+          window.addEventListener('beforeunload', () => {
+            if (notifChannel) notifChannel.unsubscribe()
+          })
+        } catch (_) {}
       }
-    }
 
-    loadProfile()
-    renderTab()
+      injectNav()
+      loadNavBadges()
+    })()
   </script>
+
+  <style>
+    .nav-badge {
+      margin-left: auto;
+      background: var(--color-racing);
+      color: var(--color-paper);
+      font-size: 10px;
+      font-weight: 700;
+      font-family: var(--font-body);
+      min-width: 18px;
+      height: 18px;
+      padding: 0 5px;
+      border-radius: 999px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      letter-spacing: 0;
+    }
+  </style>
 </body>
 </html>

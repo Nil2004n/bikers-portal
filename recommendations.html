@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Road Concierge · Bikers Portal</title>
+  <title>The compass · Bikers Portal</title>
   <link rel="icon" href="/assets/logo.svg" type="image/svg+xml" />
   <script src="./js/app.js"></script>
   <script src="https://cdn.tailwindcss.com"></script>
@@ -14,216 +14,434 @@
   <header id="bp-navbar" data-active="recommendations"></header>
 
   <div class="founding-strip">
-    Vol. III <span class="ornament">·</span> The concierge <span class="ornament">·</span> est. MMXXIV
+    Vol. III <span class="ornament">·</span> The compass <span class="ornament">·</span> est. MMXXIV <span class="ornament">·</span> bearing 045°
   </div>
 
-  <main class="page-narrow" style="padding-top:40px;padding-bottom:80px">
+  <main class="page" style="padding-top:32px;padding-bottom:80px">
 
-    <header class="page-header" style="padding:24px 0 36px;text-align:center">
-      <p class="eyebrow eyebrow-brass" style="margin-bottom:18px;justify-content:center;display:inline-flex">The concierge</p>
-      <h1 style="font-family:var(--font-display);font-style:italic;font-weight:500;line-height:1.05;letter-spacing:-0.01em;text-align:center">
-        Road Concierge
-      </h1>
-      <p class="lede" style="text-align:center;margin-left:auto;margin-right:auto">Refined route suggestions, considered by your appetite for distance, terrain, and temperament.</p>
+    <header class="page-header">
+      <p class="eyebrow eyebrow-brass">The compass <span style="color:var(--color-text-faint);margin-left:8px">·</span> <span class="mono" style="color:var(--color-text-3);font-size:10px;letter-spacing:.2em">CH. 05</span></p>
+      <h1>Find your next <span style="font-style:italic;color:var(--color-racing)">bearing.</span></h1>
+      <p class="lede">Tell the compass where you are, how far you want to ride, and what you're chasing — it'll plot the route.</p>
     </header>
 
-    <!-- Form -->
-    <form id="conciergeForm" class="concierge-card page-enter" novalidate>
+    <!-- ░░ CONCIERGE / COMPASS FORM ░░ -->
+    <section class="concierge-hero">
+      <div class="compass-bg">
+        <svg viewBox="0 0 200 200" fill="none" stroke="#c9a84c" stroke-width="0.5" xmlns="http://www.w3.org/2000/svg">
+          <circle cx="100" cy="100" r="90"/>
+          <circle cx="100" cy="100" r="74"/>
+          <circle cx="100" cy="100" r="50"/>
+          <g font-family="JetBrains Mono, monospace" font-size="9" font-weight="700" fill="#c9a84c" stroke="none">
+            <text x="100" y="14" text-anchor="middle">N</text>
+            <text x="100" y="194" text-anchor="middle">S</text>
+            <text x="14" y="103" text-anchor="middle">W</text>
+            <text x="186" y="103" text-anchor="middle">E</text>
+          </g>
+          <path d="M 100 30 L 110 100 L 100 90 L 90 100 Z" fill="#c9a84c"/>
+          <path d="M 100 90 L 110 100 L 100 170 L 90 100 Z" fill="#c9a84c" opacity="0.4"/>
+        </svg>
+      </div>
+      <div style="position:relative;z-index:1">
+        <p class="power-label">Powered by AI</p>
+        <h2 style="font-size:clamp(28px,4vw,42px);font-style:italic;letter-spacing:-.01em;line-height:1">Set the compass.</h2>
+        <p style="font-family:var(--font-heritage);font-style:italic;font-size:16px;color:var(--color-text-2);margin-top:8px;max-width:50ch">The more you tell it, the truer the heading.</p>
+      </div>
+    </section>
 
-      <div class="row row-4 mb-6" style="align-items:flex-end;flex-wrap:wrap;gap:16px">
-        <div class="field" style="flex:1;min-width:240px">
-          <label class="field-label">Rider level</label>
-          <div class="segmented">
-            <input type="radio" name="riderLevel" id="rl-b" value="Beginner" /><label for="rl-b">Beginner</label>
-            <input type="radio" name="riderLevel" id="rl-i" value="Intermediate" checked /><label for="rl-i">Intermediate</label>
-            <input type="radio" name="riderLevel" id="rl-e" value="Expert" /><label for="rl-e">Expert</label>
-          </div>
+    <form id="conciergeForm" class="concierge-card" onsubmit="return false">
+      <div id="conErr" class="form-err hidden" role="alert"></div>
+
+      <div class="grid-tripform">
+        <div class="field">
+          <label class="field-label" for="region">
+            <span>Region</span>
+            <span class="field-hint">Where you ride</span>
+          </label>
+          <select class="select" id="region" name="region">
+            <option value="">— Any —</option>
+            <option value="coast">Coastal</option>
+            <option value="mountains">Mountains</option>
+            <option value="desert">Desert</option>
+            <option value="forest">Forest</option>
+            <option value="city">City / Urban</option>
+            <option value="countryside">Countryside</option>
+          </select>
         </div>
-        <div class="field" style="flex:1;min-width:200px">
-          <label class="field-label" for="region">Region / state</label>
-          <input id="region" class="input" placeholder="e.g. Karnataka" />
+        <div class="field">
+          <label class="field-label" for="mood">
+            <span>Mood</span>
+            <span class="field-hint">What you're chasing</span>
+          </label>
+          <select class="select" id="mood" name="mood">
+            <option value="">— Any —</option>
+            <option value="adrenaline">Adrenaline</option>
+            <option value="calm">Calm / Scenic</option>
+            <option value="adventure">Adventure</option>
+            <option value="camaraderie">Camaraderie</option>
+            <option value="solitude">Solitude</option>
+          </select>
         </div>
       </div>
 
-      <div class="field mb-6">
-        <label class="field-label">Terrain preferences</label>
-        <div id="terrains" class="row row-2" style="flex-wrap:wrap">
-          <button type="button" class="chip" data-val="Highway">Highway</button>
-          <button type="button" class="chip" data-val="Mountain">Mountain</button>
-          <button type="button" class="chip" data-val="City">City</button>
-          <button type="button" class="chip" data-val="Dirt">Dirt</button>
-          <button type="button" class="chip" data-val="Touring">Touring</button>
-          <button type="button" class="chip" data-val="Mixed">Mixed</button>
+      <div class="field">
+        <label class="field-label" for="maxDist">
+          <span>Max distance</span>
+          <span class="field-hint" id="distLabel">0 km</span>
+        </label>
+        <input class="input" type="range" id="maxDist" name="maxDistance" min="50" max="2000" step="50" value="500" style="height:auto;padding:0;background:transparent;border:none;accent-color:var(--color-racing)" />
+      </div>
+
+      <div class="field">
+        <label class="field-label" style="margin-bottom:0">
+          <span>Terrain</span>
+          <span class="field-hint">Pick any</span>
+        </label>
+        <div id="terrains" class="terrain-grid">
+          <button type="button" class="chip" data-val="twisties">Twisties</button>
+          <button type="button" class="chip" data-val="highway">Highway</button>
+          <button type="button" class="chip" data-val="offroad">Off-road</button>
+          <button type="button" class="chip" data-val="coastal">Coastal</button>
+          <button type="button" class="chip" data-val="mountain">Mountain pass</button>
+          <button type="button" class="chip" data-val="canyons">Canyons</button>
+          <button type="button" class="chip" data-val="forest">Forest</button>
+          <button type="button" class="chip" data-val="desert">Desert</button>
         </div>
       </div>
 
-      <div class="field mb-6">
-        <div class="row row-between" style="align-items:baseline;margin-bottom:8px">
-          <label class="field-label" for="maxDist" style="margin:0">Max distance</label>
-          <span id="distLabel" style="font-family:var(--font-display);font-size:20px;color:var(--c-text)">300 km</span>
-        </div>
-        <input id="maxDist" type="range" min="50" max="1200" step="25" value="300" class="range" />
-        <div class="row row-between" style="font-size:10.5px;letter-spacing:0.18em;color:var(--c-text-3);text-transform:uppercase;margin-top:6px;font-weight:500">
-          <span>50</span><span>400</span><span>800</span><span>1200</span>
-        </div>
-      </div>
-
-      <div class="field mb-6">
-        <label class="field-label" for="mood">Mood <span style="color:var(--c-text-3);text-transform:none;letter-spacing:0.02em;font-size:11px;font-weight:500">(optional)</span></label>
-        <input id="mood" class="input" placeholder="calm · spirited · long-haul · scenic · technical" />
-      </div>
-
-      <p id="conErr" class="msg msg-error hidden" style="margin-bottom:16px"></p>
-
-      <div class="row row-end">
-        <button id="conSubmit" type="submit" class="btn btn-primary">
-          <span class="btn-label">Consult the concierge</span>
+      <div class="row" style="justify-content:flex-end;gap:8px;margin-top:8px">
+        <button id="conSubmit" type="submit" class="btn btn-primary btn-lg">
+          <span>Plot the route</span>
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="square"><path d="M5 12h14M13 6l6 6-6 6"/></svg>
         </button>
       </div>
     </form>
 
-    <!-- Results -->
-    <section id="results" class="hidden mt-8">
-      <div class="subhead">
-        <h2 id="resultsNote">Curated routes</h2>
-        <span class="subhead-aside">From the concierge</span>
+    <!-- ░░ SKELETON ░░ -->
+    <div id="skeleton" class="grid-concierge hidden">
+      <div class="rec-card"><div class="skeleton" style="height:18px;width:70%;margin-bottom:10px"></div><div class="skeleton" style="height:12px;width:90%;margin-bottom:6px"></div><div class="skeleton" style="height:12px;width:60%"></div></div>
+      <div class="rec-card"><div class="skeleton" style="height:18px;width:70%;margin-bottom:10px"></div><div class="skeleton" style="height:12px;width:90%;margin-bottom:6px"></div><div class="skeleton" style="height:12px;width:60%"></div></div>
+      <div class="rec-card"><div class="skeleton" style="height:18px;width:70%;margin-bottom:10px"></div><div class="skeleton" style="height:12px;width:90%;margin-bottom:6px"></div><div class="skeleton" style="height:12px;width:60%"></div></div>
+    </div>
+
+    <!-- ░░ RESULTS ░░ -->
+    <section id="results" class="hidden" style="margin-top:32px">
+      <div class="section-title">
+        <h3>Plot results</h3>
+        <span class="more" id="resultsNote">3 of 3</span>
       </div>
       <div id="cards" class="grid-concierge"></div>
     </section>
 
-    <section id="skeleton" class="hidden mt-8 grid-concierge">
-      <article class="rec-card"><div class="skeleton" style="height:18px;width:60%"></div><div class="skeleton mt-3" style="height:11px;width:40%"></div><div class="skeleton mt-5" style="height:60px"></div><div class="skeleton mt-5" style="height:36px"></div></article>
-      <article class="rec-card"><div class="skeleton" style="height:18px;width:50%"></div><div class="skeleton mt-3" style="height:11px;width:55%"></div><div class="skeleton mt-5" style="height:60px"></div><div class="skeleton mt-5" style="height:36px"></div></article>
-      <article class="rec-card"><div class="skeleton" style="height:18px;width:70%"></div><div class="skeleton mt-3" style="height:11px;width:45%"></div><div class="skeleton mt-5" style="height:60px"></div><div class="skeleton mt-5" style="height:36px"></div></article>
+    <!-- ░░ NEAR-YOU SUGGESTIONS ░░ -->
+    <section style="margin-top:64px">
+      <div class="section-title">
+        <h3>Riders you may know</h3>
+        <span class="more">From the roster</span>
+      </div>
+      <div id="suggestedRiders" class="grid-riders"></div>
     </section>
+
+    <section style="margin-top:48px">
+      <div class="section-title">
+        <h3>Routes worth riding</h3>
+        <span class="more">From the brotherhood</span>
+      </div>
+      <div id="suggestedRoutes" class="grid-trips"></div>
+    </section>
+
   </main>
 
-  <style>
-    .grid-concierge {
-      display: grid;
-      grid-template-columns: 1fr;
-      gap: 18px;
-    }
-    @media (min-width: 800px) { .grid-concierge { grid-template-columns: repeat(3, 1fr); } }
-  </style>
+  <footer class="site-footer">
+    Bikers Portal <span style="color:var(--color-brass);padding:0 8px">·</span> EST. MMXXIV <span style="color:var(--color-brass);padding:0 8px">·</span> Charted by riders, for riders
+  </footer>
 
   <script type="module">
-    import { supabase } from './js/supabase.js'
-    const { esc, toast } = window.bp
+    import { supabase, getUnreadNotificationCount, subscribeToNotifications } from './js/supabase.js'
+    import * as follow from './js/follow.js'
 
-    const me = window.__bpUser
-    const form   = document.getElementById('conciergeForm')
-    const submit = document.getElementById('conSubmit')
-    const err    = document.getElementById('conErr')
-    const skel   = document.getElementById('skeleton')
-    const res    = document.getElementById('results')
-    const cards  = document.getElementById('cards')
-    const note   = document.getElementById('resultsNote')
-    const distIn = document.getElementById('maxDist')
-    const distLb = document.getElementById('distLabel')
+    const $ = (id) => document.getElementById(id)
+    const esc = (s) => String(s ?? '').replace(/[&<>"']/g, (c) => ({ '&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;' }[c]))
+    const initialsOf = (n) => (n || '?').split(/\s+/).map(s => s[0]).join('').slice(0, 2).toUpperCase()
 
-    const FALLBACK = [
-      { title: 'Western Ghats Dawn Run',  distance_km: 180, difficulty: 'Medium', terrain: 'Mountain', description: 'A refined early-morning climb through mist, bends, and old hillside roads.' },
-      { title: 'Konkan Coastal Crawl',    distance_km: 240, difficulty: 'Easy',   terrain: 'Highway',  description: 'A measured ride along the western coast — salt air and unhurried towns.' },
-      { title: 'Spiti Cold Ascent',       distance_km: 420, difficulty: 'Hard',   terrain: 'Mountain', description: 'A serious high-altitude push through stark valleys and moonlike passes.' },
-    ]
-    let lastList = []
+    /* session */
+    const { data: { session } } = await supabase.auth.getSession()
+    const me = session?.user
+    if (!me) { window.location.replace('/index.html'); }
+    if (window.bp?.loadCurrentProfile) await window.bp.loadCurrentProfile()
+    const myProfile = window.bp?.currentProfile
 
-    distIn.addEventListener('input', () => { distLb.textContent = distIn.value + ' km' })
+    /* distance slider */
+    const slider = $('maxDist')
+    const distLabel = $('distLabel')
+    if (slider && distLabel) {
+      const update = () => distLabel.textContent = `${slider.value} km`
+      slider.addEventListener('input', update); update()
+    }
 
-    const selected = new Set()
-    document.querySelectorAll('#terrains .chip').forEach(b => {
-      b.addEventListener('click', () => {
-        const v = b.getAttribute('data-val')
-        if (selected.has(v)) { selected.delete(v); b.classList.remove('is-on') }
-        else                 { selected.add(v);    b.classList.add('is-on') }
-      })
+    /* terrain chips (multi-select) */
+    const terrains = $('terrains')
+    if (terrains) terrains.addEventListener('click', (e) => {
+      const c = e.target.closest('.chip'); if (!c) return
+      c.classList.toggle('is-active')
     })
 
-    form.addEventListener('submit', async (e) => {
-      e.preventDefault()
-      err.classList.add('hidden')
-      const riderLevel = form.querySelector('input[name=riderLevel]:checked')?.value || 'Intermediate'
-      const terrains = [...selected]
-      const maxDistance = parseInt(distIn.value, 10)
-      const region = document.getElementById('region').value.trim() || 'India'
-      const mood = document.getElementById('mood').value.trim()
+    /* ── Concierge submit ────────────────────────── */
+    const conForm   = $('conciergeForm')
+    const conSubmit = $('conSubmit')
+    const skeleton  = $('skeleton')
+    const results   = $('results')
+    const cards     = $('cards')
+    const conErr    = $('conErr')
+    const resultsNote= $('resultsNote')
 
-      submit.disabled = true
-      submit.innerHTML = '<span class="spinner"></span><span class="btn-label">Consulting the concierge</span>'
-      res.classList.add('hidden')
-      skel.classList.remove('hidden')
+    if (conSubmit) conSubmit.addEventListener('click', async (e) => {
+      e?.preventDefault?.()
+      conErr.classList.add('hidden'); conErr.textContent = ''
+
+      const region   = $('region')?.value || ''
+      const mood     = $('mood')?.value   || ''
+      const maxDistance = parseInt(slider?.value || '500', 10)
+      const terrainChips = terrains ? terrains.querySelectorAll('.chip.is-active') : []
+      const terrainList = Array.from(terrainChips).map(c => c.dataset.val)
+
+      /* build the rider-level descriptor from profile if available */
+      const riderLevel = (myProfile?.bike_model || '').toLowerCase().includes('125')
+        ? 'beginner'
+        : (myProfile?.bio || '').toLowerCase().includes('pro') ? 'expert' : 'intermediate'
+
+      conSubmit.disabled = true
+      const original = conSubmit.innerHTML
+      conSubmit.innerHTML = '<span>Plotting…</span>'
+
       try {
-        const r = await fetch('/api/ai-recommend', {
+        skeleton?.classList.remove('hidden')
+        results.classList.add('hidden')
+
+        const resp = await fetch('/.netlify/functions/ai-recommend', {
           method: 'POST',
           headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify({ riderLevel, terrains, maxDistance, region, mood }),
+          body: JSON.stringify({
+            riderLevel,
+            terrains: terrainList,
+            maxDistance,
+            region,
+            mood
+          })
         })
-        let data
-        try { data = await r.json() } catch { data = null }
-        if (!r.ok || !data) throw new Error('Concierge unavailable')
-        const recs = (data.recommendations || []).slice(0, 3)
-        if (!recs.length) throw new Error('No recommendations returned')
-        if (data.fallback) { note.textContent = 'Concierge is paused — showing house recommendations' }
-        else               { note.textContent = 'Curated routes' }
-        renderCards(recs)
-      } catch (e2) {
-        skel.classList.add('hidden')
-        note.textContent = 'Concierge is paused — showing house recommendations'
-        renderCards(FALLBACK)
+        if (!resp.ok) {
+          const txt = await resp.text()
+          throw new Error(`AI service error (${resp.status}): ${txt.slice(0, 200)}`)
+        }
+        const json = await resp.json()
+        const recs = Array.isArray(json.recommendations) ? json.recommendations : []
+
+        renderRecs(recs, json.fallback)
+      } catch (err) {
+        conErr.textContent = err?.message || 'Could not reach the AI.'
+        conErr.classList.remove('hidden')
       } finally {
-        submit.disabled = false
-        submit.innerHTML = '<span class="btn-label">Consult the concierge</span>'
+        skeleton?.classList.add('hidden')
+        conSubmit.disabled = false
+        conSubmit.innerHTML = original
       }
     })
 
-    function renderCards(list) {
-      lastList = list
-      res.classList.remove('hidden')
-      skel.classList.add('hidden')
-      cards.innerHTML = list.map((r, i) => {
-        return `<article class="rec-card fade-up" data-idx="${i}">
-          <p class="rec-card-title">${esc(r.title)}</p>
-          <div class="rec-card-meta">
-            <span class="badge badge-brass">${esc(r.difficulty || 'Medium')}</span>
-            <span class="dot">·</span>
-            <span>${esc(r.terrain || 'Mixed')}</span>
-            <span class="dot">·</span>
-            <span>${r.distance_km || '—'} km</span>
+    function renderRecs(recs, fallback) {
+      if (!recs.length) {
+        cards.innerHTML = `<div class="results-empty">
+          <h3>${fallback ? 'The compass is recalibrating.' : 'No routes found.'}</h3>
+          <p>${fallback ? 'Try widening your distance or terrain.' : 'Adjust the inputs and try again.'}</p>
+        </div>`
+        results.classList.remove('hidden')
+        if (resultsNote) resultsNote.textContent = '0 of 0'
+        return
+      }
+      cards.innerHTML = recs.map((r, i) => `
+        <div class="rec-card">
+          <span class="rec-no">${String(i + 1).padStart(2, '0')}</span>
+          <h3 class="rec-title">${esc(r.title || 'Untitled route')}</h3>
+          <div class="rec-meta">
+            ${r.distance_km ? `<span><strong>${Math.round(r.distance_km)}</strong> km</span>` : ''}
+            ${r.difficulty ? `<span>${esc(r.difficulty)}</span>` : ''}
+            ${r.terrain ? `<span>${esc(r.terrain)}</span>` : ''}
           </div>
-          <div class="rule" style="margin:16px 0"></div>
-          <p class="rec-card-desc">${esc(r.description)}</p>
-          <div class="rec-card-foot">
-            <button data-act="save" class="btn btn-ghost full">Save to my routes</button>
-          </div>
-        </article>`
-      }).join('')
+          ${r.description ? `<p class="rec-desc">${esc(r.description)}</p>` : ''}
+        </div>
+      `).join('')
+      if (resultsNote) resultsNote.textContent = `${recs.length} of ${recs.length}`
+      results.classList.remove('hidden')
     }
 
-    cards.addEventListener('click', async (e) => {
-      const btn = e.target.closest('button[data-act=save]')
-      if (!btn) return
-      const card = btn.closest('[data-idx]')
-      if (!card) return
-      const idx = parseInt(card.getAttribute('data-idx'), 10)
-      const r = lastList[idx]
-      if (!r) return
-      btn.disabled = true
-      btn.innerHTML = '<span class="spinner"></span><span>Saving</span>'
-      const { error } = await supabase.from('trips').insert({
-        user_id: me.id,
-        title: r.title,
-        start_loc: '', end_loc: '',
-        distance_km: r.distance_km || null,
-        difficulty: r.difficulty || 'Medium',
-        notes: r.description || '',
-        waypoints: [],
-        is_public: false,
+    /* ── Suggestion rows: Riders + Routes ────────── */
+    async function loadRiders() {
+      const wrap = $('suggestedRiders')
+      if (!wrap) return
+      try {
+        const { data } = await supabase
+          .from('profiles')
+          .select('id, username, full_name, avatar_url, bike_model, bio')
+          .neq('id', me.id)
+          .order('created_at', { ascending: false })
+          .limit(6)
+        if (!data || !data.length) {
+          wrap.innerHTML = '<p class="results-empty" style="padding:32px 0"><h3>No riders to suggest yet.</h3></p>'
+          return
+        }
+        wrap.innerHTML = data.map(p => {
+          const av = p.avatar_url
+            ? `<img src="${esc(p.avatar_url)}" alt="" class="avatar-img" style="width:100%;height:100%;object-fit:cover"/>`
+            : `<span class="bp-avatar-fallback" style="width:100%;height:100%;display:flex;align-items:center;justify-content:center">${esc(initialsOf(p.full_name || p.username))}</span>`
+          return `<a class="rider-card" href="/profile.html?u=${esc(p.id)}">
+            <div class="rider-head">
+              <div class="avatar avatar-md">${av}</div>
+              <div class="info">
+                <div class="n">${esc(p.full_name || p.username)}</div>
+                <div class="h">@${esc(p.username)}</div>
+              </div>
+            </div>
+            ${p.bio ? `<p class="rider-bio">${esc(p.bio)}</p>` : ''}
+            ${p.bike_model ? `<p class="rider-bio" style="color:var(--color-text-3)">Rides: ${esc(p.bike_model)}</p>` : ''}
+          </a>`
+        }).join('')
+      } catch (err) {
+        wrap.innerHTML = `<p class="results-empty"><h3>${esc(err?.message || 'Could not load riders.')}</h3></p>`
+      }
+    }
+
+    async function loadRoutes() {
+      const wrap = $('suggestedRoutes')
+      if (!wrap) return
+      try {
+        const { data } = await supabase
+          .from('trips')
+          .select('id, title, trip_date, distance_km, is_public, profiles:user_id ( username, full_name, avatar_url )')
+          .eq('is_public', true)
+          .order('created_at', { ascending: false })
+          .limit(6)
+        if (!data || !data.length) {
+          wrap.innerHTML = '<p class="results-empty" style="padding:32px 0"><h3>No routes charted yet.</h3></p>'
+          return
+        }
+        wrap.innerHTML = data.map(t => {
+          const a = t.profiles || {}
+          return `<div class="route-card" data-trip="${esc(t.id)}">
+            <div class="route-art">
+              <span class="status-pin" data-status="completed">public</span>
+              <span class="bearing">${t.trip_date ? new Date(t.trip_date).toLocaleDateString() : '—'}</span>
+              <svg viewBox="0 0 400 225" preserveAspectRatio="xMidYMid slice" xmlns="http://www.w3.org/2000/svg">
+                <defs>
+                  <linearGradient id="rg" x1="0" y1="0" x2="0" y2="1">
+                    <stop offset="0" stop-color="#c9a84c" stop-opacity="0.25"/>
+                    <stop offset="1" stop-color="#c9a84c" stop-opacity="0"/>
+                  </linearGradient>
+                </defs>
+                <rect width="400" height="225" fill="url(#rg)"/>
+                <path d="M 0 130 L 60 80 L 100 110 L 140 70 L 180 100 L 220 60 L 260 95 L 300 75 L 340 105 L 400 85 L 400 225 L 0 225 Z" fill="#0b0d12" opacity="0.5"/>
+                <path d="M 200 225 L 200 100" stroke="#c9a84c" stroke-width="1.5" stroke-dasharray="6 8" stroke-opacity="0.7"/>
+              </svg>
+            </div>
+            <div class="route-body">
+              <h3 class="route-title">${esc(t.title || 'Untitled voyage')}</h3>
+              <p class="route-meta">
+                ${a.username ? `<span>by @${esc(a.username)}</span>` : ''}
+                ${t.distance_km ? `<span><strong>${Math.round(t.distance_km)}</strong> km</span>` : ''}
+              </p>
+            </div>
+          </div>`
+        }).join('')
+      } catch (err) {
+        wrap.innerHTML = `<p class="results-empty"><h3>${esc(err?.message || 'Could not load routes.')}</h3></p>`
+      }
+    }
+
+    loadRiders()
+    loadRoutes()
+
+    // ── Nav injection: Messages + Notifications ──────────
+    function injectNav() {
+      const navLinks = document.querySelector('.nav-links')
+      if (!navLinks || document.getElementById('nav-messages')) return
+
+      const msgLink = document.createElement('a')
+      msgLink.href = '/messages.html'
+      msgLink.className = 'nav-link'
+      msgLink.id = 'nav-messages'
+      msgLink.innerHTML = '<span>Messages</span><span class="nav-badge" id="msg-unread-badge" style="display:none"></span>'
+      navLinks.appendChild(msgLink)
+
+      const notifLink = document.createElement('a')
+      notifLink.href = '/notifications.html'
+      notifLink.className = 'nav-link'
+      notifLink.id = 'nav-notifications'
+      notifLink.innerHTML = '<span>Notifications</span><span class="nav-badge" id="notif-unread-badge" style="display:none"></span>'
+      navLinks.appendChild(notifLink)
+
+      const mobileNav = document.querySelector('.nav-mobile nav')
+      if (mobileNav) {
+        const mMsg = document.createElement('a')
+        mMsg.href = '/messages.html'
+        mMsg.className = 'nav-link'
+        mMsg.textContent = 'Messages'
+        mobileNav.appendChild(mMsg)
+        const mNotif = document.createElement('a')
+        mNotif.href = '/notifications.html'
+        mNotif.className = 'nav-link'
+        mNotif.textContent = 'Notifications'
+        mobileNav.appendChild(mNotif)
+      }
+    }
+
+    // ── Badge loader ──────────────────────────────────────
+    async function loadNavBadges() {
+      const { data: { user } } = await supabase.auth.getUser()
+      if (!user) return
+
+      const notifCount = await getUnreadNotificationCount()
+      const badge = document.getElementById('notif-unread-badge')
+      if (badge) {
+        badge.textContent = notifCount > 99 ? '99+' : notifCount
+        badge.style.display = notifCount > 0 ? 'flex' : 'none'
+      }
+
+      let notifChannel = subscribeToNotifications(user.id, () => {
+        const b = document.getElementById('notif-unread-badge')
+        if (b) {
+          const current = parseInt(b.textContent) || 0
+          b.textContent = current + 1 > 99 ? '99+' : (current + 1)
+          b.style.display = 'flex'
+          b.style.transition = 'transform 150ms ease'
+          b.style.transform = 'scale(1.3)'
+          setTimeout(() => { b.style.transform = 'scale(1)' }, 150)
+        }
       })
-      if (error) { toast('Couldn’t save this route.', 'error'); btn.disabled = false; btn.innerHTML = 'Save to my routes'; return }
-      toast('Route added to your ledger.', 'success')
-      btn.innerHTML = 'Saved'
-    })
+
+      window.addEventListener('beforeunload', () => {
+        if (notifChannel) notifChannel.unsubscribe()
+      })
+    }
+
+    injectNav()
+    loadNavBadges()
   </script>
+
+  <style>
+    .nav-badge {
+      margin-left: auto;
+      background: var(--color-racing);
+      color: var(--color-paper);
+      font-size: 10px;
+      font-weight: 700;
+      font-family: var(--font-body);
+      min-width: 18px;
+      height: 18px;
+      padding: 0 5px;
+      border-radius: 999px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      letter-spacing: 0;
+    }
+  </style>
 </body>
 </html>
